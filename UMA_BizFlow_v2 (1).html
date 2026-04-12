@@ -1,0 +1,1612 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UMA BizFlow</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --ub-navy: #0D1B2A; --ub-blue: #1A56DB; --ub-cyan: #06B6D4;
+  --ub-gold: #F59E0B; --ub-light: #F0F4FF; --ub-muted: #64748B;
+  --ub-surface: #FFFFFF; --ub-border: rgba(26,86,219,0.15);
+  --ub-success: #10B981; --ub-warning: #F59E0B; --ub-danger: #EF4444;
+}
+body { font-family: 'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif; background: var(--ub-light); color: var(--ub-navy); overflow-x: hidden; }
+
+/* NAV */
+.nav { position: fixed; top:0; left:0; right:0; z-index:100; background: rgba(13,27,42,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(6,182,212,0.2); padding: 0 2rem; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+.nav-logo { font-family: Georgia,serif; font-size: 20px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+.nav-logo span { color: var(--ub-cyan); }
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 13px; transition: color 0.2s; }
+.nav-links a:hover { color: var(--ub-cyan); }
+.nav-cta { display: flex; gap: 10px; }
+.btn-outline-sm { border: 1px solid rgba(255,255,255,0.3); color: #fff; background: transparent; padding: 8px 18px; border-radius: 6px; font-size: 13px; cursor: pointer; font-family: 'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif; }
+.btn-primary-sm { background: var(--ub-blue); color: #fff; border: none; padding: 8px 18px; border-radius: 6px; font-size: 13px; cursor: pointer; font-family: 'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif; font-weight: 500; }
+
+/* HERO */
+.hero { min-height: 100vh; padding-top: 64px; background: linear-gradient(135deg, var(--ub-navy) 0%, #0F2B4A 50%, #0a1a2e 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 8rem 2rem 4rem; position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 40% at 50% 60%, rgba(26,86,219,0.15) 0%, transparent 70%); }
+.hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.3); color: var(--ub-cyan); padding: 6px 16px; border-radius: 100px; font-size: 12px; font-weight: 500; margin-bottom: 2rem; letter-spacing: 0.5px; position: relative; }
+.hero h1 { font-family: Georgia,serif; font-size: clamp(36px,6vw,72px); font-weight: 800; color: #fff; line-height: 1.1; max-width: 800px; margin-bottom: 1.5rem; position: relative; }
+.hero h1 em { color: var(--ub-cyan); font-style: normal; }
+.hero-desc { color: rgba(255,255,255,0.65); font-size: 16px; line-height: 1.8; max-width: 560px; margin-bottom: 2.5rem; position: relative; }
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-bottom: 4rem; position: relative; }
+.btn-hero { padding: 14px 32px; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; border: none; font-family: 'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif; }
+.btn-hero-primary { background: var(--ub-blue); color: #fff; box-shadow: 0 4px 20px rgba(26,86,219,0.4); }
+.btn-hero-secondary { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.3); }
+.hero-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: rgba(255,255,255,0.1); border-radius: 12px; overflow: hidden; max-width: 600px; width: 100%; position: relative; }
+.stat-item { background: rgba(13,27,42,0.6); padding: 1.5rem; text-align: center; }
+.stat-num { font-family: Georgia,serif; font-size: 32px; font-weight: 800; color: var(--ub-cyan); display: block; }
+.stat-lbl { color: rgba(255,255,255,0.5); font-size: 12px; margin-top: 4px; }
+
+/* COMMON */
+.section-tag { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--ub-blue); margin-bottom: 0.75rem; }
+.section-title { font-family: Georgia,serif; font-size: clamp(26px,4vw,40px); font-weight: 700; color: var(--ub-navy); margin-bottom: 1rem; line-height: 1.2; }
+.section-desc { color: var(--ub-muted); font-size: 15px; line-height: 1.8; max-width: 560px; }
+
+/* FEATURES */
+.features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px,1fr)); gap: 1.5rem; margin-top: 3rem; }
+.feat-card { background: var(--ub-surface); border: 1px solid var(--ub-border); border-radius: 12px; padding: 1.75rem; transition: all 0.2s; position: relative; overflow: hidden; }
+.feat-card::before { content: ''; position: absolute; top:0; left:0; right:0; height: 3px; background: linear-gradient(90deg, var(--ub-blue), var(--ub-cyan)); transform: scaleX(0); transition: transform 0.3s; transform-origin: left; }
+.feat-card:hover::before { transform: scaleX(1); }
+.feat-card:hover { border-color: rgba(26,86,219,0.3); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(26,86,219,0.1); }
+.feat-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; font-size: 20px; }
+.feat-icon.blue { background: rgba(26,86,219,0.1); }
+.feat-icon.cyan { background: rgba(6,182,212,0.1); }
+.feat-icon.gold { background: rgba(245,158,11,0.1); }
+.feat-icon.green { background: rgba(16,185,129,0.1); }
+.feat-card h3 { font-size: 16px; font-weight: 700; color: var(--ub-navy); margin-bottom: 0.5rem; }
+.feat-card p { font-size: 13px; color: var(--ub-muted); line-height: 1.7; }
+.feat-badge { display: inline-block; margin-top: 0.75rem; background: rgba(26,86,219,0.08); color: var(--ub-blue); font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 500; }
+
+/* FLOW */
+.flow-wrapper { background: var(--ub-navy); border-radius: 16px; padding: 3rem 2rem; margin-top: 3rem; }
+.flow-title { font-family: Georgia,serif; font-size: 20px; font-weight: 700; color: #fff; text-align: center; margin-bottom: 2.5rem; }
+.flow-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 1rem; }
+.flow-step { text-align: center; }
+.flow-num { width: 44px; height: 44px; border-radius: 50%; background: var(--ub-blue); color: #fff; font-family: Georgia,serif; font-size: 18px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem; }
+.flow-step-title { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 0.25rem; }
+.flow-step-desc { font-size: 11px; color: rgba(255,255,255,0.5); line-height: 1.6; }
+
+/* PRICING */
+.pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 1.5rem; margin-top: 3rem; }
+.price-card { background: var(--ub-surface); border: 1px solid var(--ub-border); border-radius: 12px; padding: 2rem; }
+.price-card.featured { border: 2px solid var(--ub-blue); position: relative; }
+.price-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--ub-blue); color: #fff; font-size: 11px; padding: 4px 16px; border-radius: 100px; white-space: nowrap; }
+.price-plan { font-size: 12px; font-weight: 700; letter-spacing: 1px; color: var(--ub-blue); margin-bottom: 0.5rem; }
+.price-amount { font-family: Georgia,serif; font-size: 36px; font-weight: 800; color: var(--ub-navy); }
+.price-unit { font-size: 13px; color: var(--ub-muted); margin-left: 4px; }
+.price-sub { font-size: 12px; color: var(--ub-muted); margin-top: 4px; margin-bottom: 1.5rem; }
+.price-features { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+.price-features li { font-size: 13px; color: var(--ub-muted); display: flex; align-items: center; gap: 8px; }
+.price-features li::before { content: '✓'; color: var(--ub-success); font-weight: 700; font-size: 14px; }
+.btn-price { width: 100%; margin-top: 1.5rem; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif; }
+.btn-price-outline { background: transparent; border: 1px solid var(--ub-border); color: var(--ub-navy); }
+.btn-price-fill { background: var(--ub-blue); border: none; color: #fff; }
+
+/* CTA & FOOTER */
+.cta-banner { background: linear-gradient(135deg, var(--ub-navy), #0F2B4A); border-radius: 16px; padding: 4rem 2rem; text-align: center; margin: 0 2rem 5rem; border: 1px solid rgba(6,182,212,0.2); }
+.cta-banner h2 { font-family: Georgia,serif; font-size: 32px; font-weight: 800; color: #fff; margin-bottom: 1rem; }
+.cta-banner p { color: rgba(255,255,255,0.6); font-size: 15px; margin-bottom: 2rem; }
+.footer { background: var(--ub-navy); color: rgba(255,255,255,0.5); padding: 2rem; text-align: center; font-size: 12px; }
+
+/* MODAL */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; align-items: center; justify-content: center; }
+.modal-overlay.show { display: flex; }
+.modal-box { background: var(--ub-surface); border-radius: 16px; padding: 2.5rem; width: 90%; max-width: 400px; position: relative; }
+.modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; cursor: pointer; font-size: 20px; color: var(--ub-muted); }
+.modal-logo { font-family: Georgia,serif; font-size: 20px; font-weight: 800; color: var(--ub-navy); margin-bottom: 0.25rem; }
+.modal-logo span { color: var(--ub-blue); }
+.modal-sub { font-size: 13px; color: var(--ub-muted); margin-bottom: 2rem; }
+.form-group { margin-bottom: 1rem; }
+.form-group label { display: block; font-size: 12px; font-weight: 500; color: var(--ub-navy); margin-bottom: 6px; }
+.form-input { width: 100%; padding: 10px 14px; border: 1px solid var(--ub-border); border-radius: 8px; font-size: 14px; font-family: 'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif; outline: none; }
+.form-input:focus { border-color: var(--ub-blue); }
+.btn-login { width: 100%; padding: 12px; background: var(--ub-blue); color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; font-family: 'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif; margin-top: 0.5rem; }
+.login-hint { text-align: center; font-size: 12px; color: var(--ub-muted); margin-top: 1rem; }
+.login-hint a { color: var(--ub-blue); cursor: pointer; }
+
+/* STATE SWITCHES */
+.admin-panel { display: none; }
+.admin-panel.show { display: block; }
+.lp-content.hide { display: none; }
+
+/* ADMIN */
+.admin-layout { display: flex; min-height: 100vh; }
+.admin-sidebar { width: 240px; background: var(--ub-navy); display: flex; flex-direction: column; position: fixed; top:0; left:0; bottom:0; z-index: 50; }
+.sidebar-logo { padding: 1.5rem 1.5rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.sidebar-nav { flex: 1; padding: 1rem 0; overflow-y: auto; }
+.sidebar-section { padding: 1rem 1.5rem 0.25rem; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; color: rgba(255,255,255,0.3); text-transform: uppercase; }
+.sidebar-item { display: flex; align-items: center; gap: 10px; padding: 10px 1.5rem; font-size: 13px; color: rgba(255,255,255,0.6); cursor: pointer; border-left: 3px solid transparent; transition: all 0.15s; }
+.sidebar-item:hover { color: #fff; background: rgba(255,255,255,0.05); }
+.sidebar-item.active { color: #fff; background: rgba(26,86,219,0.2); border-left-color: var(--ub-blue); }
+.sidebar-item .si-icon { font-size: 15px; width: 18px; text-align: center; }
+.sidebar-badge { margin-left: auto; background: var(--ub-blue); color: #fff; font-size: 10px; padding: 2px 7px; border-radius: 100px; }
+.sidebar-user { padding: 1rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); }
+.user-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--ub-blue); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; }
+.user-name { font-size: 12px; font-weight: 500; color: #fff; }
+.user-role { font-size: 10px; color: rgba(255,255,255,0.4); }
+.btn-back-lp { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.7); padding: 8px 16px; border-radius: 6px; font-size: 12px; cursor: pointer; font-family: 'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif; width: 100%; margin-top: 10px; }
+
+.admin-main { margin-left: 240px; flex: 1; background: #F5F7FA; min-height: 100vh; }
+.admin-header { background: var(--ub-surface); border-bottom: 1px solid var(--ub-border); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 40; }
+.admin-header h1 { font-family: Georgia,serif; font-size: 18px; font-weight: 700; color: var(--ub-navy); }
+.admin-header-actions { display: flex; align-items: center; gap: 12px; }
+.header-btn { background: transparent; border: 1px solid var(--ub-border); color: var(--ub-muted); padding: 8px 16px; border-radius: 8px; font-size: 13px; cursor: pointer; font-family: 'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif; display: flex; align-items: center; gap: 6px; }
+.header-btn-primary { background: var(--ub-blue); border-color: var(--ub-blue); color: #fff; }
+.admin-body { padding: 2rem; }
+
+/* KPI */
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 1rem; margin-bottom: 2rem; }
+.kpi-card { background: var(--ub-surface); border: 1px solid var(--ub-border); border-radius: 10px; padding: 1.25rem 1.5rem; }
+.kpi-label { font-size: 12px; color: var(--ub-muted); margin-bottom: 0.25rem; }
+.kpi-value { font-family: Georgia,serif; font-size: 28px; font-weight: 800; color: var(--ub-navy); }
+.kpi-change { font-size: 12px; margin-top: 4px; }
+.kpi-change.up { color: var(--ub-success); }
+
+.admin-grid-3 { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+.admin-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+.card { background: var(--ub-surface); border: 1px solid var(--ub-border); border-radius: 10px; padding: 1.5rem; }
+.card-title { font-size: 14px; font-weight: 700; color: var(--ub-navy); margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; }
+.card-title-action { font-size: 12px; font-weight: 400; color: var(--ub-blue); cursor: pointer; }
+
+/* TABLE */
+.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.data-table th { text-align: left; padding: 8px 12px; font-size: 11px; font-weight: 700; color: var(--ub-muted); border-bottom: 1px solid var(--ub-border); text-transform: uppercase; letter-spacing: 0.5px; }
+.data-table td { padding: 12px; border-bottom: 1px solid rgba(26,86,219,0.06); color: var(--ub-navy); vertical-align: middle; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: rgba(26,86,219,0.02); }
+
+/* BADGES */
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 11px; font-weight: 500; }
+.badge-success { background: rgba(16,185,129,0.1); color: #065F46; }
+.badge-warning { background: rgba(245,158,11,0.1); color: #92400E; }
+.badge-info { background: rgba(26,86,219,0.1); color: #1A56DB; }
+.badge-neutral { background: rgba(100,116,139,0.1); color: #475569; }
+
+/* BAR */
+.workflow-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 0.75rem; }
+.workflow-label { font-size: 12px; color: var(--ub-muted); width: 80px; flex-shrink: 0; }
+.workflow-track { flex: 1; background: var(--ub-light); border-radius: 4px; height: 8px; overflow: hidden; }
+.workflow-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--ub-blue), var(--ub-cyan)); }
+.workflow-count { font-size: 12px; font-weight: 700; color: var(--ub-navy); width: 32px; text-align: right; }
+
+/* AI */
+.ai-panel { background: linear-gradient(135deg, #0D1B2A, #0F2B4A); border-radius: 12px; padding: 1.5rem; color: #fff; }
+.ai-panel-title { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 1rem; }
+.ai-input-area { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 1rem; font-size: 13px; color: rgba(255,255,255,0.8); min-height: 80px; width: 100%; resize: none; font-family: 'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif; }
+.ai-actions { display: flex; gap: 8px; margin-top: 0.75rem; flex-wrap: wrap; }
+.ai-btn { background: rgba(26,86,219,0.4); border: 1px solid rgba(26,86,219,0.5); color: #fff; padding: 6px 14px; border-radius: 6px; font-size: 12px; cursor: pointer; font-family: 'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif; }
+.ai-btn:hover { background: rgba(26,86,219,0.6); }
+.ai-result { margin-top: 1rem; background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.2); border-radius: 8px; padding: 0.75rem; font-size: 12px; color: rgba(255,255,255,0.8); line-height: 1.8; display: none; white-space: pre-wrap; }
+
+/* SIGN */
+.sig-card { background: linear-gradient(135deg, #EFF6FF, #DBEAFE); border: 1px solid rgba(26,86,219,0.2); border-radius: 12px; padding: 1.5rem; }
+.sig-title { font-size: 14px; font-weight: 700; color: var(--ub-navy); margin-bottom: 1rem; }
+.sig-step { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(26,86,219,0.1); }
+.sig-step:last-child { border-bottom: none; }
+.sig-step-num { width: 28px; height: 28px; border-radius: 50%; background: var(--ub-blue); color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.sig-step-info { flex: 1; }
+.sig-step-name { font-size: 13px; font-weight: 500; color: var(--ub-navy); }
+.sig-step-sub { font-size: 11px; color: var(--ub-muted); }
+
+/* TABS */
+.tab-bar { display: flex; border-bottom: 1px solid var(--ub-border); margin-bottom: 1.5rem; }
+.tab-btn { padding: 10px 20px; font-size: 13px; font-family: 'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif; background: transparent; border: none; cursor: pointer; color: var(--ub-muted); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.tab-btn.active { color: var(--ub-blue); border-bottom-color: var(--ub-blue); font-weight: 500; }
+
+/* ══ 会計モジュール ══════════════════════════════════════ */
+.acc-banner { background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 55%, #38bdf8 100%); border-radius: 12px; padding: 1.25rem 1.5rem; display: flex; align-items: center; gap: 14px; margin-bottom: 1.25rem; position: relative; overflow: hidden; }
+.acc-banner::after { content:''; position:absolute; right:-20px; top:-20px; width:120px; height:120px; background:rgba(255,255,255,0.07); border-radius:50%; pointer-events:none; }
+.acc-banner-icon { width:44px; height:44px; background:rgba(255,255,255,0.2); border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.acc-banner-icon svg { width:24px; height:24px; stroke:#fff; fill:none; stroke-width:2; }
+.acc-banner-title { font-family:Georgia,serif; font-size:20px; font-weight:800; color:#fff; }
+.acc-banner-sub { font-size:12px; color:rgba(255,255,255,0.75); margin-top:2px; }
+.acc-banner-right { margin-left:auto; display:flex; gap:8px; flex-wrap:wrap; }
+.period-pill { background:rgba(255,255,255,0.2); color:#fff; border-radius:6px; padding:4px 12px; font-size:12px; font-weight:500; }
+
+.acc-kpi-grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; margin-bottom:1.25rem; }
+.acc-kpi { background:var(--ub-surface); border:1px solid var(--ub-border); border-radius:10px; padding:1rem 1.25rem; }
+.acc-kpi-label { font-size:11px; color:var(--ub-muted); margin-bottom:6px; font-weight:500; text-transform:uppercase; letter-spacing:.4px; }
+.acc-kpi-val { font-family:Georgia,serif; font-size:20px; font-weight:800; color:var(--ub-navy); }
+.acc-kpi-val.danger { color:var(--ub-danger); }
+
+.acc-tabs { display:flex; border-bottom:2px solid var(--ub-border); margin-bottom:1.25rem; overflow-x:auto; gap:0; }
+.acc-tab { padding:9px 18px; font-size:13px; font-family:'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif; background:transparent; border:none; cursor:pointer; color:var(--ub-muted); border-bottom:2px solid transparent; margin-bottom:-2px; white-space:nowrap; font-weight:500; transition:color .15s; flex-shrink:0; }
+.acc-tab:hover { color:var(--ub-navy); }
+.acc-tab.active { color:var(--ub-blue); border-bottom-color:var(--ub-blue); }
+.acc-panel { display:none; }
+.acc-panel.active { display:block; }
+
+.acc-toolbar { display:flex; gap:8px; margin-bottom:1rem; align-items:center; flex-wrap:wrap; }
+.acc-toolbar select, .acc-toolbar input[type="text"], .acc-toolbar input[type="date"] { padding:7px 10px; border:1px solid var(--ub-border); border-radius:8px; font-size:13px; font-family:'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif; background:var(--ub-surface); color:var(--ub-navy); outline:none; }
+.acc-toolbar input[type="text"] { flex:1; max-width:200px; }
+.acc-toolbar select:focus, .acc-toolbar input:focus { border-color:var(--ub-blue); }
+.acc-ml-auto { margin-left:auto; }
+
+.acc-charts-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
+.acc-stats-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; }
+.acc-stat { background:var(--ub-surface); border:1px solid var(--ub-border); border-radius:10px; padding:1rem 1.25rem; }
+.acc-stat-label { font-size:11px; color:var(--ub-muted); font-weight:500; text-transform:uppercase; letter-spacing:.4px; margin-bottom:6px; }
+.acc-stat-val { font-family:Georgia,serif; font-size:26px; font-weight:800; color:var(--ub-navy); }
+.acc-stat-sub { font-size:11px; color:var(--ub-muted); margin-top:4px; }
+
+.acc-table { width:100%; border-collapse:collapse; font-size:13px; }
+.acc-table th { text-align:left; padding:9px 12px; font-size:11px; font-weight:700; color:var(--ub-muted); border-bottom:1px solid var(--ub-border); text-transform:uppercase; letter-spacing:.4px; background:rgba(240,244,255,0.5); }
+.acc-table td { padding:10px 12px; border-bottom:1px solid rgba(26,86,219,0.06); color:var(--ub-navy); vertical-align:middle; }
+.acc-table tr:last-child td { border-bottom:none; }
+.acc-table tr:hover td { background:rgba(26,86,219,0.02); }
+.acc-table tfoot td { font-weight:700; background:rgba(240,244,255,0.7); border-top:2px solid var(--ub-border); border-bottom:none; }
+.acc-table .mono { font-family:'JetBrains Mono','Fira Code',monospace; font-size:12px; }
+.acc-table .tr { text-align:right; }
+.acc-table .tc { text-align:center; }
+.acc-debit { color:#2563eb; font-weight:500; }
+.acc-credit { color:#16a34a; font-weight:500; }
+.acc-muted { color:var(--ub-muted); font-size:12px; }
+
+.fin-section-head { font-size:13px; font-weight:700; padding:7px 12px; background:rgba(26,86,219,0.05); border-radius:8px; border-left:3px solid var(--ub-blue); margin-bottom:8px; color:var(--ub-navy); }
+.fin-row { display:flex; justify-content:space-between; padding:5px 12px; font-size:13px; border-bottom:1px dashed rgba(26,86,219,0.08); }
+.fin-row:last-child { border-bottom:none; }
+.fin-subtotal { font-weight:700; background:rgba(26,86,219,0.04); border-radius:6px; border:1px solid var(--ub-border); padding:6px 12px; margin-top:4px; }
+.fin-total { display:flex; justify-content:space-between; padding:14px 16px; background:linear-gradient(135deg,#eff6ff,#dbeafe); border:2px solid #bfdbfe; border-radius:10px; font-size:16px; font-weight:700; color:#1e40af; margin-top:1rem; }
+.fin-profit { background:linear-gradient(135deg,#f0fdf4,#dcfce7); border-color:#bbf7d0; color:#15803d; }
+.fin-loss   { background:linear-gradient(135deg,#fef2f2,#fee2e2); border-color:#fecaca; color:#b91c1c; }
+.bs-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; }
+
+.acc-badge { display:inline-flex; align-items:center; padding:2px 9px; border-radius:100px; font-size:11px; font-weight:600; }
+.acc-badge-success { background:rgba(16,185,129,0.1); color:#065F46; }
+.acc-badge-warn    { background:rgba(245,158,11,0.1); color:#92400E; }
+.acc-badge-info    { background:rgba(26,86,219,0.1); color:#1A56DB; }
+.acc-badge-danger  { background:rgba(239,68,68,0.1); color:#991B1B; }
+
+/* 会計モーダル */
+.acc-modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:300; align-items:center; justify-content:center; }
+.acc-modal-bg.open { display:flex; }
+.acc-modal { background:var(--ub-surface); border-radius:16px; padding:2rem; width:500px; max-width:95vw; max-height:85vh; overflow-y:auto; box-shadow:0 24px 60px rgba(0,0,0,0.2); }
+.acc-modal h3 { font-family:Georgia,serif; font-size:18px; font-weight:800; color:var(--ub-navy); margin-bottom:1.5rem; }
+.acc-form-row { margin-bottom:14px; }
+.acc-form-row label { display:block; font-size:12px; font-weight:600; color:var(--ub-muted); margin-bottom:5px; text-transform:uppercase; letter-spacing:.3px; }
+.acc-form-row input, .acc-form-row select, .acc-form-row textarea { width:100%; padding:9px 12px; border:1px solid var(--ub-border); border-radius:8px; font-size:13px; font-family:'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif; background:var(--ub-surface); color:var(--ub-navy); outline:none; transition:border-color .15s; }
+.acc-form-row input:focus, .acc-form-row select:focus { border-color:var(--ub-blue); box-shadow:0 0 0 3px rgba(26,86,219,0.1); }
+.acc-two-col { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.acc-modal-footer { display:flex; gap:8px; justify-content:flex-end; margin-top:1.5rem; padding-top:1rem; border-top:1px solid var(--ub-border); }
+.btn-acc-ghost { background:transparent; border:1px solid var(--ub-border); color:var(--ub-muted); padding:8px 18px; border-radius:8px; font-size:13px; cursor:pointer; font-family:'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif; }
+.btn-acc-primary { background:var(--ub-blue); border:none; color:#fff; padding:8px 18px; border-radius:8px; font-size:13px; cursor:pointer; font-family:'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif; font-weight:600; }
+.btn-acc-primary:hover { background:#1347c5; }
+.btn-acc-danger { background:none; border:none; cursor:pointer; color:var(--ub-danger); font-size:12px; font-family:'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif; padding:2px 6px; }
+.btn-acc-danger:hover { text-decoration:underline; }
+.btn-acc-export { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:8px; font-size:13px; cursor:pointer; background:transparent; border:1px solid var(--ub-border); color:var(--ub-muted); font-family:'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif; }
+.btn-acc-export:hover { background:rgba(26,86,219,0.04); color:var(--ub-navy); }
+.acc-empty { text-align:center; padding:3rem; color:var(--ub-muted); font-size:13px; }
+.acc-legend { display:flex; gap:16px; margin-top:12px; font-size:12px; color:var(--ub-muted); }
+.acc-legend span { display:flex; align-items:center; gap:5px; }
+.acc-legend-dot { width:10px; height:10px; border-radius:2px; display:inline-block; }
+code { font-family:'JetBrains Mono','Fira Code',monospace; font-size:11px; background:rgba(26,86,219,0.06); padding:1px 6px; border-radius:4px; }
+</style>
+</head>
+<body>
+
+<!-- ===== LP ===== -->
+<div id="lp-content" class="lp-content">
+  <nav class="nav">
+    <div class="nav-logo">UMA <span>BizFlow</span></div>
+    <ul class="nav-links">
+      <li><a href="#">機能</a></li><li><a href="#">料金</a></li>
+      <li><a href="#">導入事例</a></li><li><a href="#">補助金</a></li>
+    </ul>
+    <div class="nav-cta">
+      <button class="btn-outline-sm" onclick="showLogin()">ログイン</button>
+      <button class="btn-primary-sm" onclick="showLogin()">無料デモ申請</button>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-badge">🏆 IT導入補助金2026 対象ツール</div>
+    <h1>業務フローを<em>AIで</em><br>スマートに自動化</h1>
+    <p class="hero-desc">受発注・請求・電子署名・ワークフロー承認を一元管理。中小企業の業務プロセス全体をデジタル化し、生産性を劇的に向上させます。</p>
+    <div class="hero-actions">
+      <button class="btn-hero btn-hero-primary" onclick="showLogin()">管理画面を見る</button>
+      <button class="btn-hero btn-hero-secondary">資料ダウンロード</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item"><span class="stat-num">87%</span><span class="stat-lbl">業務時間削減率</span></div>
+      <div class="stat-item"><span class="stat-num">2,400+</span><span class="stat-lbl">導入企業数</span></div>
+      <div class="stat-item"><span class="stat-num">最大450万</span><span class="stat-lbl">補助金対応額</span></div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <div style="background:#fff;padding:5rem 2rem;">
+    <div style="max-width:1100px;margin:0 auto;">
+      <div class="section-tag">CORE FEATURES</div>
+      <h2 class="section-title">業務プロセスを丸ごとカバーする機能群</h2>
+      <p class="section-desc">IT導入補助金の審査要件を満たす汎用プロセス・業務プロセスに完全対応した機能を提供します。</p>
+      <div class="features-grid">
+        <div class="feat-card"><div class="feat-icon blue">📋</div><h3>電子ワークフロー承認</h3><p>稟議・申請・承認フローをペーパーレスで完全デジタル化。条件分岐・代理承認・期限アラートに対応。</p><span class="feat-badge">汎P-01 汎P-02対応</span></div>
+        <div class="feat-card"><div class="feat-icon cyan">✍️</div><h3>電子署名・電子契約</h3><p>電子署名法・電子帳簿保存法に準拠。取引先への外部送付・タイムスタンプ付与に対応。</p><span class="feat-badge">汎P-05対応</span></div>
+        <div class="feat-card"><div class="feat-icon gold">🤖</div><h3>生成AI業務アシスト</h3><p>議事録自動生成・文書要約・回答案作成など、業務に特化したAI支援を提供。</p><span class="feat-badge">生成AI機能搭載</span></div>
+        <div class="feat-card"><div class="feat-icon green">📊</div><h3>受発注・在庫管理</h3><p>受注から発注・在庫確認・納品確認まで一元管理。インボイス対応請求書自動発行付き。</p><span class="feat-badge">汎P-03 インボイス対応</span></div>
+        <div class="feat-card"><div class="feat-icon blue">💰</div><h3>会計・経費精算連携</h3><p>会計ソフトとのAPI連携により、経費申請から仕訳まで自動化。月次決算工数を大幅削減。</p><span class="feat-badge">汎P-04対応</span></div>
+        <div class="feat-card"><div class="feat-icon cyan">🔒</div><h3>セキュリティ・アクセス管理</h3><p>ロールベースのアクセス制御・多要素認証・操作ログ記録により企業情報を安全に保護。</p><span class="feat-badge">ISO27001準拠</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOW -->
+  <div style="background:var(--ub-light);padding:5rem 2rem;">
+    <div style="max-width:1100px;margin:0 auto;">
+      <div class="section-tag">WORKFLOW</div>
+      <h2 class="section-title">申請から承認まで全プロセスを可視化</h2>
+      <div class="flow-wrapper">
+        <div class="flow-title">UMA BizFlow — 標準ワークフロー</div>
+        <div class="flow-steps">
+          <div class="flow-step"><div class="flow-num">1</div><div class="flow-step-title">申請・起案</div><div class="flow-step-desc">担当者がフォームから申請。AIが内容を自動チェック</div></div>
+          <div class="flow-step"><div class="flow-num">2</div><div class="flow-step-title">承認ルーティング</div><div class="flow-step-desc">条件に応じて自動的に承認者へ回付</div></div>
+          <div class="flow-step"><div class="flow-num">3</div><div class="flow-step-title">電子署名</div><div class="flow-step-desc">法的効力のある電子署名を付与・送付</div></div>
+          <div class="flow-step"><div class="flow-num">4</div><div class="flow-step-title">記録・保存</div><div class="flow-step-desc">電子帳簿保存法に準拠した安全な保存</div></div>
+          <div class="flow-step"><div class="flow-num">5</div><div class="flow-step-title">分析・改善</div><div class="flow-step-desc">AIが処理状況を分析しボトルネックを特定</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRICING -->
+  <div style="background:#fff;padding:5rem 2rem;">
+    <div style="max-width:1100px;margin:0 auto;">
+      <div class="section-tag">PRICING</div>
+      <h2 class="section-title">シンプルな料金体系</h2>
+      <p class="section-desc">IT導入補助金を活用することで、最大2/3の費用が補助されます。</p>
+      <div class="pricing-grid">
+        <div class="price-card">
+          <div class="price-plan">STARTER</div>
+          <div><span class="price-amount">¥48,000</span><span class="price-unit">/年〜</span></div>
+          <div class="price-sub">補助後：¥16,000〜</div>
+          <ul class="price-features"><li>ワークフロー承認（基本）</li><li>電子署名（月50件）</li><li>受発注管理</li><li>メールサポート</li></ul>
+          <button class="btn-price btn-price-outline">詳細を見る</button>
+        </div>
+        <div class="price-card featured">
+          <div class="price-badge">IT導入補助金 最適プラン</div>
+          <div class="price-plan">STANDARD</div>
+          <div><span class="price-amount">¥168,000</span><span class="price-unit">/年〜</span></div>
+          <div class="price-sub">補助後：¥56,000〜（2/3補助適用時）</div>
+          <ul class="price-features"><li>全ワークフロー機能</li><li>電子署名（無制限）</li><li>生成AIアシスト機能</li><li>会計ソフト連携</li><li>インボイス対応請求書</li><li>優先サポート</li></ul>
+          <button class="btn-price btn-price-fill" onclick="showLogin()">管理画面を体験</button>
+        </div>
+        <div class="price-card">
+          <div class="price-plan">ENTERPRISE</div>
+          <div><span class="price-amount">要見積</span></div>
+          <div class="price-sub">大規模導入・カスタマイズ対応</div>
+          <ul class="price-features"><li>Standardの全機能</li><li>カスタムAPI連携</li><li>専任サポート担当</li><li>オンプレミス対応可</li></ul>
+          <button class="btn-price btn-price-outline">お問い合わせ</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-banner">
+    <h2>IT導入補助金で導入コストを最大2/3削減</h2>
+    <p>補助金申請サポートから導入・運用まで、専任スタッフが伴走します</p>
+    <button class="btn-hero btn-hero-primary" onclick="showLogin()">管理画面デモを見る →</button>
+  </div>
+  <footer class="footer"><p>© 2026 UMA BizFlow. All rights reserved. | IT導入補助金2026 登録対象ツール</p></footer>
+</div>
+
+<!-- ===== LOGIN MODAL ===== -->
+<div id="login-modal" class="modal-overlay">
+  <div class="modal-box">
+    <button class="modal-close" onclick="hideLogin()">×</button>
+    <div class="modal-logo">UMA <span>BizFlow</span></div>
+    <div class="modal-sub">管理者・従業員ポータルへログイン</div>
+    <div class="form-group"><label>メールアドレス</label><input class="form-input" type="email" value="admin@uma-biz.co.jp"></div>
+    <div class="form-group"><label>パスワード</label><input class="form-input" type="password" value="demo1234"></div>
+    <button class="btn-login" onclick="doLogin()">ログイン</button>
+    <div class="login-hint">アカウントをお持ちでない方は <a onclick="hideLogin()">お問い合わせ</a></div>
+  </div>
+</div>
+
+<!-- ===== ADMIN PANEL ===== -->
+<div id="admin-panel" class="admin-panel">
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <div class="sidebar-logo">
+        <div class="nav-logo">UMA <span>BizFlow</span></div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:4px;">管理者ポータル</div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="sidebar-section">1. 顧客・案件管理</div>
+        <div class="sidebar-item active" onclick="setTab(this,'crm')"><span class="si-icon">🏢</span> CRM・顧客一覧</div>
+        <div class="sidebar-item" onclick="setTab(this,'deal')"><span class="si-icon">📋</span> 案件進捗管理</div>
+        <div class="sidebar-section">2. 受発注・在庫管理</div>
+        <div class="sidebar-item" onclick="setTab(this,'order')"><span class="si-icon">📦</span> 受発注管理</div>
+        <div class="sidebar-item" onclick="setTab(this,'stock')"><span class="si-icon">🏭</span> 在庫・倉庫管理</div>
+        <div class="sidebar-section">3. インボイス・金銭管理</div>
+        <div class="sidebar-item" onclick="setTab(this,'invoice')"><span class="si-icon">🧾</span> 請求書発行</div>
+        <div class="sidebar-item" onclick="setTab(this,'payment')"><span class="si-icon">💳</span> 入金・決済管理</div>
+        <div class="sidebar-section">4. 財務会計（複式簿記）</div>
+        <div class="sidebar-item" onclick="setTab(this,'accounting')"><span class="si-icon">📒</span> 仕訳帳・勘定科目</div>
+        <div class="sidebar-item" onclick="setTab(this,'report')"><span class="si-icon">📊</span> 財務諸表</div>
+        <div class="sidebar-section">5. AIアシスト・分析</div>
+        <div class="sidebar-item" onclick="setTab(this,'ai')"><span class="si-icon">🤖</span> AI自動化・分析</div>
+        <div class="sidebar-item" onclick="setTab(this,'analytics')"><span class="si-icon">📈</span> CRM分析ダッシュボード</div>
+      </nav>
+      <div class="sidebar-user">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="user-avatar">山田</div>
+          <div><div class="user-name">山田 太郎</div><div class="user-role">システム管理者</div></div>
+        </div>
+        <button class="btn-back-lp" onclick="backToLP()">← LPに戻る</button>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+      <div class="admin-header">
+        <h1 id="admin-title">ダッシュボード</h1>
+        <div class="admin-header-actions">
+          <button class="header-btn">🔔 通知 <span style="background:var(--ub-danger);color:#fff;font-size:10px;padding:1px 6px;border-radius:100px;margin-left:4px;">3</span></button>
+          <button class="header-btn header-btn-primary" onclick="setTab(document.querySelectorAll('.sidebar-item')[9],'ai')">🤖 AIに質問</button>
+        </div>
+      </div>
+
+      <div class="admin-body">
+
+        <!-- ① 顧客・案件管理 CRM -->
+        <div id="tab-crm">
+          <div class="kpi-grid">
+            <div class="kpi-card"><div class="kpi-label">総顧客数</div><div class="kpi-value" id="crm-kpi-total">0<span style="font-size:16px;color:var(--ub-muted)">社</span></div></div>
+            <div class="kpi-card"><div class="kpi-label">アクティブ</div><div class="kpi-value" id="crm-kpi-active">0<span style="font-size:16px;color:var(--ub-muted)">社</span></div></div>
+            <div class="kpi-card"><div class="kpi-label">今月追加</div><div class="kpi-value" id="crm-kpi-new">0<span style="font-size:16px;color:var(--ub-muted)">社</span></div></div>
+          </div>
+          <div class="card">
+            <div class="card-title">顧客一覧
+              <button class="header-btn header-btn-primary" style="font-size:12px;padding:6px 14px;" onclick="crmOpenModal()">＋ 新規追加</button>
+            </div>
+            <div style="display:flex;gap:8px;margin-bottom:12px;">
+              <input type="text" id="crm-search" placeholder="会社名・担当者名で検索..." style="flex:1;padding:8px 12px;border:1px solid var(--ub-border);border-radius:6px;font-size:13px;" oninput="crmLoad()">
+            </div>
+            <table class="data-table">
+              <thead><tr><th>会社名</th><th>担当者名</th><th>メール</th><th>電話</th><th>状態</th><th>操作</th></tr></thead>
+              <tbody id="crm-tbody"><tr><td colspan="6" style="text-align:center;color:var(--ub-muted);padding:2rem;">読み込み中...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+        <div id="tab-crm-OLD-REMOVED" style="display:none"></div>
+          <div class="admin-grid-3">
+            <div class="card">
+              <div class="card-title">最近のワークフロー <span class="card-title-action">すべて見る</span></div>
+              <table class="data-table">
+                <thead><tr><th>案件名</th><th>申請者</th><th>状態</th><th>更新日</th></tr></thead>
+                <tbody>
+                  <tr><td>Q1営業報告書承認</td><td>佐藤 花子</td><td><span class="badge badge-warning">承認待ち</span></td><td>04/10</td></tr>
+                  <tr><td>外注委託契約書</td><td>田中 一郎</td><td><span class="badge badge-success">完了</span></td><td>04/09</td></tr>
+                  <tr><td>新規取引先与信審査</td><td>鈴木 次郎</td><td><span class="badge badge-info">署名待ち</span></td><td>04/09</td></tr>
+                  <tr><td>備品購入稟議</td><td>高橋 明美</td><td><span class="badge badge-success">完了</span></td><td>04/08</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:1.5rem;">
+              <div class="card">
+                <div class="card-title">カテゴリ別処理量</div>
+                <div class="workflow-bar"><span class="workflow-label">稟議承認</span><div class="workflow-track"><div class="workflow-fill" style="width:78%"></div></div><span class="workflow-count">78件</span></div>
+                <div class="workflow-bar"><span class="workflow-label">電子契約</span><div class="workflow-track"><div class="workflow-fill" style="width:52%"></div></div><span class="workflow-count">52件</span></div>
+                <div class="workflow-bar"><span class="workflow-label">受発注</span><div class="workflow-track"><div class="workflow-fill" style="width:65%"></div></div><span class="workflow-count">65件</span></div>
+                <div class="workflow-bar"><span class="workflow-label">経費精算</span><div class="workflow-track"><div class="workflow-fill" style="width:43%"></div></div><span class="workflow-count">43件</span></div>
+              </div>
+              <div class="ai-panel">
+                <div class="ai-panel-title">🤖 AI クイックアシスト</div>
+                <div class="ai-actions">
+                  <button class="ai-btn" onclick="aiQuick('今月の処理状況を要約して')">今月まとめ</button>
+                  <button class="ai-btn" onclick="aiQuick('承認が遅れている案件を教えて')">遅延案件</button>
+                  <button class="ai-btn" onclick="aiQuick('改善提案をして')">改善提案</button>
+                </div>
+                <div class="ai-result" id="ai-result-dash"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WORKFLOW -->
+                <!-- ① 案件進捗管理 -->
+        <div id="tab-deal" style="display:none">
+          <div class="card">
+            <div class="card-title">案件進捗一覧
+              <button class="header-btn header-btn-primary" style="font-size:12px;padding:6px 14px;" onclick="dealOpenModal()">＋ 新規案件</button>
+            </div>
+            <table class="data-table">
+              <thead><tr><th>案件名</th><th>顧客</th><th>金額</th><th>フェーズ</th><th>期日</th><th>操作</th></tr></thead>
+              <tbody id="deal-tbody"><tr><td colspan="6" style="text-align:center;color:var(--ub-muted);padding:2rem;">読み込み中...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+        <div id="tab-workflow" style="display:none">
+          <div class="card">
+            <div class="card-title">ワークフロー一覧
+              <button class="header-btn header-btn-primary" style="font-size:12px;padding:6px 14px;" onclick="wfOpenModal()">＋ 新規申請</button>
+            </div>
+            <table class="data-table">
+              <thead><tr><th>申請日</th><th>案件名</th><th>種別</th><th>申請者</th><th>状態</th><th>操作</th></tr></thead>
+              <tbody id="wf-tbody"><tr><td colspan="6" style="text-align:center;color:var(--ub-muted);padding:2rem;">読み込み中...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SIGN -->
+        <div id="tab-sign" style="display:none">
+          <div class="admin-grid-2">
+            <div class="sig-card">
+              <div class="sig-title">✍️ 電子署名ステータス — 外注委託契約書</div>
+              <div class="sig-step"><div class="sig-step-num">1</div><div class="sig-step-info"><div class="sig-step-name">起案者署名 — 田中 一郎</div><div class="sig-step-sub">2026/04/07 14:32 完了</div></div><span class="badge badge-success">✓ 完了</span></div>
+              <div class="sig-step"><div class="sig-step-num">2</div><div class="sig-step-info"><div class="sig-step-name">部長承認署名 — 山田 太郎</div><div class="sig-step-sub">2026/04/08 09:15 完了</div></div><span class="badge badge-success">✓ 完了</span></div>
+              <div class="sig-step"><div class="sig-step-num">3</div><div class="sig-step-info"><div class="sig-step-name">取引先署名 — 株式会社ABC商事</div><div class="sig-step-sub">署名待ち送付済み</div></div><span class="badge badge-warning">待機中</span></div>
+              <div class="sig-step"><div class="sig-step-num">4</div><div class="sig-step-info"><div class="sig-step-name">タイムスタンプ付与・保存</div><div class="sig-step-sub">署名完了後に自動実行</div></div><span class="badge badge-neutral">待機中</span></div>
+            </div>
+            <div class="card">
+              <div class="card-title">今月の電子署名サマリー</div>
+              <div class="kpi-grid" style="grid-template-columns:1fr 1fr;">
+                <div class="kpi-card"><div class="kpi-label">署名完了</div><div class="kpi-value">67件</div></div>
+                <div class="kpi-card"><div class="kpi-label">署名待ち</div><div class="kpi-value" style="color:var(--ub-warning);">20件</div></div>
+              </div>
+              <div style="margin-top:1rem;padding:1rem;background:rgba(16,185,129,0.05);border:1px solid rgba(16,185,129,0.2);border-radius:8px;">
+                <div style="font-size:12px;font-weight:700;color:#065F46;margin-bottom:4px;">✓ 電子帳簿保存法対応</div>
+                <div style="font-size:11px;color:var(--ub-muted);line-height:1.7;">全署名書類にQES準拠のタイムスタンプを自動付与。改ざん検知・長期保存（最大10年）に対応済み。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ORDER -->
+        <div id="tab-order" style="display:none">
+          <div class="card">
+            <div class="card-title">受注管理
+              <button class="header-btn header-btn-primary" style="font-size:12px;padding:6px 14px;" onclick="orderOpenModal()">＋ 新規受注登録</button>
+            </div>
+            <table class="data-table">
+              <thead><tr><th>受注No.</th><th>顧客</th><th>受注日</th><th>合計金額</th><th>状態</th><th>操作</th></tr></thead>
+              <tbody id="order-tbody"><tr><td colspan="6" style="text-align:center;color:var(--ub-muted);padding:2rem;">読み込み中...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- INVOICE -->
+                <!-- ② 在庫・倉庫管理 -->
+        <div id="tab-stock" style="display:none">
+          <div class="card">
+            <div class="card-title">在庫・商品マスタ
+              <button class="header-btn header-btn-primary" style="font-size:12px;padding:6px 14px;" onclick="stockOpenModal()">＋ 商品登録</button>
+            </div>
+            <table class="data-table">
+              <thead><tr><th>品番</th><th>品名</th><th>単位</th><th>単価</th><th>在庫数</th><th>状態</th><th>操作</th></tr></thead>
+              <tbody id="stock-tbody"><tr><td colspan="7" style="text-align:center;color:var(--ub-muted);padding:2rem;">読み込み中...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+        <div id="tab-invoice" style="display:none">
+          <div class="card">
+            <div class="card-title">請求書一覧（インボイス対応）
+              <button class="header-btn header-btn-primary" style="font-size:12px;padding:6px 14px;" onclick="invoiceOpenModal()">＋ 請求書発行</button>
+            </div>
+            <div style="margin-bottom:8px;padding:8px 12px;background:rgba(26,86,219,0.05);border:1px solid var(--ub-border);border-radius:8px;font-size:12px;">
+              ✓ 適格請求書発行事業者番号・消費税額・軽減税率区分を自動付与 — インボイス制度完全対応
+            </div>
+            <table class="data-table">
+              <thead><tr><th>請求No.</th><th>顧客名</th><th>発行日</th><th>支払期日</th><th>合計金額</th><th>状態</th><th>操作</th></tr></thead>
+              <tbody id="invoice-tbody"><tr><td colspan="7" style="text-align:center;color:var(--ub-muted);padding:2rem;">読み込み中...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- AI -->
+                <!-- ③ 入金・決済管理 -->
+        <div id="tab-payment" style="display:none">
+          <div class="card">
+            <div class="card-title">入金管理
+              <button class="header-btn header-btn-primary" style="font-size:12px;padding:6px 14px;" onclick="paymentOpenModal()">＋ 入金登録</button>
+            </div>
+            <table class="data-table">
+              <thead><tr><th>入金日</th><th>請求No.</th><th>入金額</th><th>入金方法</th><th>摘要</th></tr></thead>
+              <tbody id="payment-tbody"><tr><td colspan="5" style="text-align:center;color:var(--ub-muted);padding:2rem;">読み込み中...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+        <div id="tab-ai" style="display:none">
+          <div class="admin-grid-2">
+            <div class="ai-panel" style="padding:2rem;">
+              <div class="ai-panel-title" style="font-size:18px;">🤖 UMA BizFlow AI アシスト</div>
+              <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:1.5rem;">生成AIが業務を強力にサポートします</div>
+              <textarea id="ai-input-main" class="ai-input-area" placeholder="例：今月の承認遅延の原因を分析して、改善策を提案してください"></textarea>
+              <div class="ai-actions">
+                <button class="ai-btn" onclick="runAI('main')">送信</button>
+                <button class="ai-btn" onclick="document.getElementById('ai-input-main').value='今月のワークフロー処理状況を分析して'">処理分析</button>
+                <button class="ai-btn" onclick="document.getElementById('ai-input-main').value='稟議書の文面を添削して'">文書添削</button>
+                <button class="ai-btn" onclick="document.getElementById('ai-input-main').value='IT導入補助金の申請に必要な書類を整理して'">補助金ガイド</button>
+              </div>
+              <div class="ai-result" id="ai-result-main"></div>
+            </div>
+            <div class="card">
+              <div class="card-title">AI機能一覧</div>
+              <div style="display:flex;flex-direction:column;gap:0.75rem;">
+                <div style="padding:0.75rem;background:rgba(26,86,219,0.05);border-radius:8px;border-left:3px solid var(--ub-blue);"><div style="font-size:13px;font-weight:700;color:var(--ub-navy);">📝 文書自動生成</div><div style="font-size:12px;color:var(--ub-muted);margin-top:4px;">稟議書・議事録・報告書を自動生成</div></div>
+                <div style="padding:0.75rem;background:rgba(6,182,212,0.05);border-radius:8px;border-left:3px solid var(--ub-cyan);"><div style="font-size:13px;font-weight:700;color:var(--ub-navy);">📊 データ分析・レポート</div><div style="font-size:12px;color:var(--ub-muted);margin-top:4px;">業務データをAIが自動分析・可視化</div></div>
+                <div style="padding:0.75rem;background:rgba(16,185,129,0.05);border-radius:8px;border-left:3px solid var(--ub-success);"><div style="font-size:13px;font-weight:700;color:var(--ub-navy);">🔍 契約書レビュー</div><div style="font-size:12px;color:var(--ub-muted);margin-top:4px;">AIがリスク箇所を自動検知・指摘</div></div>
+                <div style="padding:0.75rem;background:rgba(245,158,11,0.05);border-radius:8px;border-left:3px solid var(--ub-gold);"><div style="font-size:13px;font-weight:700;color:var(--ub-navy);">💬 チャットサポート</div><div style="font-size:12px;color:var(--ub-muted);margin-top:4px;">24時間AIがシステム操作・業務をサポート</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- USERS -->
+                <!-- ⑤ CRM分析ダッシュボード -->
+        <div id="tab-analytics" style="display:none">
+          <div class="kpi-grid">
+            <div class="kpi-card"><div class="kpi-label">新規リード（今月）</div><div class="kpi-value">42<span style="font-size:16px;color:var(--ub-muted)">件</span></div><div class="kpi-change up">↑ 前月比 +31%</div></div>
+            <div class="kpi-card"><div class="kpi-label">平均商談期間</div><div class="kpi-value">18<span style="font-size:16px;color:var(--ub-muted)">日</span></div></div>
+            <div class="kpi-card"><div class="kpi-label">Win Rate</div><div class="kpi-value">43<span style="font-size:16px;color:var(--ub-muted)">%</span></div><div class="kpi-change up">↑ +5pt</div></div>
+            <div class="kpi-card"><div class="kpi-label">LTV（平均）</div><div class="kpi-value" style="font-size:22px;">¥6.8M</div></div>
+          </div>
+          <div class="admin-grid-2">
+            <div class="card">
+              <div class="card-title">業種別売上構成</div>
+              <div class="workflow-bar"><span class="workflow-label">製造業</span><div class="workflow-track"><div class="workflow-fill" style="width:72%"></div></div><span class="workflow-count">38%</span></div>
+              <div class="workflow-bar"><span class="workflow-label">商社</span><div class="workflow-track"><div class="workflow-fill" style="width:55%"></div></div><span class="workflow-count">29%</span></div>
+              <div class="workflow-bar"><span class="workflow-label">物流</span><div class="workflow-track"><div class="workflow-fill" style="width:35%"></div></div><span class="workflow-count">18%</span></div>
+              <div class="workflow-bar"><span class="workflow-label">その他</span><div class="workflow-track"><div class="workflow-fill" style="width:18%"></div></div><span class="workflow-count">10%</span></div>
+            </div>
+            <div class="card">
+              <div class="card-title">AI自動化ステータス</div>
+              <div style="display:flex;flex-direction:column;gap:0.75rem;margin-top:0.5rem">
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:rgba(16,185,129,0.05);border-radius:8px;border:1px solid rgba(16,185,129,0.2)"><span style="font-size:13px">📧 メール自動分類</span><span class="badge badge-success">稼働中</span></div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:rgba(16,185,129,0.05);border-radius:8px;border:1px solid rgba(16,185,129,0.2)"><span style="font-size:13px">📅 フォローアップ自動化</span><span class="badge badge-success">稼働中</span></div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:rgba(245,158,11,0.05);border-radius:8px;border:1px solid rgba(245,158,11,0.2)"><span style="font-size:13px">🔮 受注予測AI</span><span class="badge badge-warning">学習中</span></div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:rgba(100,116,139,0.05);border-radius:8px;border:1px solid rgba(100,116,139,0.2)"><span style="font-size:13px">📊 レポート自動生成</span><span class="badge badge-neutral">設定待ち</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="tab-users" style="display:none">
+          <div class="card">
+            <div class="card-title">ユーザー管理<button class="header-btn header-btn-primary" style="font-size:12px;padding:6px 14px;">+ ユーザー追加</button></div>
+            <table class="data-table">
+              <thead><tr><th>氏名</th><th>メール</th><th>ロール</th><th>部署</th><th>最終ログイン</th><th>状態</th></tr></thead>
+              <tbody>
+                <tr><td><div style="display:flex;align-items:center;gap:8px;"><div style="width:28px;height:28px;border-radius:50%;background:var(--ub-blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">山</div>山田 太郎</div></td><td><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="87e3e2eae8c7f2eae6aae5eefda9e4e8a9edf7">[email&#160;protected]</a></td><td><span class="badge badge-info">管理者</span></td><td>情報システム部</td><td>今日</td><td><span class="badge badge-success">有効</span></td></tr>
+                <tr><td><div style="display:flex;align-items:center;gap:8px;"><div style="width:28px;height:28px;border-radius:50%;background:#E11D48;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">佐</div>佐藤 花子</div></td><td><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e387868e8ca3968e82ce818a99cd808ccd8993">[email&#160;protected]</a></td><td><span class="badge badge-neutral">一般</span></td><td>営業部</td><td>今日</td><td><span class="badge badge-success">有効</span></td></tr>
+                <tr><td><div style="display:flex;align-items:center;gap:8px;"><div style="width:28px;height:28px;border-radius:50%;background:#059669;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">田</div>田中 一郎</div></td><td><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d9bdbcb4b699acb4b8f4bbb0a3f7bab6f7b3a9">[email&#160;protected]</a></td><td><span class="badge badge-neutral">一般</span></td><td>購買部</td><td>昨日</td><td><span class="badge badge-success">有効</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════
+             会計・財務モジュール（複式簿記フル実装）
+        ════════════════════════════════════════════════════════ -->
+        <div id="tab-accounting" style="display:none">
+
+          <!-- バナー -->
+          <div class="acc-banner">
+            <div class="acc-banner-icon">
+              <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M6 8h4M6 11h6M6 14h3"/></svg>
+            </div>
+            <div>
+              <div class="acc-banner-title">会計・財務管理</div>
+              <div class="acc-banner-sub">本格的な複式簿記による財務管理 — 共P-04 対応</div>
+            </div>
+            <div class="acc-banner-right">
+              <span class="period-pill">会計期間</span>
+              <span class="period-pill">2025年5月〜2026年4月（当期）</span>
+            </div>
+          </div>
+
+          <!-- アクションバー -->
+          <div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:1rem;">
+            <button class="btn-acc-export" onclick="accExportCSV()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              仕訳CSV出力（弥生/freee連携）
+            </button>
+            <button class="header-btn header-btn-primary" onclick="accOpenModal('acc-modal-journal')">＋ 仕訳入力</button>
+          </div>
+
+          <!-- KPI -->
+          <div class="acc-kpi-grid">
+            <div class="acc-kpi"><div class="acc-kpi-label">総資産</div><div class="acc-kpi-val" id="acc-kpi-assets">¥0</div></div>
+            <div class="acc-kpi"><div class="acc-kpi-label">総負債</div><div class="acc-kpi-val" id="acc-kpi-liab">¥0</div></div>
+            <div class="acc-kpi"><div class="acc-kpi-label">純資産</div><div class="acc-kpi-val" id="acc-kpi-equity">¥0</div></div>
+            <div class="acc-kpi"><div class="acc-kpi-label">売上高</div><div class="acc-kpi-val" id="acc-kpi-rev">¥0</div></div>
+            <div class="acc-kpi"><div class="acc-kpi-label">当期純利益</div><div class="acc-kpi-val" id="acc-kpi-profit">¥0</div></div>
+          </div>
+
+          <!-- タブバー -->
+          <div class="acc-tabs">
+            <button class="acc-tab active" onclick="accTab('overview',this)">概要</button>
+            <button class="acc-tab" onclick="accTab('accounts',this)">勘定科目</button>
+            <button class="acc-tab" onclick="accTab('journal',this)">仕訳帳</button>
+            <button class="acc-tab" onclick="accTab('ledger',this)">総勘定元帳</button>
+            <button class="acc-tab" onclick="accTab('trial',this)">試算表</button>
+            <button class="acc-tab" onclick="accTab('pl',this)">損益計算書</button>
+            <button class="acc-tab" onclick="accTab('bs',this)">貸借対照表</button>
+          </div>
+
+          <!-- ── 概要パネル ─────────────────────────── -->
+          <div class="acc-panel active" id="acc-panel-overview">
+            <div class="acc-charts-row">
+              <div class="card" style="padding:1.25rem">
+                <div class="card-title" style="font-size:14px;margin-bottom:4px">財務構成</div>
+                <div style="font-size:12px;color:var(--ub-muted);margin-bottom:1rem">資産・負債・純資産の構成比</div>
+                <div style="position:relative;height:200px"><canvas id="acc-donut" aria-label="財務構成ドーナツ">財務構成</canvas></div>
+                <div class="acc-legend">
+                  <span><span class="acc-legend-dot" style="background:#3b82f6"></span>資産</span>
+                  <span><span class="acc-legend-dot" style="background:#10b981"></span>負債</span>
+                  <span><span class="acc-legend-dot" style="background:#ef4444"></span>純資産</span>
+                </div>
+              </div>
+              <div class="card" style="padding:1.25rem">
+                <div class="card-title" style="font-size:14px;margin-bottom:4px">収益・費用構成</div>
+                <div style="font-size:12px;color:var(--ub-muted);margin-bottom:1rem">売上と経費の内訳</div>
+                <div style="position:relative;height:200px"><canvas id="acc-bar" aria-label="収益費用グラフ">収益費用</canvas></div>
+              </div>
+            </div>
+            <div class="acc-stats-grid">
+              <div class="acc-stat"><div class="acc-stat-label">勘定科目数</div><div class="acc-stat-val" id="acc-stat-accts">0</div><div class="acc-stat-sub">登録済み科目</div></div>
+              <div class="acc-stat"><div class="acc-stat-label">仕訳件数</div><div class="acc-stat-val" id="acc-stat-jnls">0</div><div class="acc-stat-sub">登録済み仕訳</div></div>
+              <div class="acc-stat">
+                <div class="acc-stat-label">試算表バランス</div>
+                <div class="acc-stat-val"><span class="acc-badge acc-badge-success" id="acc-stat-bal">バランス</span></div>
+                <div class="acc-stat-sub" id="acc-stat-diff">差額: ¥0</div>
+              </div>
+              <div class="acc-stat"><div class="acc-stat-label">利益率</div><div class="acc-stat-val" id="acc-stat-margin">—</div><div class="acc-stat-sub">当期純利益率</div></div>
+            </div>
+          </div>
+
+          <!-- ── 勘定科目パネル ─────────────────────── -->
+          <div class="acc-panel" id="acc-panel-accounts">
+            <div class="acc-toolbar">
+              <select id="acc-filter-type" onchange="accRenderAccounts()">
+                <option value="">すべての分類</option>
+                <option>資産</option><option>負債</option><option>純資産</option><option>収益</option><option>費用</option>
+              </select>
+              <input type="text" id="acc-search" placeholder="科目名で検索..." oninput="accRenderAccounts()">
+              <button class="header-btn header-btn-primary acc-ml-auto" onclick="accOpenModal('acc-modal-account')" style="font-size:12px;padding:7px 14px;">＋ 科目追加</button>
+            </div>
+            <div class="card" style="padding:0;overflow:hidden">
+              <table class="acc-table"><thead><tr><th>コード</th><th>科目名</th><th>分類</th><th class="tr">残高</th><th class="tc">操作</th></tr></thead>
+              <tbody id="acc-accts-body"></tbody></table>
+            </div>
+          </div>
+
+          <!-- ── 仕訳帳パネル ──────────────────────── -->
+          <div class="acc-panel" id="acc-panel-journal">
+            <div class="acc-toolbar">
+              <input type="date" id="acc-j-from">
+              <span style="color:var(--ub-muted);font-size:13px">〜</span>
+              <input type="date" id="acc-j-to">
+              <button class="btn-acc-ghost" onclick="accFilterJournals()">絞り込み</button>
+              <button class="btn-acc-export acc-ml-auto" onclick="accExportCSV()">CSV出力</button>
+              <button class="header-btn header-btn-primary" onclick="accOpenModal('acc-modal-journal')" style="font-size:12px;padding:7px 14px;">＋ 仕訳入力</button>
+            </div>
+            <div class="card" style="padding:0;overflow:hidden">
+              <table class="acc-table">
+                <thead><tr><th>No.</th><th>日付</th><th>借方科目</th><th class="tr">借方金額</th><th>貸方科目</th><th class="tr">貸方金額</th><th>摘要</th><th class="tc">削除</th></tr></thead>
+                <tbody id="acc-journal-body"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ── 総勘定元帳パネル ──────────────────── -->
+          <div class="acc-panel" id="acc-panel-ledger">
+            <div class="acc-toolbar">
+              <select id="acc-ledger-sel" onchange="accRenderLedger()">
+                <option value="">科目を選択してください</option>
+              </select>
+            </div>
+            <div id="acc-ledger-content"></div>
+          </div>
+
+          <!-- ── 試算表パネル ──────────────────────── -->
+          <div class="acc-panel" id="acc-panel-trial">
+            <div class="card" style="padding:0;overflow:hidden">
+              <table class="acc-table">
+                <thead><tr><th>コード</th><th>科目名</th><th>分類</th><th class="tr">借方合計</th><th class="tr">貸方合計</th><th class="tr">残高</th></tr></thead>
+                <tbody id="acc-trial-body"></tbody>
+                <tfoot id="acc-trial-foot"></tfoot>
+              </table>
+            </div>
+          </div>
+
+          <!-- ── 損益計算書パネル ──────────────────── -->
+          <div class="acc-panel" id="acc-panel-pl">
+            <div class="card" style="max-width:680px">
+              <div class="card-title" style="font-size:15px;font-family:Georgia,serif;font-weight:800">損益計算書</div>
+              <div style="font-size:12px;color:var(--ub-muted);margin-bottom:1.5rem">自 2025年5月1日　至 2026年4月30日</div>
+              <div id="acc-pl-content"></div>
+            </div>
+          </div>
+
+          <!-- ── 貸借対照表パネル ──────────────────── -->
+          <div class="acc-panel" id="acc-panel-bs">
+            <div class="card">
+              <div class="card-title" style="font-size:15px;font-family:Georgia,serif;font-weight:800">貸借対照表</div>
+              <div style="font-size:12px;color:var(--ub-muted);margin-bottom:1.5rem">2026年4月30日 現在</div>
+              <div class="bs-grid" id="acc-bs-content"></div>
+            </div>
+          </div>
+        </div>
+        <!-- /tab-accounting -->
+
+              <!-- ④ 財務諸表 -->
+        <div id="tab-report" style="display:none">
+          <div class="admin-grid-2">
+            <div class="card">
+              <div class="card-title" style="font-size:15px;font-weight:800">損益計算書（P/L）</div>
+              <div style="font-size:12px;color:var(--ub-muted);margin-bottom:1.5rem">2025年5月〜2026年4月</div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--ub-border);font-weight:700;color:var(--ub-blue)"><span>売上高</span><span>¥148,200,000</span></div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--ub-border)"><span style="padding-left:1rem">売上原価</span><span>¥89,100,000</span></div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:2px solid var(--ub-border);font-weight:700"><span>売上総利益</span><span>¥59,100,000</span></div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--ub-border)"><span style="padding-left:1rem">販管費</span><span>¥32,400,000</span></div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:2px solid var(--ub-navy);font-weight:700;font-size:15px;color:var(--ub-success)"><span>当期純利益</span><span>¥26,700,000</span></div>
+            </div>
+            <div class="card">
+              <div class="card-title" style="font-size:15px;font-weight:800">貸借対照表（B/S）</div>
+              <div style="font-size:12px;color:var(--ub-muted);margin-bottom:1.5rem">2026年4月30日 現在</div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--ub-border);font-weight:700;color:var(--ub-blue)"><span>【資産の部】</span><span></span></div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--ub-border)"><span style="padding-left:1rem">流動資産</span><span>¥84,200,000</span></div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:2px solid var(--ub-border);font-weight:700"><span>資産合計</span><span>¥124,500,000</span></div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--ub-border);font-weight:700;color:var(--ub-blue)"><span>【負債・純資産の部】</span><span></span></div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--ub-border)"><span style="padding-left:1rem">負債合計</span><span>¥58,200,000</span></div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:2px solid var(--ub-navy);font-weight:700;font-size:15px;color:var(--ub-success)"><span>純資産合計</span><span>¥66,300,000</span></div>
+            </div>
+          </div>
+        </div>
+<!-- /admin-body -->
+    </main>
+  </div>
+</div>
+
+<!-- ══ 会計モーダル：仕訳入力 ════════════════════════ -->
+<div class="acc-modal-bg" id="acc-modal-journal">
+  <div class="acc-modal">
+    <h3>仕訳入力</h3>
+    <div class="acc-form-row"><label>日付</label><input type="date" id="acc-j-date"></div>
+    <div class="acc-two-col">
+      <div class="acc-form-row"><label>借方科目</label><select id="acc-j-debit"></select></div>
+      <div class="acc-form-row"><label>借方金額</label><input type="number" id="acc-j-amount" placeholder="0" min="1"></div>
+    </div>
+    <div class="acc-two-col">
+      <div class="acc-form-row"><label>貸方科目</label><select id="acc-j-credit"></select></div>
+      <div class="acc-form-row"><label>貸方金額</label><input type="text" disabled placeholder="借方金額と同額"></div>
+    </div>
+    <div class="acc-form-row"><label>摘要</label><textarea id="acc-j-memo" rows="2" placeholder="取引内容を入力..."></textarea></div>
+    <div class="acc-modal-footer">
+      <button class="btn-acc-ghost" onclick="accCloseModal('acc-modal-journal')">キャンセル</button>
+      <button class="btn-acc-primary" onclick="accAddJournal()">登録する</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 会計モーダル：勘定科目追加 ═══════════════════ -->
+<div class="acc-modal-bg" id="acc-modal-account">
+  <div class="acc-modal">
+    <h3>勘定科目追加</h3>
+    <div class="acc-two-col">
+      <div class="acc-form-row"><label>科目コード</label><input type="text" id="acc-new-code" placeholder="例: 1110"></div>
+      <div class="acc-form-row"><label>分類</label>
+        <select id="acc-new-type"><option>資産</option><option>負債</option><option>純資産</option><option>収益</option><option>費用</option></select>
+      </div>
+    </div>
+    <div class="acc-form-row"><label>科目名</label><input type="text" id="acc-new-name" placeholder="例: 電子マネー"></div>
+    <div class="acc-modal-footer">
+      <button class="btn-acc-ghost" onclick="accCloseModal('acc-modal-account')">キャンセル</button>
+      <button class="btn-acc-primary" onclick="accAddAccount()">追加する</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ CRM モーダル ══════════════════════════════════════════ -->
+<div class="acc-modal-bg" id="crm-modal">
+  <div class="acc-modal">
+    <h3 id="crm-modal-title">顧客登録</h3>
+    <input type="hidden" id="crm-edit-id">
+    <div class="acc-form-row"><label>会社名</label><input type="text" id="crm-company" placeholder="株式会社〇〇"></div>
+    <div class="acc-form-row"><label>担当者名</label><input type="text" id="crm-name" placeholder="山田 太郎"></div>
+    <div class="acc-two-col">
+      <div class="acc-form-row"><label>メール</label><input type="email" id="crm-email" placeholder="info@example.com"></div>
+      <div class="acc-form-row"><label>電話</label><input type="text" id="crm-phone" placeholder="03-0000-0000"></div>
+    </div>
+    <div class="acc-form-row"><label>状態</label>
+      <select id="crm-status"><option>アクティブ</option><option>フォロー中</option><option>休眠</option></select>
+    </div>
+    <div class="acc-form-row"><label>メモ</label><textarea id="crm-memo" rows="2"></textarea></div>
+    <div class="acc-modal-footer">
+      <button class="btn-acc-ghost" onclick="crmCloseModal()">キャンセル</button>
+      <button class="btn-acc-primary" onclick="crmSave()">保存する</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 案件モーダル ════════════════════════════════════════════ -->
+<div class="acc-modal-bg" id="deal-modal">
+  <div class="acc-modal">
+    <h3>案件登録</h3>
+    <div class="acc-form-row"><label>案件名</label><input type="text" id="deal-title" placeholder="ERP導入支援"></div>
+    <div class="acc-two-col">
+      <div class="acc-form-row"><label>顧客</label><select id="deal-customer"></select></div>
+      <div class="acc-form-row"><label>金額</label><input type="number" id="deal-amount" placeholder="0"></div>
+    </div>
+    <div class="acc-two-col">
+      <div class="acc-form-row"><label>フェーズ</label>
+        <select id="deal-stage"><option>リード</option><option>商談中</option><option>提案</option><option>受注</option><option>失注</option></select>
+      </div>
+      <div class="acc-form-row"><label>期日</label><input type="date" id="deal-due"></div>
+    </div>
+    <div class="acc-modal-footer">
+      <button class="btn-acc-ghost" onclick="accCloseModal('deal-modal')">キャンセル</button>
+      <button class="btn-acc-primary" onclick="dealSave()">保存する</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 在庫モーダル ════════════════════════════════════════════ -->
+<div class="acc-modal-bg" id="stock-modal">
+  <div class="acc-modal">
+    <h3>商品登録</h3>
+    <div class="acc-two-col">
+      <div class="acc-form-row"><label>品番</label><input type="text" id="stock-code" placeholder="ITM-001"></div>
+      <div class="acc-form-row"><label>単位</label><input type="text" id="stock-unit" placeholder="個" value="個"></div>
+    </div>
+    <div class="acc-form-row"><label>品名</label><input type="text" id="stock-name" placeholder="製品A"></div>
+    <div class="acc-two-col">
+      <div class="acc-form-row"><label>単価</label><input type="number" id="stock-price" placeholder="0"></div>
+      <div class="acc-form-row"><label>初期在庫</label><input type="number" id="stock-qty" placeholder="0"></div>
+    </div>
+    <div class="acc-modal-footer">
+      <button class="btn-acc-ghost" onclick="accCloseModal('stock-modal')">キャンセル</button>
+      <button class="btn-acc-primary" onclick="stockSave()">登録する</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 受注モーダル ════════════════════════════════════════════ -->
+<div class="acc-modal-bg" id="order-modal">
+  <div class="acc-modal">
+    <h3>受注登録</h3>
+    <div class="acc-two-col">
+      <div class="acc-form-row"><label>顧客</label><select id="order-customer"></select></div>
+      <div class="acc-form-row"><label>受注日</label><input type="date" id="order-date"></div>
+    </div>
+    <div id="order-lines-wrap">
+      <div class="acc-form-row"><label>明細</label></div>
+      <div id="order-lines">
+        <div class="acc-two-col" style="margin-bottom:6px;">
+          <input type="text" class="ol-name" placeholder="品目名" style="flex:2">
+          <input type="number" class="ol-qty" placeholder="数量" style="flex:1" value="1">
+          <input type="number" class="ol-price" placeholder="単価" style="flex:1">
+        </div>
+      </div>
+      <button class="btn-acc-ghost" style="font-size:12px;margin-top:4px;" onclick="orderAddLine()">＋ 行追加</button>
+    </div>
+    <div class="acc-form-row"><label>メモ</label><textarea id="order-memo" rows="2"></textarea></div>
+    <div class="acc-modal-footer">
+      <button class="btn-acc-ghost" onclick="accCloseModal('order-modal')">キャンセル</button>
+      <button class="btn-acc-primary" onclick="orderSave()">登録（自動仕訳）</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 請求書モーダル ══════════════════════════════════════════ -->
+<div class="acc-modal-bg" id="invoice-modal">
+  <div class="acc-modal">
+    <h3>請求書発行</h3>
+    <div class="acc-two-col">
+      <div class="acc-form-row"><label>顧客</label><select id="inv-customer"></select></div>
+      <div class="acc-form-row"><label>発行日</label><input type="date" id="inv-issue"></div>
+    </div>
+    <div class="acc-two-col">
+      <div class="acc-form-row"><label>支払期日</label><input type="date" id="inv-due"></div>
+      <div class="acc-form-row"><label>税率</label>
+        <select id="inv-taxrate"><option value="0.1">10%</option><option value="0.08">8%（軽減）</option></select>
+      </div>
+    </div>
+    <div class="acc-form-row"><label>発行者名</label><input type="text" id="inv-issuer" placeholder="UMA BizFlow株式会社"></div>
+    <div class="acc-form-row"><label>適格請求書登録番号</label><input type="text" id="inv-regno" placeholder="T0000000000000"></div>
+    <div id="inv-lines">
+      <div class="acc-form-row"><label>明細</label></div>
+      <div class="acc-two-col" style="margin-bottom:6px;">
+        <input type="text" class="il-name" placeholder="品目名" style="flex:2">
+        <input type="number" class="il-qty" placeholder="数量" value="1" style="flex:1">
+        <input type="number" class="il-price" placeholder="単価" style="flex:1">
+      </div>
+    </div>
+    <button class="btn-acc-ghost" style="font-size:12px;" onclick="invoiceAddLine()">＋ 行追加</button>
+    <div class="acc-modal-footer">
+      <button class="btn-acc-ghost" onclick="accCloseModal('invoice-modal')">キャンセル</button>
+      <button class="btn-acc-primary" onclick="invoiceSave()">発行する</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 入金モーダル ════════════════════════════════════════════ -->
+<div class="acc-modal-bg" id="payment-modal">
+  <div class="acc-modal">
+    <h3>入金登録</h3>
+    <div class="acc-form-row"><label>請求書</label><select id="pay-invoice"><option value="">（請求書なし）</option></select></div>
+    <div class="acc-two-col">
+      <div class="acc-form-row"><label>入金日</label><input type="date" id="pay-date"></div>
+      <div class="acc-form-row"><label>入金額</label><input type="number" id="pay-amount" placeholder="0"></div>
+    </div>
+    <div class="acc-form-row"><label>入金方法</label>
+      <select id="pay-method"><option>銀行振込</option><option>現金</option><option>クレジットカード</option><option>電子マネー</option></select>
+    </div>
+    <div class="acc-form-row"><label>摘要</label><input type="text" id="pay-memo" placeholder="〇〇社 4月分入金"></div>
+    <div class="acc-modal-footer">
+      <button class="btn-acc-ghost" onclick="accCloseModal('payment-modal')">キャンセル</button>
+      <button class="btn-acc-primary" onclick="paymentSave()">登録（自動消し込み）</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ワークフローモーダル ════════════════════════════════════ -->
+<div class="acc-modal-bg" id="wf-modal">
+  <div class="acc-modal">
+    <h3>ワークフロー申請</h3>
+    <div class="acc-form-row"><label>件名</label><input type="text" id="wf-title" placeholder="備品購入稟議"></div>
+    <div class="acc-two-col">
+      <div class="acc-form-row"><label>種別</label>
+        <select id="wf-category"><option>稟議</option><option>契約</option><option>経費精算</option><option>その他</option></select>
+      </div>
+      <div class="acc-form-row"><label>申請者</label><input type="text" id="wf-applicant" placeholder="山田 太郎"></div>
+    </div>
+    <div class="acc-modal-footer">
+      <button class="btn-acc-ghost" onclick="accCloseModal('wf-modal')">キャンセル</button>
+      <button class="btn-acc-primary" onclick="wfSave()">申請する</button>
+    </div>
+  </div>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+/* ── インラインChartライブラリ（外部依存ゼロ）── */
+var Chart=(function(){
+  function Chart(el,cfg){
+    this.canvas=el; this.ctx=el.getContext('2d');
+    this.type=cfg.type; this.data=cfg.data; this.options=cfg.options||{};
+    this._draw();
+  }
+  Chart.prototype.update=function(){this._draw();};
+  Chart.prototype._draw=function(){
+    var cv=this.canvas,c=this.ctx;
+    var w=cv.clientWidth||cv.offsetWidth||280,h=cv.clientHeight||cv.offsetHeight||180;
+    cv.width=w; cv.height=h; c.clearRect(0,0,w,h);
+    if(this.type==='doughnut') this._donut(c,w,h);
+    else if(this.type==='bar') this._bar(c,w,h);
+  };
+  Chart.prototype._donut=function(c,w,h){
+    var d=this.data.datasets[0],vals=d.data,cols=d.backgroundColor||['#3b82f6','#10b981','#ef4444'];
+    var tot=vals.reduce(function(a,b){return a+b;},0)||1;
+    var cx=w/2,cy=h/2,R=Math.min(w,h)*0.42,ri=R*0.62,ang=-Math.PI/2;
+    vals.forEach(function(v,i){var sw=(v/tot)*Math.PI*2;c.beginPath();c.moveTo(cx,cy);c.arc(cx,cy,R,ang,ang+sw);c.closePath();c.fillStyle=cols[i%cols.length];c.fill();ang+=sw;});
+    c.beginPath();c.arc(cx,cy,ri,0,Math.PI*2);c.fillStyle='#fff';c.fill();
+    var lbls=this.data.labels||[];
+    if(lbls.length){c.fillStyle='#0D1B2A';c.font='bold 11px sans-serif';c.textAlign='center';c.textBaseline='middle';c.fillText(lbls[0],cx,cy);}
+  };
+  Chart.prototype._bar=function(c,w,h){
+    var ds=this.data.datasets,lbls=this.data.labels||[];
+    var pL=40,pR=8,pT=16,pB=28,cW=w-pL-pR,cH=h-pT-pB;
+    var all=[];ds.forEach(function(d){d.data.forEach(function(v){all.push(v);});});
+    var mx=Math.max.apply(null,all)||1;
+    var n=lbls.length,bW=cW/n*0.55,gap=cW/n;
+    // グリッド
+    for(var g=0;g<=4;g++){var gy=pT+cH*(1-g/4);c.strokeStyle='rgba(26,86,219,0.08)';c.lineWidth=1;c.beginPath();c.moveTo(pL,gy);c.lineTo(pL+cW,gy);c.stroke();c.fillStyle='#94a3b8';c.font='10px sans-serif';c.textAlign='right';c.fillText('¥'+(mx*g/4/10000).toFixed(0)+'万',pL-3,gy+3);}
+    // バー
+    ds.forEach(function(d,di){
+      var cols=d.backgroundColor||'#1A56DB';
+      d.data.forEach(function(v,i){
+        var bh=(v/mx)*cH,bx=pL+i*gap+(gap-bW)/2,by=pT+cH-bh;
+        var col=Array.isArray(cols)?cols[i%cols.length]:cols;
+        var r=4;c.beginPath();c.moveTo(bx+r,by);c.lineTo(bx+bW-r,by);c.quadraticCurveTo(bx+bW,by,bx+bW,by+r);c.lineTo(bx+bW,by+bh);c.lineTo(bx,by+bh);c.lineTo(bx,by+r);c.quadraticCurveTo(bx,by,bx+r,by);c.closePath();c.fillStyle=col;c.fill();
+      });
+    });
+    // Xラベル
+    c.fillStyle='#64748B';c.font='11px sans-serif';c.textAlign='center';
+    lbls.forEach(function(l,i){c.fillText(l,pL+i*gap+gap/2,pT+cH+16);});
+  };
+  return Chart;
+})();
+</script>
+<script>
+// ═══ 既存 JS ════════════════════════════════════════════════
+function showLogin(){document.getElementById('login-modal').classList.add('show');}
+function hideLogin(){document.getElementById('login-modal').classList.remove('show');}
+function doLogin(){hideLogin();document.getElementById('lp-content').classList.add('hide');document.getElementById('admin-panel').classList.add('show');apiLoadAll();}
+function backToLP(){document.getElementById('admin-panel').classList.remove('show');document.getElementById('lp-content').classList.remove('hide');window.scrollTo(0,0);}
+
+var ALL_TABS=['crm','deal','order','stock','invoice','payment','accounting','report','ai','analytics','workflow','sign','users'];
+function setTab(el,tabId){
+  document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+  ALL_TABS.forEach(t=>{var e=document.getElementById('tab-'+t);if(e)e.style.display=(t===tabId)?'block':'none';});
+  var titles={crm:'顧客・案件管理 — CRM',deal:'案件進捗管理',order:'受発注管理',stock:'在庫・倉庫管理',invoice:'請求書発行',payment:'入金・決済管理',accounting:'財務会計 — 仕訳帳',report:'財務諸表',ai:'AIアシスト・自動化',analytics:'CRM分析ダッシュボード',workflow:'ワークフロー管理',sign:'電子署名',users:'ユーザー管理'};
+  document.getElementById('admin-title').textContent=titles[tabId]||'';
+  if(tabId==='accounting'||tabId==='report'){accInit();}
+  if(tabId==='crm')     crmLoad();
+  if(tabId==='deal')    dealLoad();
+  if(tabId==='order')   orderLoad();
+  if(tabId==='stock')   stockLoad();
+  if(tabId==='invoice') invoiceLoad();
+  if(tabId==='payment') paymentLoad();
+  if(tabId==='workflow')wfLoad();
+}
+
+var aiRes={
+  '今月の処理状況を要約して':'📊 今月の処理状況\n\n処理件数: 248件（前月比+23%）\n承認率: 97.2%（高水準維持）\n平均処理時間: 1.8日（目標2日以内）\n電子署名完了: 87件\n\n✅ 全体として順調に推移しています。',
+  '承認が遅れている案件を教えて':'⚠️ 要注意案件\n\n1. Q1営業報告書承認 (WF-0042)\n   期限: 04/12 / 残り2日\n   → 山田部長へリマインド推奨\n\n2. 新規取引先与信審査 (WF-0040)\n   外部署名待ち → ABC商事様へ連絡推奨',
+  '改善提案をして':'💡 業務改善提案\n\n1. 承認タイムアウト設定（推奨: 48時間）\n   → 自動エスカレーションで遅延防止\n\n2. AIによる優先度自動判定\n   → 金額・期限・相手先で自動ランク付け\n\n3. モバイル承認の活用促進\n   → 外出先承認率を向上させましょう'
+};
+function aiQuick(p){var r=document.getElementById('ai-result-dash');r.style.display='block';r.textContent='分析中...';setTimeout(function(){r.textContent=aiRes[p]||'🤖 AIが分析しました。詳細なレポートを作成しますか？';},800);}
+function runAI(suffix){var inp=document.getElementById('ai-input-'+suffix);var r=document.getElementById('ai-result-'+suffix);if(!inp||!inp.value.trim())return;r.style.display='block';r.textContent='AIが分析中...';setTimeout(function(){r.textContent='🤖 AIの回答\n\n「'+inp.value.trim()+'」について分析しました。\n\nUMA BizFlowのデータを元に、業務効率化のポイントと改善案をご提案します。具体的な数値は会計・財務タブでご確認ください。';},1200);}
+
+// ═══ API設定 ══════════════════════════════════════════════════
+const API = 'http://localhost:3000';
+async function api(method, path, body){
+  const opts={method,headers:{'Content-Type':'application/json'}};
+  if(body)opts.body=JSON.stringify(body);
+  const r=await fetch(API+path,opts);
+  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error||r.statusText);}
+  return r.json();
+}
+
+
+// ═══ 会計エンジン（複式簿記 — API接続版）══════════════════════
+var accAccounts=[];
+var accJournals=[];
+var accDonut=null,accBarChart=null;
+var accInited=false;
+var accCurrentPanel='overview';
+
+const accFmt=v=>'¥'+Math.round(v).toLocaleString('ja-JP');
+const accToday=()=>new Date().toISOString().slice(0,10);
+function accGetRawBal(code){return accJournals.reduce((s,j)=>{if(j.debit===code)s+=j.amount;if(j.credit===code)s-=j.amount;return s;},0);}
+function accGetBal(code){const a=accAccounts.find(x=>x.code===code);if(!a)return 0;const raw=accGetRawBal(code);return ['負債','純資産','収益'].includes(a.type)?-raw:raw;}
+function accTypeTotal(type){return accAccounts.filter(a=>a.type===type).reduce((s,a)=>s+accGetBal(a.code),0);}
+
+function accUpdateKPIs(){
+  const assets=accTypeTotal('資産'),liab=accTypeTotal('負債'),eq=accTypeTotal('純資産'),rev=accTypeTotal('収益'),exp=accTypeTotal('費用'),profit=rev-exp;
+  document.getElementById('acc-kpi-assets').textContent=accFmt(assets);
+  document.getElementById('acc-kpi-liab').textContent=accFmt(liab);
+  document.getElementById('acc-kpi-equity').textContent=accFmt(eq);
+  document.getElementById('acc-kpi-rev').textContent=accFmt(rev);
+  const pEl=document.getElementById('acc-kpi-profit');pEl.textContent=accFmt(profit);pEl.className='acc-kpi-val'+(profit<0?' danger':'');
+  document.getElementById('acc-stat-accts').textContent=accAccounts.length;
+  document.getElementById('acc-stat-jnls').textContent=accJournals.length;
+  document.getElementById('acc-stat-diff').textContent='差額: ¥0';
+  document.getElementById('acc-stat-margin').textContent=rev>0?((profit/rev)*100).toFixed(1)+'%':'—';
+  if(accDonut){accDonut.data.datasets[0].data=[Math.max(assets,1),Math.max(liab,1),Math.max(eq,1)];accDonut.update();}
+  if(accBarChart){accBarChart.data.datasets[0].data=[rev,exp];accBarChart.update();}
+}
+
+async function accLoadFromAPI(){
+  try{
+    accAccounts=await api('GET','/api/accounts');
+    accJournals=await api('GET','/api/journals');
+    accUpdateAll();
+  }catch(e){console.warn('API未接続 — オフラインモードで起動',e.message);}
+}
+
+function accInit(){
+  if(accInited)return;accInited=true;
+  if(!accAccounts.length)accLoadFromAPI();
+  const dc=document.getElementById('acc-donut');
+  if(dc)accDonut=new Chart(dc,{type:'doughnut',data:{labels:['資産','負債','純資産'],datasets:[{data:[33,33,33],backgroundColor:['#3b82f6','#10b981','#ef4444'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false}}}});
+  const bc=document.getElementById('acc-bar');
+  if(bc)accBarChart=new Chart(bc,{type:'bar',data:{labels:['収益','費用'],datasets:[{data:[0,0],backgroundColor:['#1A56DB','#f97316'],borderRadius:6,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{callback:v=>'¥'+v.toLocaleString('ja-JP')},grid:{color:'rgba(26,86,219,0.08)'}},x:{grid:{display:false}}}}});
+  accUpdateAll();
+}
+function accUpdateAll(){accUpdateKPIs();if(accCurrentPanel==='accounts')accRenderAccounts();if(accCurrentPanel==='journal')accRenderJournal();if(accCurrentPanel==='ledger')accRenderLedger();if(accCurrentPanel==='trial')accRenderTrial();if(accCurrentPanel==='pl')accRenderPL();if(accCurrentPanel==='bs')accRenderBS();}
+
+function accTab(name,el){
+  accCurrentPanel=name;
+  document.querySelectorAll('.acc-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');
+  document.querySelectorAll('.acc-panel').forEach(p=>p.classList.remove('active'));document.getElementById('acc-panel-'+name).classList.add('active');
+  if(name==='accounts')accRenderAccounts();if(name==='journal')accRenderJournal();if(name==='ledger'){accPopulateLedgerSel();accRenderLedger();}if(name==='trial')accRenderTrial();if(name==='pl')accRenderPL();if(name==='bs')accRenderBS();
+}
+
+function accRenderAccounts(){
+  const filter=document.getElementById('acc-filter-type')?.value||'';const search=(document.getElementById('acc-search')?.value||'').toLowerCase();
+  const tbody=document.getElementById('acc-accts-body');if(!tbody)return;
+  const tc={収益:'success',費用:'warn',資産:'info',負債:'info',純資産:'info'};
+  const list=accAccounts.filter(a=>(!filter||a.type===filter)&&(!search||a.name.includes(search)||a.code.includes(search)));
+  tbody.innerHTML=list.map(a=>`<tr><td><code>${a.code}</code></td><td>${a.name}</td><td><span class="acc-badge acc-badge-${tc[a.type]||'info'}">${a.type}</span></td><td class="tr mono">${accFmt(accGetBal(a.code))}</td><td class="tc"><button class="btn-acc-danger" onclick="accDeleteAccount('${a.code}')">削除</button></td></tr>`).join('')||'<tr><td colspan="5" class="acc-empty">科目がありません</td></tr>';
+}
+
+function accRenderJournal(){
+  const tbody=document.getElementById('acc-journal-body');if(!tbody)return;
+  tbody.innerHTML=accJournals.map((j,i)=>{const dn=accAccounts.find(a=>a.code===j.debit)?.name||j.debit;const cn=accAccounts.find(a=>a.code===j.credit)?.name||j.credit;return `<tr class="acc-jr" data-date="${j.date}"><td class="mono acc-muted">${i+1}</td><td>${j.date}</td><td class="acc-debit">${dn}</td><td class="tr acc-debit mono">${accFmt(j.amount)}</td><td class="acc-credit">${cn}</td><td class="tr acc-credit mono">${accFmt(j.amount)}</td><td class="acc-muted">${j.memo||''}</td><td class="tc"><button class="btn-acc-danger" onclick="accDeleteJournal('${j.id}')">✕</button></td></tr>`;}).join('')||'<tr><td colspan="8" class="acc-empty">仕訳データがありません。「＋ 仕訳入力」から登録してください。</td></tr>';
+}
+function accFilterJournals(){const from=document.getElementById('acc-j-from')?.value||'';const to=document.getElementById('acc-j-to')?.value||'';document.querySelectorAll('.acc-jr').forEach(tr=>{const d=tr.dataset.date;tr.style.display=(!from||d>=from)&&(!to||d<=to)?'':'none';});}
+
+function accPopulateLedgerSel(){const sel=document.getElementById('acc-ledger-sel');if(!sel)return;const cur=sel.value;sel.innerHTML='<option value="">科目を選択してください</option>'+accAccounts.map(a=>`<option value="${a.code}" ${cur===a.code?'selected':''}>${a.code} ${a.name}</option>`).join('');}
+function accRenderLedger(){
+  const code=document.getElementById('acc-ledger-sel')?.value||'';const el=document.getElementById('acc-ledger-content');if(!el)return;
+  if(!code){el.innerHTML='<div class="card acc-empty">科目を選択してください</div>';return;}
+  const acct=accAccounts.find(a=>a.code===code);const relevant=accJournals.filter(j=>j.debit===code||j.credit===code);let running=0;const isNormal=['資産','費用'].includes(acct?.type);
+  const rows=relevant.map(j=>{const isDr=j.debit===code;const dr=isDr?j.amount:0;const cr=isDr?0:j.amount;running+=isNormal?(dr-cr):(cr-dr);const counter=isDr?(accAccounts.find(a=>a.code===j.credit)?.name||j.credit):(accAccounts.find(a=>a.code===j.debit)?.name||j.debit);return `<tr><td>${j.date}</td><td>${counter}</td><td class="tr acc-debit mono">${dr?accFmt(dr):''}</td><td class="tr acc-credit mono">${cr?accFmt(cr):''}</td><td class="tr mono">${accFmt(running)}</td><td class="acc-muted">${j.memo||''}</td></tr>`;});
+  el.innerHTML=`<div class="card" style="padding:0;overflow:hidden"><div style="padding:1rem 1.25rem;font-size:13px;font-weight:700;border-bottom:1px solid var(--ub-border)">${acct?.name}（${code}）/ 分類: ${acct?.type}</div><table class="acc-table"><thead><tr><th>日付</th><th>相手科目</th><th class="tr">借方</th><th class="tr">貸方</th><th class="tr">残高</th><th>摘要</th></tr></thead><tbody>${rows.join('')||'<tr><td colspan="6" class="acc-empty">取引がありません</td></tr>'}</tbody><tfoot><tr><td colspan="4" style="font-weight:700">残高</td><td class="tr mono" style="font-weight:700">${accFmt(running)}</td><td></td></tr></tfoot></table></div>`;
+}
+
+function accRenderTrial(){
+  const tbody=document.getElementById('acc-trial-body');const tfoot=document.getElementById('acc-trial-foot');if(!tbody)return;
+  let tDr=0,tCr=0;const tc={収益:'success',費用:'warn',資産:'info',負債:'info',純資産:'info'};
+  tbody.innerHTML=accAccounts.map(a=>{const dr=accJournals.filter(j=>j.debit===a.code).reduce((s,j)=>s+j.amount,0);const cr=accJournals.filter(j=>j.credit===a.code).reduce((s,j)=>s+j.amount,0);tDr+=dr;tCr+=cr;const bal=dr-cr;return `<tr><td><code>${a.code}</code></td><td>${a.name}</td><td><span class="acc-badge acc-badge-${tc[a.type]||'info'}">${a.type}</span></td><td class="tr acc-debit mono">${dr?accFmt(dr):''}</td><td class="tr acc-credit mono">${cr?accFmt(cr):''}</td><td class="tr mono" style="${bal<0?'color:var(--ub-danger)':''}">${accFmt(Math.abs(bal))}</td></tr>`;}).join('');
+  const ok=tDr===tCr;tfoot.innerHTML=`<tr><td colspan="3" style="font-weight:700">合計</td><td class="tr acc-debit mono">${accFmt(tDr)}</td><td class="tr acc-credit mono">${accFmt(tCr)}</td><td class="tr mono" style="color:${ok?'#16a34a':'var(--ub-danger)'};">${ok?'バランス ✓':'差額 '+accFmt(tDr-tCr)}</td></tr>`;
+}
+
+function accRenderPL(){
+  const el=document.getElementById('acc-pl-content');if(!el)return;
+  const rev=accAccounts.filter(a=>a.type==='収益');const exp=accAccounts.filter(a=>a.type==='費用');
+  const tRev=rev.reduce((s,a)=>s+accGetBal(a.code),0);const tExp=exp.reduce((s,a)=>s+accGetBal(a.code),0);const profit=tRev-tExp;
+  el.innerHTML=`<div style="margin-bottom:1.5rem"><div class="fin-section-head">【収益の部】</div>${rev.map(a=>`<div class="fin-row"><span>${a.name}</span><span class="mono">${accFmt(accGetBal(a.code))}</span></div>`).join('')}<div class="fin-row fin-subtotal"><span>収益合計</span><span class="mono">${accFmt(tRev)}</span></div></div><div style="margin-bottom:1.5rem"><div class="fin-section-head">【費用の部】</div>${exp.map(a=>`<div class="fin-row"><span>${a.name}</span><span class="mono">${accFmt(accGetBal(a.code))}</span></div>`).join('')}<div class="fin-row fin-subtotal"><span>費用合計</span><span class="mono">${accFmt(tExp)}</span></div></div><div class="fin-total ${profit>=0?'fin-profit':'fin-loss'}"><span>当期純利益</span><span class="mono">${accFmt(profit)}</span></div>`;
+}
+
+function accRenderBS(){
+  const el=document.getElementById('acc-bs-content');if(!el)return;
+  const aA=accAccounts.filter(a=>a.type==='資産'),aL=accAccounts.filter(a=>a.type==='負債'),aE=accAccounts.filter(a=>a.type==='純資産');
+  const tA=aA.reduce((s,a)=>s+accGetBal(a.code),0),tL=aL.reduce((s,a)=>s+accGetBal(a.code),0),tE=aE.reduce((s,a)=>s+accGetBal(a.code),0),profit=accTypeTotal('収益')-accTypeTotal('費用');
+  const ok=Math.abs(tA-(tL+tE+profit))<1;
+  el.innerHTML=`<div><div class="fin-section-head">【資産の部】</div>${aA.map(a=>`<div class="fin-row"><span>${a.name}</span><span class="mono">${accFmt(accGetBal(a.code))}</span></div>`).join('')}<div class="fin-row fin-subtotal"><span>資産合計</span><span class="mono">${accFmt(tA)}</span></div></div><div><div class="fin-section-head">【負債の部】</div>${aL.map(a=>`<div class="fin-row"><span>${a.name}</span><span class="mono">${accFmt(accGetBal(a.code))}</span></div>`).join('')}<div class="fin-row fin-subtotal" style="margin-bottom:1.5rem"><span>負債合計</span><span class="mono">${accFmt(tL)}</span></div><div class="fin-section-head">【純資産の部】</div>${aE.map(a=>`<div class="fin-row"><span>${a.name}</span><span class="mono">${accFmt(accGetBal(a.code))}</span></div>`).join('')}<div class="fin-row"><span>当期純利益</span><span class="mono">${accFmt(profit)}</span></div><div class="fin-row fin-subtotal" style="margin-bottom:1rem"><span>純資産合計</span><span class="mono">${accFmt(tE+profit)}</span></div><div class="fin-total ${ok?'fin-profit':'fin-loss'}" style="font-size:14px"><span>負債・純資産合計</span><span class="mono">${accFmt(tL+tE+profit)}</span></div></div>`;
+}
+
+function accOpenModal(id){
+  if(id==='acc-modal-journal'){const opts=accAccounts.map(a=>`<option value="${a.code}">${a.code} ${a.name}</option>`).join('');document.getElementById('acc-j-debit').innerHTML=opts;document.getElementById('acc-j-credit').innerHTML=opts;document.getElementById('acc-j-date').value=accToday();}
+  document.getElementById(id).classList.add('open');
+}
+function accCloseModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.acc-modal-bg').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+
+async function accAddJournal(){
+  const date=document.getElementById('acc-j-date').value,debit=document.getElementById('acc-j-debit').value,credit=document.getElementById('acc-j-credit').value,amount=parseFloat(document.getElementById('acc-j-amount').value)||0,memo=document.getElementById('acc-j-memo').value;
+  if(!date||!debit||!credit||!amount){alert('日付・借方科目・貸方科目・金額を入力してください');return;}
+  if(debit===credit){alert('借方と貸方に同じ科目は使用できません');return;}
+  try{
+    const res=await api('POST','/api/journals',{date,debit,credit,amount,memo});
+    accJournals=await api('GET','/api/journals');
+    accJournals.sort((a,b)=>a.date.localeCompare(b.date));
+    accCloseModal('acc-modal-journal');document.getElementById('acc-j-amount').value='';document.getElementById('acc-j-memo').value='';
+    accUpdateAll();
+  }catch(e){alert('保存失敗: '+e.message);}
+}
+async function accDeleteJournal(id){if(!confirm('この仕訳を削除しますか？'))return;try{await api('DELETE','/api/journals/'+id);accJournals=await api('GET','/api/journals');accUpdateAll();}catch(e){alert('削除失敗: '+e.message);}}
+async function accAddAccount(){
+  const code=document.getElementById('acc-new-code').value.trim(),name=document.getElementById('acc-new-name').value.trim(),type=document.getElementById('acc-new-type').value;
+  if(!code||!name){alert('コードと科目名を入力してください');return;}
+  try{
+    await api('POST','/api/accounts',{code,name,type});
+    accAccounts=await api('GET','/api/accounts');
+    accCloseModal('acc-modal-account');document.getElementById('acc-new-code').value='';document.getElementById('acc-new-name').value='';
+    accUpdateAll();
+  }catch(e){alert('保存失敗: '+e.message);}
+}
+async function accDeleteAccount(code){if(!confirm('削除しますか？'))return;try{await api('DELETE','/api/accounts/'+code);accAccounts=await api('GET','/api/accounts');accUpdateAll();}catch(e){alert(e.message);}}
+function accExportCSV(){
+  if(!accJournals.length){alert('仕訳データがありません');return;}
+  const BOM='\uFEFF';
+  const header='取引日,借方科目コード,借方科目名,貸方科目コード,貸方科目名,金額,摘要';
+  const rows=accJournals.map(j=>{
+    const dn=accAccounts.find(a=>a.code===j.debit)?.name||j.debit;
+    const cn=accAccounts.find(a=>a.code===j.credit)?.name||j.credit;
+    const memo=(j.memo||'').replace(/,/g,'、');
+    return [j.date,j.debit,dn,j.credit,cn,j.amount,memo].join(',');
+  });
+  const csv=BOM+header+'\n'+rows.join('\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='仕訳データ_'+new Date().toISOString().slice(0,10)+'.csv';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+// ═══ CRM ════════════════════════════════════════════════════
+async function crmLoad(){
+  const q=document.getElementById('crm-search')?.value||'';
+  const list=await api('GET','/api/customers'+(q?'?q='+encodeURIComponent(q):'')).catch(()=>[]);
+  const today=new Date().toISOString().slice(0,7);
+  document.getElementById('crm-kpi-total').innerHTML=list.length+'<span style="font-size:16px;color:var(--ub-muted)">社</span>';
+  const active=list.filter(c=>c.status==='アクティブ').length;
+  document.getElementById('crm-kpi-active').innerHTML=active+'<span style="font-size:16px;color:var(--ub-muted)">社</span>';
+  const newM=list.filter(c=>c.created&&c.created.startsWith(today)).length;
+  document.getElementById('crm-kpi-new').innerHTML=newM+'<span style="font-size:16px;color:var(--ub-muted)">社</span>';
+  const sc={'アクティブ':'badge-success','フォロー中':'badge-warning','休眠':'badge-neutral'};
+  document.getElementById('crm-tbody').innerHTML=list.length?list.map(c=>`
+    <tr>
+      <td><b>${c.company||'—'}</b></td><td>${c.name}</td>
+      <td>${c.email||'—'}</td><td>${c.phone||'—'}</td>
+      <td><span class="badge ${sc[c.status]||'badge-neutral'}">${c.status}</span></td>
+      <td>
+        <button class="btn-acc-ghost" style="font-size:11px;padding:3px 8px;" onclick="crmEdit('${c.id}')">編集</button>
+        <button class="btn-acc-danger" style="font-size:11px;padding:3px 8px;" onclick="crmDelete('${c.id}')">削除</button>
+      </td>
+    </tr>`).join(''):'<tr><td colspan="6" style="text-align:center;color:var(--ub-muted);padding:2rem;">顧客データがありません</td></tr>';
+}
+function crmOpenModal(c){
+  document.getElementById('crm-edit-id').value=c?.id||'';
+  document.getElementById('crm-modal-title').textContent=c?'顧客編集':'顧客登録';
+  document.getElementById('crm-company').value=c?.company||'';
+  document.getElementById('crm-name').value=c?.name||'';
+  document.getElementById('crm-email').value=c?.email||'';
+  document.getElementById('crm-phone').value=c?.phone||'';
+  document.getElementById('crm-status').value=c?.status||'アクティブ';
+  document.getElementById('crm-memo').value=c?.memo||'';
+  document.getElementById('crm-modal').classList.add('open');
+}
+function crmCloseModal(){document.getElementById('crm-modal').classList.remove('open');}
+async function crmEdit(id){
+  const list=await api('GET','/api/customers');
+  const c=list.find(x=>x.id===id);if(c)crmOpenModal(c);
+}
+async function crmSave(){
+  const id=document.getElementById('crm-edit-id').value;
+  const body={
+    name:document.getElementById('crm-name').value,
+    company:document.getElementById('crm-company').value,
+    email:document.getElementById('crm-email').value,
+    phone:document.getElementById('crm-phone').value,
+    status:document.getElementById('crm-status').value,
+    memo:document.getElementById('crm-memo').value,
+  };
+  if(!body.name){alert('担当者名を入力してください');return;}
+  try{
+    if(id)await api('PUT','/api/customers/'+id,body);
+    else await api('POST','/api/customers',body);
+    crmCloseModal();crmLoad();
+  }catch(e){alert('保存失敗: '+e.message);}
+}
+async function crmDelete(id){
+  if(!confirm('この顧客を削除しますか？'))return;
+  try{await api('DELETE','/api/customers/'+id);crmLoad();}catch(e){alert(e.message);}
+}
+
+// ═══ 案件 ════════════════════════════════════════════════════
+async function dealLoad(){
+  const list=await api('GET','/api/deals').catch(()=>[]);
+  const sc={リード:'badge-neutral',商談中:'badge-warning',提案:'badge-info',受注:'badge-success',失注:'badge-danger'};
+  document.getElementById('deal-tbody').innerHTML=list.length?list.map(d=>`
+    <tr>
+      <td><b>${d.title}</b></td><td>${d.customer_name||'—'}</td>
+      <td style="text-align:right;">¥${Number(d.amount).toLocaleString()}</td>
+      <td><span class="badge ${sc[d.stage]||'badge-neutral'}">${d.stage}</span></td>
+      <td>${d.due_date||'—'}</td>
+      <td>
+        <select style="font-size:12px;padding:4px 8px;border:1px solid var(--ub-border);border-radius:6px;" onchange="dealUpdateStage('${d.id}',this.value)">
+          ${['リード','商談中','提案','受注','失注'].map(s=>`<option ${d.stage===s?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </td>
+    </tr>`).join(''):'<tr><td colspan="6" style="text-align:center;color:var(--ub-muted);padding:2rem;">案件データがありません</td></tr>';
+}
+async function dealOpenModal(){
+  const customers=await api('GET','/api/customers').catch(()=>[]);
+  document.getElementById('deal-customer').innerHTML='<option value="">（顧客なし）</option>'+customers.map(c=>`<option value="${c.id}">${c.company||c.name}</option>`).join('');
+  document.getElementById('deal-modal').classList.add('open');
+}
+async function dealSave(){
+  const body={
+    title:document.getElementById('deal-title').value,
+    customer_id:document.getElementById('deal-customer').value,
+    amount:document.getElementById('deal-amount').value,
+    stage:document.getElementById('deal-stage').value,
+    due_date:document.getElementById('deal-due').value,
+  };
+  if(!body.title){alert('案件名を入力してください');return;}
+  try{await api('POST','/api/deals',body);accCloseModal('deal-modal');dealLoad();}catch(e){alert(e.message);}
+}
+async function dealUpdateStage(id,stage){
+  try{await api('PUT','/api/deals/'+id,{stage});}catch(e){alert(e.message);}
+}
+
+// ═══ 在庫 ════════════════════════════════════════════════════
+async function stockLoad(){
+  const list=await api('GET','/api/items').catch(()=>[]);
+  document.getElementById('stock-tbody').innerHTML=list.length?list.map(i=>`
+    <tr>
+      <td><code>${i.code}</code></td><td>${i.name}</td><td>${i.unit}</td>
+      <td style="text-align:right;">¥${Number(i.price).toLocaleString()}</td>
+      <td style="text-align:right;font-weight:700;${i.stock<=0?'color:var(--ub-danger)':''}">${i.stock}</td>
+      <td>${i.stock<=0?'<span class="badge" style="background:rgba(239,68,68,0.1);color:#b91c1c;">欠品注意</span>':'<span class="badge badge-success">正常</span>'}</td>
+      <td><button class="btn-acc-danger" style="font-size:11px;" onclick="stockDelete('${i.id}')">削除</button></td>
+    </tr>`).join(''):'<tr><td colspan="7" style="text-align:center;color:var(--ub-muted);padding:2rem;">商品データがありません</td></tr>';
+}
+function stockOpenModal(){document.getElementById('stock-modal').classList.add('open');}
+async function stockSave(){
+  const body={
+    code:document.getElementById('stock-code').value,
+    name:document.getElementById('stock-name').value,
+    unit:document.getElementById('stock-unit').value||'個',
+    price:document.getElementById('stock-price').value,
+    stock:document.getElementById('stock-qty').value,
+  };
+  if(!body.code||!body.name){alert('品番と品名を入力してください');return;}
+  try{await api('POST','/api/items',body);accCloseModal('stock-modal');stockLoad();}catch(e){alert(e.message);}
+}
+async function stockDelete(id){
+  if(!confirm('削除しますか？'))return;
+  try{await api('DELETE','/api/items/'+id);stockLoad();}catch(e){alert(e.message);}
+}
+
+// ═══ 受注 ════════════════════════════════════════════════════
+async function orderLoad(){
+  const list=await api('GET','/api/orders').catch(()=>[]);
+  const sc={'受注確定':'badge-success','キャンセル':'badge-danger'};
+  document.getElementById('order-tbody').innerHTML=list.length?list.map(o=>`
+    <tr>
+      <td><code>${o.id.slice(0,8)}</code></td><td>${o.customer_name||'—'}</td>
+      <td>${o.date}</td>
+      <td style="text-align:right;font-weight:700;">¥${Number(o.total).toLocaleString()}</td>
+      <td><span class="badge ${sc[o.status]||'badge-neutral'}">${o.status}</span></td>
+      <td><button class="btn-acc-ghost" style="font-size:11px;" onclick="orderShowDetail('${o.id}')">明細</button></td>
+    </tr>`).join(''):'<tr><td colspan="6" style="text-align:center;color:var(--ub-muted);padding:2rem;">受注データがありません</td></tr>';
+}
+async function orderOpenModal(){
+  const customers=await api('GET','/api/customers').catch(()=>[]);
+  document.getElementById('order-customer').innerHTML='<option value="">（顧客なし）</option>'+customers.map(c=>`<option value="${c.id}">${c.company||c.name}</option>`).join('');
+  document.getElementById('order-date').value=new Date().toISOString().slice(0,10);
+  document.getElementById('order-modal').classList.add('open');
+}
+function orderAddLine(){
+  const wrap=document.getElementById('order-lines');
+  const d=document.createElement('div');
+  d.className='acc-two-col';d.style.marginBottom='6px';
+  d.innerHTML='<input type="text" class="ol-name" placeholder="品目名" style="flex:2"><input type="number" class="ol-qty" placeholder="数量" value="1" style="flex:1"><input type="number" class="ol-price" placeholder="単価" style="flex:1">';
+  wrap.appendChild(d);
+}
+async function orderSave(){
+  const names=[...document.querySelectorAll('#order-lines .ol-name')];
+  const lines=names.map((el,i)=>({
+    name:el.value,
+    qty:document.querySelectorAll('#order-lines .ol-qty')[i].value,
+    price:document.querySelectorAll('#order-lines .ol-price')[i].value,
+  })).filter(l=>l.name&&l.price);
+  if(!lines.length){alert('明細を1行以上入力してください');return;}
+  const body={
+    customer_id:document.getElementById('order-customer').value,
+    date:document.getElementById('order-date').value,
+    memo:document.getElementById('order-memo').value,
+    lines,
+  };
+  try{
+    const res=await api('POST','/api/orders',body);
+    alert('受注登録完了！\n合計: ¥'+Number(res.total).toLocaleString()+'\n\n自動仕訳生成: 売掛金 / 売上高');
+    accCloseModal('order-modal');orderLoad();
+    if(accInited){accJournals=await api('GET','/api/journals');accUpdateAll();}
+  }catch(e){alert(e.message);}
+}
+async function orderShowDetail(id){
+  const orders=await api('GET','/api/orders');
+  const o=orders.find(x=>x.id===id);if(!o)return;
+  const lines=(o.lines||[]).map(l=>`  ${l.name} × ${l.qty}  ¥${Number(l.price).toLocaleString()}`).join('\n');
+  alert('受注ID: '+o.id.slice(0,8)+'\n顧客: '+(o.customer_name||'—')+'\n日付: '+o.date+'\n\n明細:\n'+lines+'\n\n合計: ¥'+Number(o.total).toLocaleString());
+}
+
+// ═══ 請求書 ══════════════════════════════════════════════════
+async function invoiceLoad(){
+  const list=await api('GET','/api/invoices').catch(()=>[]);
+  const sc={'未収':'badge-warning','一部入金':'badge-info','入金済':'badge-success'};
+  document.getElementById('invoice-tbody').innerHTML=list.length?list.map(i=>`
+    <tr>
+      <td><code>${i.invoice_no}</code></td><td>${i.customer_name||'—'}</td>
+      <td>${i.issue_date}</td><td>${i.due_date||'—'}</td>
+      <td style="text-align:right;font-weight:700;">¥${Number(i.total).toLocaleString()}</td>
+      <td><span class="badge ${sc[i.status]||'badge-neutral'}">${i.status}</span></td>
+      <td><button class="btn-acc-ghost" style="font-size:11px;" onclick="invoicePreview('${i.id}')">詳細</button></td>
+    </tr>`).join(''):'<tr><td colspan="7" style="text-align:center;color:var(--ub-muted);padding:2rem;">請求書データがありません</td></tr>';
+}
+async function invoiceOpenModal(){
+  const customers=await api('GET','/api/customers').catch(()=>[]);
+  document.getElementById('inv-customer').innerHTML='<option value="">（顧客なし）</option>'+customers.map(c=>`<option value="${c.id}">${c.company||c.name}</option>`).join('');
+  document.getElementById('inv-issue').value=new Date().toISOString().slice(0,10);
+  document.getElementById('invoice-modal').classList.add('open');
+}
+function invoiceAddLine(){
+  const wrap=document.getElementById('inv-lines');
+  const d=document.createElement('div');
+  d.className='acc-two-col';d.style.marginBottom='6px';
+  d.innerHTML='<input type="text" class="il-name" placeholder="品目名" style="flex:2"><input type="number" class="il-qty" placeholder="数量" value="1" style="flex:1"><input type="number" class="il-price" placeholder="単価" style="flex:1">';
+  wrap.appendChild(d);
+}
+async function invoiceSave(){
+  const names=[...document.querySelectorAll('#inv-lines .il-name')];
+  const lines=names.map((el,i)=>({
+    name:el.value,
+    qty:document.querySelectorAll('#inv-lines .il-qty')[i].value,
+    unit_price:document.querySelectorAll('#inv-lines .il-price')[i].value,
+  })).filter(l=>l.name&&l.unit_price);
+  if(!lines.length){alert('明細を1行以上入力してください');return;}
+  const body={
+    customer_id:document.getElementById('inv-customer').value,
+    issue_date:document.getElementById('inv-issue').value,
+    due_date:document.getElementById('inv-due').value,
+    tax_rate:document.getElementById('inv-taxrate').value,
+    issuer_name:document.getElementById('inv-issuer').value,
+    issuer_regno:document.getElementById('inv-regno').value,
+    lines,
+  };
+  try{
+    const res=await api('POST','/api/invoices',body);
+    alert('請求書発行完了！\n請求No.: '+res.invoice_no+'\n合計（税込）: ¥'+Number(res.total).toLocaleString());
+    accCloseModal('invoice-modal');invoiceLoad();
+  }catch(e){alert(e.message);}
+}
+async function invoicePreview(id){
+  const res=await api('GET','/api/invoices/'+id);
+  const lines=(res.lines||[]).map(l=>`  ${l.name} × ${l.qty}  ¥${Number(l.amount).toLocaleString()}`).join('\n');
+  alert(res.invoice_no+'\n発行者: '+res.issuer_name+'\n登録番号: '+res.issuer_regno+'\n\n明細:\n'+lines+'\n\n小計: ¥'+Number(res.subtotal).toLocaleString()+'\n消費税: ¥'+Number(res.tax_amount).toLocaleString()+'\n合計: ¥'+Number(res.total).toLocaleString()+'\n\n状態: '+res.status);
+}
+
+// ═══ 入金 ════════════════════════════════════════════════════
+async function paymentLoad(){
+  const list=await api('GET','/api/payments').catch(()=>[]);
+  document.getElementById('payment-tbody').innerHTML=list.length?list.map(p=>`
+    <tr>
+      <td>${p.date}</td><td>${p.invoice_no||'—'}</td>
+      <td style="text-align:right;font-weight:700;">¥${Number(p.amount).toLocaleString()}</td>
+      <td>${p.method}</td><td>${p.memo||'—'}</td>
+    </tr>`).join(''):'<tr><td colspan="5" style="text-align:center;color:var(--ub-muted);padding:2rem;">入金データがありません</td></tr>';
+}
+async function paymentOpenModal(){
+  const invs=await api('GET','/api/invoices').catch(()=>[]);
+  document.getElementById('pay-invoice').innerHTML='<option value="">（請求書なし）</option>'+
+    invs.filter(i=>i.status!=='入金済').map(i=>`<option value="${i.id}">${i.invoice_no} — ¥${Number(i.total).toLocaleString()}</option>`).join('');
+  document.getElementById('pay-date').value=new Date().toISOString().slice(0,10);
+  document.getElementById('payment-modal').classList.add('open');
+}
+async function paymentSave(){
+  const body={
+    invoice_id:document.getElementById('pay-invoice').value,
+    date:document.getElementById('pay-date').value,
+    amount:document.getElementById('pay-amount').value,
+    method:document.getElementById('pay-method').value,
+    memo:document.getElementById('pay-memo').value,
+  };
+  if(!body.amount){alert('入金額を入力してください');return;}
+  try{
+    await api('POST','/api/payments',body);
+    alert('入金登録完了！\n自動仕訳生成: 現金預金 / 売掛金（消し込み）');
+    accCloseModal('payment-modal');paymentLoad();
+    if(accInited){accJournals=await api('GET','/api/journals');accUpdateAll();}
+  }catch(e){alert(e.message);}
+}
+
+// ═══ ワークフロー ════════════════════════════════════════════
+async function wfLoad(){
+  const list=await api('GET','/api/workflows').catch(()=>[]);
+  const sc={'申請中':'badge-warning','承認済':'badge-success','却下':'badge-danger'};
+  document.getElementById('wf-tbody').innerHTML=list.length?list.map(w=>`
+    <tr>
+      <td>${w.created}</td><td><b>${w.title}</b></td>
+      <td><span class="badge badge-info">${w.category}</span></td>
+      <td>${w.applicant||'—'}</td>
+      <td><span class="badge ${sc[w.status]||'badge-neutral'}">${w.status}</span></td>
+      <td>
+        ${w.status==='申請中'?`<button class="btn-acc-primary" style="font-size:11px;padding:3px 10px;" onclick="wfApprove('${w.id}')">承認</button>
+        <button class="btn-acc-danger" style="font-size:11px;" onclick="wfReject('${w.id}')">却下</button>`:''}
+        <button class="btn-acc-ghost" style="font-size:11px;" onclick="wfDelete('${w.id}')">削除</button>
+      </td>
+    </tr>`).join(''):'<tr><td colspan="6" style="text-align:center;color:var(--ub-muted);padding:2rem;">申請データがありません</td></tr>';
+}
+function wfOpenModal(){document.getElementById('wf-modal').classList.add('open');}
+async function wfSave(){
+  const body={
+    title:document.getElementById('wf-title').value,
+    category:document.getElementById('wf-category').value,
+    applicant:document.getElementById('wf-applicant').value,
+  };
+  if(!body.title){alert('件名を入力してください');return;}
+  try{await api('POST','/api/workflows',body);accCloseModal('wf-modal');wfLoad();}catch(e){alert(e.message);}
+}
+async function wfApprove(id){try{await api('PUT','/api/workflows/'+id,{status:'承認済'});wfLoad();}catch(e){alert(e.message);}}
+async function wfReject(id){try{await api('PUT','/api/workflows/'+id,{status:'却下'});wfLoad();}catch(e){alert(e.message);}}
+async function wfDelete(id){if(!confirm('削除しますか？'))return;try{await api('DELETE','/api/workflows/'+id);wfLoad();}catch(e){alert(e.message);}}
+
+// ─── ログイン後の全データ初回ロード ─────────────────────────
+async function apiLoadAll(){
+  crmLoad();
+  await accLoadFromAPI();
+}
+</script>
+</body>
+</html>
