@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UMA BizFlow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --ub-navy: #0D1B2A; --ub-blue: #1A56DB; --ub-cyan: #06B6D4;
+  --ub-gold: #F59E0B; --ub-light: #F0F4FF; --ub-muted: #64748B;
+  --ub-surface: #FFFFFF; --ub-border: rgba(26,86,219,0.15);
+  --ub-success: #10B981; --ub-warning: #F59E0B; --ub-danger: #EF4444;
+}
+body { font-family: 'Noto Sans JP', sans-serif; background: var(--ub-light); color: var(--ub-navy); overflow-x: hidden; }
+
+/* NAV */
+.nav { position: fixed; top:0; left:0; right:0; z-index:100; background: rgba(13,27,42,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(6,182,212,0.2); padding: 0 2rem; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+.nav-logo { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+.nav-logo span { color: var(--ub-cyan); }
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 13px; transition: color 0.2s; }
+.nav-links a:hover { color: var(--ub-cyan); }
+.nav-cta { display: flex; gap: 10px; }
+.btn-outline-sm { border: 1px solid rgba(255,255,255,0.3); color: #fff; background: transparent; padding: 8px 18px; border-radius: 6px; font-size: 13px; cursor: pointer; font-family: 'Noto Sans JP', sans-serif; }
+.btn-primary-sm { background: var(--ub-blue); color: #fff; border: none; padding: 8px 18px; border-radius: 6px; font-size: 13px; cursor: pointer; font-family: 'Noto Sans JP', sans-serif; font-weight: 500; }
+
+/* HERO */
+.hero { min-height: 100vh; padding-top: 64px; background: linear-gradient(135deg, var(--ub-navy) 0%, #0F2B4A 50%, #0a1a2e 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 8rem 2rem 4rem; position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 40% at 50% 60%, rgba(26,86,219,0.15) 0%, transparent 70%); }
+.hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.3); color: var(--ub-cyan); padding: 6px 16px; border-radius: 100px; font-size: 12px; font-weight: 500; margin-bottom: 2rem; letter-spacing: 0.5px; position: relative; }
+.hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(36px,6vw,72px); font-weight: 800; color: #fff; line-height: 1.1; max-width: 800px; margin-bottom: 1.5rem; position: relative; }
+.hero h1 em { color: var(--ub-cyan); font-style: normal; }
+.hero-desc { color: rgba(255,255,255,0.65); font-size: 16px; line-height: 1.8; max-width: 560px; margin-bottom: 2.5rem; position: relative; }
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-bottom: 4rem; position: relative; }
+.btn-hero { padding: 14px 32px; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; border: none; font-family: 'Noto Sans JP', sans-serif; }
+.btn-hero-primary { background: var(--ub-blue); color: #fff; box-shadow: 0 4px 20px rgba(26,86,219,0.4); }
+.btn-hero-secondary { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.3); }
+.hero-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: rgba(255,255,255,0.1); border-radius: 12px; overflow: hidden; max-width: 600px; width: 100%; position: relative; }
+.stat-item { background: rgba(13,27,42,0.6); padding: 1.5rem; text-align: center; }
+.stat-num { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; color: var(--ub-cyan); display: block; }
+.stat-lbl { color: rgba(255,255,255,0.5); font-size: 12px; margin-top: 4px; }
+
+/* COMMON */
+.section-tag { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--ub-blue); margin-bottom: 0.75rem; }
+.section-title { font-family: 'Syne', sans-serif; font-size: clamp(26px,4vw,40px); font-weight: 700; color: var(--ub-navy); margin-bottom: 1rem; line-height: 1.2; }
+.section-desc { color: var(--ub-muted); font-size: 15px; line-height: 1.8; max-width: 560px; }
+
+/* FEATURES */
+.features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px,1fr)); gap: 1.5rem; margin-top: 3rem; }
+.feat-card { background: var(--ub-surface); border: 1px solid var(--ub-border); border-radius: 12px; padding: 1.75rem; transition: all 0.2s; position: relative; overflow: hidden; }
+.feat-card::before { content: ''; position: absolute; top:0; left:0; right:0; height: 3px; background: linear-gradient(90deg, var(--ub-blue), var(--ub-cyan)); transform: scaleX(0); transition: transform 0.3s; transform-origin: left; }
+.feat-card:hover::before { transform: scaleX(1); }
+.feat-card:hover { border-color: rgba(26,86,219,0.3); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(26,86,219,0.1); }
+.feat-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; font-size: 20px; }
+.feat-icon.blue { background: rgba(26,86,219,0.1); }
+.feat-icon.cyan { background: rgba(6,182,212,0.1); }
+.feat-icon.gold { background: rgba(245,158,11,0.1); }
+.feat-icon.green { background: rgba(16,185,129,0.1); }
+.feat-card h3 { font-size: 16px; font-weight: 700; color: var(--ub-navy); margin-bottom: 0.5rem; }
+.feat-card p { font-size: 13px; color: var(--ub-muted); line-height: 1.7; }
+.feat-badge { display: inline-block; margin-top: 0.75rem; background: rgba(26,86,219,0.08); color: var(--ub-blue); font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 500; }
+
+/* FLOW */
+.flow-wrapper { background: var(--ub-navy); border-radius: 16px; padding: 3rem 2rem; margin-top: 3rem; }
+.flow-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; color: #fff; text-align: center; margin-bottom: 2.5rem; }
+.flow-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 1rem; }
+.flow-step { text-align: center; }
+.flow-num { width: 44px; height: 44px; border-radius: 50%; background: var(--ub-blue); color: #fff; font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem; }
+.flow-step-title { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 0.25rem; }
+.flow-step-desc { font-size: 11px; color: rgba(255,255,255,0.5); line-height: 1.6; }
+
+/* PRICING */
+.pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 1.5rem; margin-top: 3rem; }
+.price-card { background: var(--ub-surface); border: 1px solid var(--ub-border); border-radius: 12px; padding: 2rem; }
+.price-card.featured { border: 2px solid var(--ub-blue); position: relative; }
+.price-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--ub-blue); color: #fff; font-size: 11px; padding: 4px 16px; border-radius: 100px; white-space: nowrap; }
+.price-plan { font-size: 12px; font-weight: 700; letter-spacing: 1px; color: var(--ub-blue); margin-bottom: 0.5rem; }
+.price-amount { font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 800; color: var(--ub-navy); }
+.price-unit { font-size: 13px; color: var(--ub-muted); margin-left: 4px; }
+.price-sub { font-size: 12px; color: var(--ub-muted); margin-top: 4px; margin-bottom: 1.5rem; }
+.price-features { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+.price-features li { font-size: 13px; color: var(--ub-muted); display: flex; align-items: center; gap: 8px; }
+.price-features li::before { content: '✓'; color: var(--ub-success); font-weight: 700; font-size: 14px; }
+.btn-price { width: 100%; margin-top: 1.5rem; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'Noto Sans JP', sans-serif; }
+.btn-price-outline { background: transparent; border: 1px solid var(--ub-border); color: var(--ub-navy); }
+.btn-price-fill { background: var(--ub-blue); border: none; color: #fff; }
+
+/* CTA & FOOTER */
+.cta-banner { background: linear-gradient(135deg, var(--ub-navy), #0F2B4A); border-radius: 16px; padding: 4rem 2rem; text-align: center; margin: 0 2rem 5rem; border: 1px solid rgba(6,182,212,0.2); }
+.cta-banner h2 { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; color: #fff; margin-bottom: 1rem; }
+.cta-banner p { color: rgba(255,255,255,0.6); font-size: 15px; margin-bottom: 2rem; }
+.footer { background: var(--ub-navy); color: rgba(255,255,255,0.5); padding: 2rem; text-align: center; font-size: 12px; }
+
+/* MODAL */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; align-items: center; justify-content: center; }
+.modal-overlay.show { display: flex; }
+.modal-box { background: var(--ub-surface); border-radius: 16px; padding: 2.5rem; width: 90%; max-width: 400px; position: relative; }
+.modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; cursor: pointer; font-size: 20px; color: var(--ub-muted); }
+.modal-logo { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--ub-navy); margin-bottom: 0.25rem; }
+.modal-logo span { color: var(--ub-blue); }
+.modal-sub { font-size: 13px; color: var(--ub-muted); margin-bottom: 2rem; }
+.form-group { margin-bottom: 1rem; }
+.form-group label { display: block; font-size: 12px; font-weight: 500; color: var(--ub-navy); margin-bottom: 6px; }
+.form-input { width: 100%; padding: 10px 14px; border: 1px solid var(--ub-border); border-radius: 8px; font-size: 14px; font-family: 'Noto Sans JP', sans-serif; outline: none; }
+.form-input:focus { border-color: var(--ub-blue); }
+.btn-login { width: 100%; padding: 12px; background: var(--ub-blue); color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; font-family: 'Noto Sans JP', sans-serif; margin-top: 0.5rem; }
+.login-hint { text-align: center; font-size: 12px; color: var(--ub-muted); margin-top: 1rem; }
+.login-hint a { color: var(--ub-blue); cursor: pointer; }
+
+/* STATE SWITCHES */
+.admin-panel { display: none; }
+.admin-panel.show { display: block; }
+.lp-content.hide { display: none; }
+
+/* ADMIN */
+.admin-layout { display: flex; min-height: 100vh; }
+.admin-sidebar { width: 240px; background: var(--ub-navy); display: flex; flex-direction: column; position: fixed; top:0; left:0; bottom:0; z-index: 50; }
+.sidebar-logo { padding: 1.5rem 1.5rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.sidebar-nav { flex: 1; padding: 1rem 0; overflow-y: auto; }
+.sidebar-section { padding: 1rem 1.5rem 0.25rem; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; color: rgba(255,255,255,0.3); text-transform: uppercase; }
+.sidebar-item { display: flex; align-items: center; gap: 10px; padding: 10px 1.5rem; font-size: 13px; color: rgba(255,255,255,0.6); cursor: pointer; border-left: 3px solid transparent; transition: all 0.15s; }
+.sidebar-item:hover { color: #fff; background: rgba(255,255,255,0.05); }
+.sidebar-item.active { color: #fff; background: rgba(26,86,219,0.2); border-left-color: var(--ub-blue); }
+.sidebar-item .si-icon { font-size: 15px; width: 18px; text-align: center; }
+.sidebar-badge { margin-left: auto; background: var(--ub-blue); color: #fff; font-size: 10px; padding: 2px 7px; border-radius: 100px; }
+.sidebar-user { padding: 1rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); }
+.user-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--ub-blue); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; }
+.user-name { font-size: 12px; font-weight: 500; color: #fff; }
+.user-role { font-size: 10px; color: rgba(255,255,255,0.4); }
+.btn-back-lp { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.7); padding: 8px 16px; border-radius: 6px; font-size: 12px; cursor: pointer; font-family: 'Noto Sans JP', sans-serif; width: 100%; margin-top: 10px; }
+
+.admin-main { margin-left: 240px; flex: 1; background: #F5F7FA; min-height: 100vh; }
+.admin-header { background: var(--ub-surface); border-bottom: 1px solid var(--ub-border); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 40; }
+.admin-header h1 { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: var(--ub-navy); }
+.admin-header-actions { display: flex; align-items: center; gap: 12px; }
+.header-btn { background: transparent; border: 1px solid var(--ub-border); color: var(--ub-muted); padding: 8px 16px; border-radius: 8px; font-size: 13px; cursor: pointer; font-family: 'Noto Sans JP', sans-serif; display: flex; align-items: center; gap: 6px; }
+.header-btn-primary { background: var(--ub-blue); border-color: var(--ub-blue); color: #fff; }
+.admin-body { padding: 2rem; }
+
+/* KPI */
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 1rem; margin-bottom: 2rem; }
+.kpi-card { background: var(--ub-surface); border: 1px solid var(--ub-border); border-radius: 10px; padding: 1.25rem 1.5rem; }
+.kpi-label { font-size: 12px; color: var(--ub-muted); margin-bottom: 0.25rem; }
+.kpi-value { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: var(--ub-navy); }
+.kpi-change { font-size: 12px; margin-top: 4px; }
+.kpi-change.up { color: var(--ub-success); }
+
+.admin-grid-3 { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+.admin-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+.card { background: var(--ub-surface); border: 1px solid var(--ub-border); border-radius: 10px; padding: 1.5rem; }
+.card-title { font-size: 14px; font-weight: 700; color: var(--ub-navy); margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; }
+.card-title-action { font-size: 12px; font-weight: 400; color: var(--ub-blue); cursor: pointer; }
+
+/* TABLE */
+.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.data-table th { text-align: left; padding: 8px 12px; font-size: 11px; font-weight: 700; color: var(--ub-muted); border-bottom: 1px solid var(--ub-border); text-transform: uppercase; letter-spacing: 0.5px; }
+.data-table td { padding: 12px; border-bottom: 1px solid rgba(26,86,219,0.06); color: var(--ub-navy); vertical-align: middle; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: rgba(26,86,219,0.02); }
+
+/* BADGES */
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 11px; font-weight: 500; }
+.badge-success { background: rgba(16,185,129,0.1); color: #065F46; }
+.badge-warning { background: rgba(245,158,11,0.1); color: #92400E; }
+.badge-info { background: rgba(26,86,219,0.1); color: #1A56DB; }
+.badge-neutral { background: rgba(100,116,139,0.1); color: #475569; }
+
+/* BAR */
+.workflow-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 0.75rem; }
+.workflow-label { font-size: 12px; color: var(--ub-muted); width: 80px; flex-shrink: 0; }
+.workflow-track { flex: 1; background: var(--ub-light); border-radius: 4px; height: 8px; overflow: hidden; }
+.workflow-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--ub-blue), var(--ub-cyan)); }
+.workflow-count { font-size: 12px; font-weight: 700; color: var(--ub-navy); width: 32px; text-align: right; }
+
+/* AI */
+.ai-panel { background: linear-gradient(135deg, #0D1B2A, #0F2B4A); border-radius: 12px; padding: 1.5rem; color: #fff; }
+.ai-panel-title { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 1rem; }
+.ai-input-area { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 1rem; font-size: 13px; color: rgba(255,255,255,0.8); min-height: 80px; width: 100%; resize: none; font-family: 'Noto Sans JP', sans-serif; }
+.ai-actions { display: flex; gap: 8px; margin-top: 0.75rem; flex-wrap: wrap; }
+.ai-btn { background: rgba(26,86,219,0.4); border: 1px solid rgba(26,86,219,0.5); color: #fff; padding: 6px 14px; border-radius: 6px; font-size: 12px; cursor: pointer; font-family: 'Noto Sans JP', sans-serif; }
+.ai-btn:hover { background: rgba(26,86,219,0.6); }
+.ai-result { margin-top: 1rem; background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.2); border-radius: 8px; padding: 0.75rem; font-size: 12px; color: rgba(255,255,255,0.8); line-height: 1.8; display: none; white-space: pre-wrap; }
+
+/* SIGN */
+.sig-card { background: linear-gradient(135deg, #EFF6FF, #DBEAFE); border: 1px solid rgba(26,86,219,0.2); border-radius: 12px; padding: 1.5rem; }
+.sig-title { font-size: 14px; font-weight: 700; color: var(--ub-navy); margin-bottom: 1rem; }
+.sig-step { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(26,86,219,0.1); }
+.sig-step:last-child { border-bottom: none; }
+.sig-step-num { width: 28px; height: 28px; border-radius: 50%; background: var(--ub-blue); color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.sig-step-info { flex: 1; }
+.sig-step-name { font-size: 13px; font-weight: 500; color: var(--ub-navy); }
+.sig-step-sub { font-size: 11px; color: var(--ub-muted); }
+
+/* TABS */
+.tab-bar { display: flex; border-bottom: 1px solid var(--ub-border); margin-bottom: 1.5rem; }
+.tab-btn { padding: 10px 20px; font-size: 13px; font-family: 'Noto Sans JP', sans-serif; background: transparent; border: none; cursor: pointer; color: var(--ub-muted); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.tab-btn.active { color: var(--ub-blue); border-bottom-color: var(--ub-blue); font-weight: 500; }
+
+/* ══ 会計モジュール ══════════════════════════════════════ */
+.acc-banner { background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 55%, #38bdf8 100%); border-radius: 12px; padding: 1.25rem 1.5rem; display: flex; align-items: center; gap: 14px; margin-bottom: 1.25rem; position: relative; overflow: hidden; }
+.acc-banner::after { content:''; position:absolute; right:-20px; top:-20px; width:120px; height:120px; background:rgba(255,255,255,0.07); border-radius:50%; pointer-events:none; }
+.acc-banner-icon { width:44px; height:44px; background:rgba(255,255,255,0.2); border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.acc-banner-icon svg { width:24px; height:24px; stroke:#fff; fill:none; stroke-width:2; }
+.acc-banner-title { font-family:'Syne',sans-serif; font-size:20px; font-weight:800; color:#fff; }
+.acc-banner-sub { font-size:12px; color:rgba(255,255,255,0.75); margin-top:2px; }
+.acc-banner-right { margin-left:auto; display:flex; gap:8px; flex-wrap:wrap; }
+.period-pill { background:rgba(255,255,255,0.2); color:#fff; border-radius:6px; padding:4px 12px; font-size:12px; font-weight:500; }
+
+.acc-kpi-grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; margin-bottom:1.25rem; }
+.acc-kpi { background:var(--ub-surface); border:1px solid var(--ub-border); border-radius:10px; padding:1rem 1.25rem; }
+.acc-kpi-label { font-size:11px; color:var(--ub-muted); margin-bottom:6px; font-weight:500; text-transform:uppercase; letter-spacing:.4px; }
+.acc-kpi-val { font-family:'Syne',sans-serif; font-size:20px; font-weight:800; color:var(--ub-navy); }
+.acc-kpi-val.danger { color:var(--ub-danger); }
+
+.acc-tabs { display:flex; border-bottom:2px solid var(--ub-border); margin-bottom:1.25rem; overflow-x:auto; gap:0; }
+.acc-tab { padding:9px 18px; font-size:13px; font-family:'Noto Sans JP',sans-serif; background:transparent; border:none; cursor:pointer; color:var(--ub-muted); border-bottom:2px solid transparent; margin-bottom:-2px; white-space:nowrap; font-weight:500; transition:color .15s; flex-shrink:0; }
+.acc-tab:hover { color:var(--ub-navy); }
+.acc-tab.active { color:var(--ub-blue); border-bottom-color:var(--ub-blue); }
+.acc-panel { display:none; }
+.acc-panel.active { display:block; }
+
+.acc-toolbar { display:flex; gap:8px; margin-bottom:1rem; align-items:center; flex-wrap:wrap; }
+.acc-toolbar select, .acc-toolbar input[type="text"], .acc-toolbar input[type="date"] { padding:7px 10px; border:1px solid var(--ub-border); border-radius:8px; font-size:13px; font-family:'Noto Sans JP',sans-serif; background:var(--ub-surface); color:var(--ub-navy); outline:none; }
+.acc-toolbar input[type="text"] { flex:1; max-width:200px; }
+.acc-toolbar select:focus, .acc-toolbar input:focus { border-color:var(--ub-blue); }
+.acc-ml-auto { margin-left:auto; }
+
+.acc-charts-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
+.acc-stats-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; }
+.acc-stat { background:var(--ub-surface); border:1px solid var(--ub-border); border-radius:10px; padding:1rem 1.25rem; }
+.acc-stat-label { font-size:11px; color:var(--ub-muted); font-weight:500; text-transform:uppercase; letter-spacing:.4px; margin-bottom:6px; }
+.acc-stat-val { font-family:'Syne',sans-serif; font-size:26px; font-weight:800; color:var(--ub-navy); }
+.acc-stat-sub { font-size:11px; color:var(--ub-muted); margin-top:4px; }
+
+.acc-table { width:100%; border-collapse:collapse; font-size:13px; }
+.acc-table th { text-align:left; padding:9px 12px; font-size:11px; font-weight:700; color:var(--ub-muted); border-bottom:1px solid var(--ub-border); text-transform:uppercase; letter-spacing:.4px; background:rgba(240,244,255,0.5); }
+.acc-table td { padding:10px 12px; border-bottom:1px solid rgba(26,86,219,0.06); color:var(--ub-navy); vertical-align:middle; }
+.acc-table tr:last-child td { border-bottom:none; }
+.acc-table tr:hover td { background:rgba(26,86,219,0.02); }
+.acc-table tfoot td { font-weight:700; background:rgba(240,244,255,0.7); border-top:2px solid var(--ub-border); border-bottom:none; }
+.acc-table .mono { font-family:'JetBrains Mono','Fira Code',monospace; font-size:12px; }
+.acc-table .tr { text-align:right; }
+.acc-table .tc { text-align:center; }
+.acc-debit { color:#2563eb; font-weight:500; }
+.acc-credit { color:#16a34a; font-weight:500; }
+.acc-muted { color:var(--ub-muted); font-size:12px; }
+
+.fin-section-head { font-size:13px; font-weight:700; padding:7px 12px; background:rgba(26,86,219,0.05); border-radius:8px; border-left:3px solid var(--ub-blue); margin-bottom:8px; color:var(--ub-navy); }
+.fin-row { display:flex; justify-content:space-between; padding:5px 12px; font-size:13px; border-bottom:1px dashed rgba(26,86,219,0.08); }
+.fin-row:last-child { border-bottom:none; }
+.fin-subtotal { font-weight:700; background:rgba(26,86,219,0.04); border-radius:6px; border:1px solid var(--ub-border); padding:6px 12px; margin-top:4px; }
+.fin-total { display:flex; justify-content:space-between; padding:14px 16px; background:linear-gradient(135deg,#eff6ff,#dbeafe); border:2px solid #bfdbfe; border-radius:10px; font-size:16px; font-weight:700; color:#1e40af; margin-top:1rem; }
+.fin-profit { background:linear-gradient(135deg,#f0fdf4,#dcfce7); border-color:#bbf7d0; color:#15803d; }
+.fin-loss   { background:linear-gradient(135deg,#fef2f2,#fee2e2); border-color:#fecaca; color:#b91c1c; }
+.bs-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; }
+
+.acc-badge { display:inline-flex; align-items:center; padding:2px 9px; border-radius:100px; font-size:11px; font-weight:600; }
+.acc-badge-success { background:rgba(16,185,129,0.1); color:#065F46; }
+.acc-badge-warn    { background:rgba(245,158,11,0.1); color:#92400E; }
+.acc-badge-info    { background:rgba(26,86,219,0.1); color:#1A56DB; }
+.acc-badge-danger  { background:rgba(239,68,68,0.1); color:#991B1B; }
+
+/* 会計モーダル */
+.acc-modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:300; align-items:center; justify-content:center; }
+.acc-modal-bg.open { display:flex; }
+.acc-modal { background:var(--ub-surface); border-radius:16px; padding:2rem; width:500px; max-width:95vw; max-height:85vh; overflow-y:auto; box-shadow:0 24px 60px rgba(0,0,0,0.2); }
+.acc-modal h3 { font-family:'Syne',sans-serif; font-size:18px; font-weight:800; color:var(--ub-navy); margin-bottom:1.5rem; }
+.acc-form-row { margin-bottom:14px; }
+.acc-form-row label { display:block; font-size:12px; font-weight:600; color:var(--ub-muted); margin-bottom:5px; text-transform:uppercase; letter-spacing:.3px; }
+.acc-form-row input, .acc-form-row select, .acc-form-row textarea { width:100%; padding:9px 12px; border:1px solid var(--ub-border); border-radius:8px; font-size:13px; font-family:'Noto Sans JP',sans-serif; background:var(--ub-surface); color:var(--ub-navy); outline:none; transition:border-color .15s; }
+.acc-form-row input:focus, .acc-form-row select:focus { border-color:var(--ub-blue); box-shadow:0 0 0 3px rgba(26,86,219,0.1); }
+.acc-two-col { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.acc-modal-footer { display:flex; gap:8px; justify-content:flex-end; margin-top:1.5rem; padding-top:1rem; border-top:1px solid var(--ub-border); }
+.btn-acc-ghost { background:transparent; border:1px solid var(--ub-border); color:var(--ub-muted); padding:8px 18px; border-radius:8px; font-size:13px; cursor:pointer; font-family:'Noto Sans JP',sans-serif; }
+.btn-acc-primary { background:var(--ub-blue); border:none; color:#fff; padding:8px 18px; border-radius:8px; font-size:13px; cursor:pointer; font-family:'Noto Sans JP',sans-serif; font-weight:600; }
+.btn-acc-primary:hover { background:#1347c5; }
+.btn-acc-danger { background:none; border:none; cursor:pointer; color:var(--ub-danger); font-size:12px; font-family:'Noto Sans JP',sans-serif; padding:2px 6px; }
+.btn-acc-danger:hover { text-decoration:underline; }
+.btn-acc-export { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:8px; font-size:13px; cursor:pointer; background:transparent; border:1px solid var(--ub-border); color:var(--ub-muted); font-family:'Noto Sans JP',sans-serif; }
+.btn-acc-export:hover { background:rgba(26,86,219,0.04); color:var(--ub-navy); }
+.acc-empty { text-align:center; padding:3rem; color:var(--ub-muted); font-size:13px; }
+.acc-legend { display:flex; gap:16px; margin-top:12px; font-size:12px; color:var(--ub-muted); }
+.acc-legend span { display:flex; align-items:center; gap:5px; }
+.acc-legend-dot { width:10px; height:10px; border-radius:2px; display:inline-block; }
+code { font-family:'JetBrains Mono','Fira Code',monospace; font-size:11px; background:rgba(26,86,219,0.06); padding:1px 6px; border-radius:4px; }
+</style>
+</head>
+<body>
+
+<!-- ===== LP ===== -->
+<div id="lp-content" class="lp-content">
+  <nav class="nav">
+    <div class="nav-logo">UMA <span>BizFlow</span></div>
+    <ul class="nav-links">
+      <li><a href="#">機能</a></li><li><a href="#">料金</a></li>
+      <li><a href="#">導入事例</a></li><li><a href="#">補助金</a></li>
+    </ul>
+    <div class="nav-cta">
+      <button class="btn-outline-sm" onclick="showLogin()">ログイン</button>
+      <button class="btn-primary-sm" onclick="showLogin()">無料デモ申請</button>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-badge">🏆 IT導入補助金2026 対象ツール</div>
+    <h1>業務フローを<em>AIで</em><br>スマートに自動化</h1>
+    <p class="hero-desc">受発注・請求・電子署名・ワークフロー承認を一元管理。中小企業の業務プロセス全体をデジタル化し、生産性を劇的に向上させます。</p>
+    <div class="hero-actions">
+      <button class="btn-hero btn-hero-primary" onclick="showLogin()">管理画面を見る</button>
+      <button class="btn-hero btn-hero-secondary">資料ダウンロード</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item"><span class="stat-num">87%</span><span class="stat-lbl">業務時間削減率</span></div>
+      <div class="stat-item"><span class="stat-num">2,400+</span><span class="stat-lbl">導入企業数</span></div>
+      <div class="stat-item"><span class="stat-num">最大450万</span><span class="stat-lbl">補助金対応額</span></div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <div style="background:#fff;padding:5rem 2rem;">
+    <div style="max-width:1100px;margin:0 auto;">
+      <div class="section-tag">CORE FEATURES</div>
+      <h2 class="section-title">業務プロセスを丸ごとカバーする機能群</h2>
+      <p class="section-desc">IT導入補助金の審査要件を満たす汎用プロセス・業務プロセスに完全対応した機能を提供します。</p>
+      <div class="features-grid">
+        <div class="feat-card"><div class="feat-icon blue">📋</div><h3>電子ワークフロー承認</h3><p>稟議・申請・承認フローをペーパーレスで完全デジタル化。条件分岐・代理承認・期限アラートに対応。</p><span class="feat-badge">汎P-01 汎P-02対応</span></div>
+        <div class="feat-card"><div class="feat-icon cyan">✍️</div><h3>電子署名・電子契約</h3><p>電子署名法・電子帳簿保存法に準拠。取引先への外部送付・タイムスタンプ付与に対応。</p><span class="feat-badge">汎P-05対応</span></div>
+        <div class="feat-card"><div class="feat-icon gold">🤖</div><h3>生成AI業務アシスト</h3><p>議事録自動生成・文書要約・回答案作成など、業務に特化したAI支援を提供。</p><span class="feat-badge">生成AI機能搭載</span></div>
+        <div class="feat-card"><div class="feat-icon green">📊</div><h3>受発注・在庫管理</h3><p>受注から発注・在庫確認・納品確認まで一元管理。インボイス対応請求書自動発行付き。</p><span class="feat-badge">汎P-03 インボイス対応</span></div>
+        <div class="feat-card"><div class="feat-icon blue">💰</div><h3>会計・経費精算連携</h3><p>会計ソフトとのAPI連携により、経費申請から仕訳まで自動化。月次決算工数を大幅削減。</p><span class="feat-badge">汎P-04対応</span></div>
+        <div class="feat-card"><div class="feat-icon cyan">🔒</div><h3>セキュリティ・アクセス管理</h3><p>ロールベースのアクセス制御・多要素認証・操作ログ記録により企業情報を安全に保護。</p><span class="feat-badge">ISO27001準拠</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOW -->
+  <div style="background:var(--ub-light);padding:5rem 2rem;">
+    <div style="max-width:1100px;margin:0 auto;">
+      <div class="section-tag">WORKFLOW</div>
+      <h2 class="section-title">申請から承認まで全プロセスを可視化</h2>
+      <div class="flow-wrapper">
+        <div class="flow-title">UMA BizFlow — 標準ワークフロー</div>
+        <div class="flow-steps">
+          <div class="flow-step"><div class="flow-num">1</div><div class="flow-step-title">申請・起案</div><div class="flow-step-desc">担当者がフォームから申請。AIが内容を自動チェック</div></div>
+          <div class="flow-step"><div class="flow-num">2</div><div class="flow-step-title">承認ルーティング</div><div class="flow-step-desc">条件に応じて自動的に承認者へ回付</div></div>
+          <div class="flow-step"><div class="flow-num">3</div><div class="flow-step-title">電子署名</div><div class="flow-step-desc">法的効力のある電子署名を付与・送付</div></div>
+          <div class="flow-step"><div class="flow-num">4</div><div class="flow-step-title">記録・保存</div><div class="flow-step-desc">電子帳簿保存法に準拠した安全な保存</div></div>
+          <div class="flow-step"><div class="flow-num">5</div><div class="flow-step-title">分析・改善</div><div class="flow-step-desc">AIが処理状況を分析しボトルネックを特定</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRICING -->
+  <div style="background:#fff;padding:5rem 2rem;">
+    <div style="max-width:1100px;margin:0 auto;">
+      <div class="section-tag">PRICING</div>
+      <h2 class="section-title">シンプルな料金体系</h2>
+      <p class="section-desc">IT導入補助金を活用することで、最大2/3の費用が補助されます。</p>
+      <div class="pricing-grid">
+        <div class="price-card">
+          <div class="price-plan">STARTER</div>
+          <div><span class="price-amount">¥48,000</span><span class="price-unit">/年〜</span></div>
+          <div class="price-sub">補助後：¥16,000〜</div>
+          <ul class="price-features"><li>ワークフロー承認（基本）</li><li>電子署名（月50件）</li><li>受発注管理</li><li>メールサポート</li></ul>
+          <button class="btn-price btn-price-outline">詳細を見る</button>
+        </div>
+        <div class="price-card featured">
+          <div class="price-badge">IT導入補助金 最適プラン</div>
+          <div class="price-plan">STANDARD</div>
+          <div><span class="price-amount">¥168,000</span><span class="price-unit">/年〜</span></div>
+          <div class="price-sub">補助後：¥56,000〜（2/3補助適用時）</div>
+          <ul class="price-features"><li>全ワークフロー機能</li><li>電子署名（無制限）</li><li>生成AIアシスト機能</li><li>会計ソフト連携</li><li>インボイス対応請求書</li><li>優先サポート</li></ul>
+          <button class="btn-price btn-price-fill" onclick="showLogin()">管理画面を体験</button>
+        </div>
+        <div class="price-card">
+          <div class="price-plan">ENTERPRISE</div>
+          <div><span class="price-amount">要見積</span></div>
+          <div class="price-sub">大規模導入・カスタマイズ対応</div>
+          <ul class="price-features"><li>Standardの全機能</li><li>カスタムAPI連携</li><li>専任サポート担当</li><li>オンプレミス対応可</li></ul>
+          <button class="btn-price btn-price-outline">お問い合わせ</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-banner">
+    <h2>IT導入補助金で導入コストを最大2/3削減</h2>
+    <p>補助金申請サポートから導入・運用まで、専任スタッフが伴走します</p>
+    <button class="btn-hero btn-hero-primary" onclick="showLogin()">管理画面デモを見る →</button>
+  </div>
+  <footer class="footer"><p>© 2026 UMA BizFlow. All rights reserved. | IT導入補助金2026 登録対象ツール</p></footer>
+</div>
+
+<!-- ===== LOGIN MODAL ===== -->
+<div id="login-modal" class="modal-overlay">
+  <div class="modal-box">
+    <button class="modal-close" onclick="hideLogin()">×</button>
+    <div class="modal-logo">UMA <span>BizFlow</span></div>
+    <div class="modal-sub">管理者・従業員ポータルへログイン</div>
+    <div class="form-group"><label>メールアドレス</label><input class="form-input" type="email" value="admin@uma-biz.co.jp"></div>
+    <div class="form-group"><label>パスワード</label><input class="form-input" type="password" value="demo1234"></div>
+    <button class="btn-login" onclick="doLogin()">ログイン</button>
+    <div class="login-hint">アカウントをお持ちでない方は <a onclick="hideLogin()">お問い合わせ</a></div>
+  </div>
+</div>
+
+<!-- ===== ADMIN PANEL ===== -->
+<div id="admin-panel" class="admin-panel">
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <div class="sidebar-logo">
+        <div class="nav-logo">UMA <span>BizFlow</span></div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:4px;">管理者ポータル</div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="sidebar-section">メイン</div>
+        <div class="sidebar-item active" onclick="setTab(this,'dash')"><span class="si-icon">📊</span> ダッシュボード</div>
+        <div class="sidebar-item" onclick="setTab(this,'workflow')"><span class="si-icon">🔄</span> ワークフロー <span class="sidebar-badge">8</span></div>
+        <div class="sidebar-item" onclick="setTab(this,'sign')"><span class="si-icon">✍️</span> 電子署名</div>
+        <div class="sidebar-section">業務管理</div>
+        <div class="sidebar-item" onclick="setTab(this,'order')"><span class="si-icon">📦</span> 受発注管理</div>
+        <div class="sidebar-item" onclick="setTab(this,'invoice')"><span class="si-icon">💴</span> インボイス請求書</div>
+        <div class="sidebar-item" onclick="setTab(this,'accounting')"><span class="si-icon">📒</span> 会計・財務 <span class="sidebar-badge" style="background:#0ea5e9">NEW</span></div>
+        <div class="sidebar-item" onclick="setTab(this,'ai')"><span class="si-icon">🤖</span> AI アシスト</div>
+        <div class="sidebar-section">管理</div>
+        <div class="sidebar-item" onclick="setTab(this,'users')"><span class="si-icon">👥</span> ユーザー管理</div>
+        <div class="sidebar-item"><span class="si-icon">⚙️</span> 設定</div>
+      </nav>
+      <div class="sidebar-user">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="user-avatar">山田</div>
+          <div><div class="user-name">山田 太郎</div><div class="user-role">システム管理者</div></div>
+        </div>
+        <button class="btn-back-lp" onclick="backToLP()">← LPに戻る</button>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+      <div class="admin-header">
+        <h1 id="admin-title">ダッシュボード</h1>
+        <div class="admin-header-actions">
+          <button class="header-btn">🔔 通知 <span style="background:var(--ub-danger);color:#fff;font-size:10px;padding:1px 6px;border-radius:100px;margin-left:4px;">3</span></button>
+          <button class="header-btn header-btn-primary" onclick="setTab(document.querySelectorAll('.sidebar-item')[5],'ai')">🤖 AIに質問</button>
+        </div>
+      </div>
+
+      <div class="admin-body">
+
+        <!-- DASH -->
+        <div id="tab-dash">
+          <div class="kpi-grid">
+            <div class="kpi-card"><div class="kpi-label">今月の処理件数</div><div class="kpi-value">248<span style="font-size:16px;color:var(--ub-muted)">件</span></div><div class="kpi-change up">↑ 前月比 +23%</div></div>
+            <div class="kpi-card"><div class="kpi-label">電子署名完了</div><div class="kpi-value">87<span style="font-size:16px;color:var(--ub-muted)">件</span></div><div class="kpi-change up">↑ 前月比 +12%</div></div>
+            <div class="kpi-card"><div class="kpi-label">承認待ち</div><div class="kpi-value" style="color:var(--ub-warning);">8<span style="font-size:16px;color:var(--ub-muted)">件</span></div><div class="kpi-change" style="color:var(--ub-muted)">要対応</div></div>
+            <div class="kpi-card"><div class="kpi-label">削減工数（今月）</div><div class="kpi-value">142<span style="font-size:16px;color:var(--ub-muted)">h</span></div><div class="kpi-change up">↑ 前月比 +18%</div></div>
+          </div>
+          <div class="admin-grid-3">
+            <div class="card">
+              <div class="card-title">最近のワークフロー <span class="card-title-action">すべて見る</span></div>
+              <table class="data-table">
+                <thead><tr><th>案件名</th><th>申請者</th><th>状態</th><th>更新日</th></tr></thead>
+                <tbody>
+                  <tr><td>Q1営業報告書承認</td><td>佐藤 花子</td><td><span class="badge badge-warning">承認待ち</span></td><td>04/10</td></tr>
+                  <tr><td>外注委託契約書</td><td>田中 一郎</td><td><span class="badge badge-success">完了</span></td><td>04/09</td></tr>
+                  <tr><td>新規取引先与信審査</td><td>鈴木 次郎</td><td><span class="badge badge-info">署名待ち</span></td><td>04/09</td></tr>
+                  <tr><td>備品購入稟議</td><td>高橋 明美</td><td><span class="badge badge-success">完了</span></td><td>04/08</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:1.5rem;">
+              <div class="card">
+                <div class="card-title">カテゴリ別処理量</div>
+                <div class="workflow-bar"><span class="workflow-label">稟議承認</span><div class="workflow-track"><div class="workflow-fill" style="width:78%"></div></div><span class="workflow-count">78件</span></div>
+                <div class="workflow-bar"><span class="workflow-label">電子契約</span><div class="workflow-track"><div class="workflow-fill" style="width:52%"></div></div><span class="workflow-count">52件</span></div>
+                <div class="workflow-bar"><span class="workflow-label">受発注</span><div class="workflow-track"><div class="workflow-fill" style="width:65%"></div></div><span class="workflow-count">65件</span></div>
+                <div class="workflow-bar"><span class="workflow-label">経費精算</span><div class="workflow-track"><div class="workflow-fill" style="width:43%"></div></div><span class="workflow-count">43件</span></div>
+              </div>
+              <div class="ai-panel">
+                <div class="ai-panel-title">🤖 AI クイックアシスト</div>
+                <div class="ai-actions">
+                  <button class="ai-btn" onclick="aiQuick('今月の処理状況を要約して')">今月まとめ</button>
+                  <button class="ai-btn" onclick="aiQuick('承認が遅れている案件を教えて')">遅延案件</button>
+                  <button class="ai-btn" onclick="aiQuick('改善提案をして')">改善提案</button>
+                </div>
+                <div class="ai-result" id="ai-result-dash"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WORKFLOW -->
+        <div id="tab-workflow" style="display:none">
+          <div class="tab-bar">
+            <button class="tab-btn active">すべて</button>
+            <button class="tab-btn">承認待ち (8)</button>
+            <button class="tab-btn">進行中</button>
+            <button class="tab-btn">完了</button>
+          </div>
+          <div class="card">
+            <div class="card-title">ワークフロー一覧 <button class="header-btn header-btn-primary" style="font-size:12px;padding:6px 14px;">+ 新規申請</button></div>
+            <table class="data-table">
+              <thead><tr><th>No.</th><th>案件名</th><th>種別</th><th>申請者</th><th>承認者</th><th>優先度</th><th>状態</th><th>期限</th></tr></thead>
+              <tbody>
+                <tr><td>WF-0042</td><td>Q1営業報告書承認</td><td><span class="badge badge-info">稟議</span></td><td>佐藤 花子</td><td>山田 部長</td><td style="color:var(--ub-danger);font-weight:700;">高</td><td><span class="badge badge-warning">承認待ち</span></td><td>04/12</td></tr>
+                <tr><td>WF-0041</td><td>外注委託契約書</td><td><span class="badge badge-neutral">契約</span></td><td>田中 一郎</td><td>—</td><td>中</td><td><span class="badge badge-success">完了</span></td><td>04/09</td></tr>
+                <tr><td>WF-0040</td><td>新規取引先与信審査</td><td><span class="badge badge-info">審査</span></td><td>鈴木 次郎</td><td>経理部長</td><td style="color:var(--ub-warning);font-weight:700;">中</td><td><span class="badge badge-info">署名待ち</span></td><td>04/15</td></tr>
+                <tr><td>WF-0039</td><td>備品購入稟議</td><td><span class="badge badge-info">稟議</span></td><td>高橋 明美</td><td>—</td><td>低</td><td><span class="badge badge-success">完了</span></td><td>04/08</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SIGN -->
+        <div id="tab-sign" style="display:none">
+          <div class="admin-grid-2">
+            <div class="sig-card">
+              <div class="sig-title">✍️ 電子署名ステータス — 外注委託契約書</div>
+              <div class="sig-step"><div class="sig-step-num">1</div><div class="sig-step-info"><div class="sig-step-name">起案者署名 — 田中 一郎</div><div class="sig-step-sub">2026/04/07 14:32 完了</div></div><span class="badge badge-success">✓ 完了</span></div>
+              <div class="sig-step"><div class="sig-step-num">2</div><div class="sig-step-info"><div class="sig-step-name">部長承認署名 — 山田 太郎</div><div class="sig-step-sub">2026/04/08 09:15 完了</div></div><span class="badge badge-success">✓ 完了</span></div>
+              <div class="sig-step"><div class="sig-step-num">3</div><div class="sig-step-info"><div class="sig-step-name">取引先署名 — 株式会社ABC商事</div><div class="sig-step-sub">署名待ち送付済み</div></div><span class="badge badge-warning">待機中</span></div>
+              <div class="sig-step"><div class="sig-step-num">4</div><div class="sig-step-info"><div class="sig-step-name">タイムスタンプ付与・保存</div><div class="sig-step-sub">署名完了後に自動実行</div></div><span class="badge badge-neutral">待機中</span></div>
+            </div>
+            <div class="card">
+              <div class="card-title">今月の電子署名サマリー</div>
+              <div class="kpi-grid" style="grid-template-columns:1fr 1fr;">
+                <div class="kpi-card"><div class="kpi-label">署名完了</div><div class="kpi-value">67件</div></div>
+                <div class="kpi-card"><div class="kpi-label">署名待ち</div><div class="kpi-value" style="color:var(--ub-warning);">20件</div></div>
+              </div>
+              <div style="margin-top:1rem;padding:1rem;background:rgba(16,185,129,0.05);border:1px solid rgba(16,185,129,0.2);border-radius:8px;">
+                <div style="font-size:12px;font-weight:700;color:#065F46;margin-bottom:4px;">✓ 電子帳簿保存法対応</div>
+                <div style="font-size:11px;color:var(--ub-muted);line-height:1.7;">全署名書類にQES準拠のタイムスタンプを自動付与。改ざん検知・長期保存（最大10年）に対応済み。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ORDER -->
+        <div id="tab-order" style="display:none">
+          <div class="card">
+            <div class="card-title">受発注管理 <button class="header-btn header-btn-primary" style="font-size:12px;padding:6px 14px;">+ 新規受注登録</button></div>
+            <table class="data-table">
+              <thead><tr><th>受注No.</th><th>取引先</th><th>品目</th><th>金額</th><th>インボイス</th><th>状態</th><th>納期</th></tr></thead>
+              <tbody>
+                <tr><td>RCV-2026-0248</td><td>株式会社ABC商事</td><td>業務システム保守</td><td>¥280,000</td><td><span class="badge badge-success">発行済</span></td><td><span class="badge badge-info">請求済</span></td><td>04/30</td></tr>
+                <tr><td>RCV-2026-0247</td><td>有限会社XYZ製作所</td><td>カスタム開発費</td><td>¥150,000</td><td><span class="badge badge-warning">未発行</span></td><td><span class="badge badge-warning">確認中</span></td><td>04/25</td></tr>
+                <tr><td>RCV-2026-0246</td><td>田中商店</td><td>コンサルティング</td><td>¥80,000</td><td><span class="badge badge-success">発行済</span></td><td><span class="badge badge-success">入金確認</span></td><td>04/20</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- INVOICE -->
+        <div id="tab-invoice" style="display:none">
+          <div class="admin-grid-2">
+            <div class="card">
+              <div class="card-title">インボイス対応請求書プレビュー</div>
+              <div style="border:1px solid var(--ub-border);border-radius:8px;padding:1.5rem;font-size:12px;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:1.5rem;">
+                  <div><div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--ub-navy);">請求書</div><div style="color:var(--ub-muted);margin-top:4px;">No. INV-2026-0087</div></div>
+                  <div style="text-align:right;"><div style="font-weight:700;">UMA BizFlow株式会社</div><div style="color:var(--ub-muted);font-size:11px;">登録番号: T1234567890123</div></div>
+                </div>
+                <table style="width:100%;border-collapse:collapse;font-size:11px;">
+                  <thead><tr style="background:var(--ub-light);"><th style="padding:8px;text-align:left;">品目</th><th style="padding:8px;text-align:right;">数量</th><th style="padding:8px;text-align:right;">単価</th><th style="padding:8px;text-align:right;">金額</th></tr></thead>
+                  <tbody>
+                    <tr><td style="padding:8px;">システム利用料（スタンダード）</td><td style="padding:8px;text-align:right;">1</td><td style="padding:8px;text-align:right;">¥14,000</td><td style="padding:8px;text-align:right;">¥14,000</td></tr>
+                    <tr><td style="padding:8px;">電子署名オプション</td><td style="padding:8px;text-align:right;">1</td><td style="padding:8px;text-align:right;">¥3,000</td><td style="padding:8px;text-align:right;">¥3,000</td></tr>
+                  </tbody>
+                </table>
+                <div style="text-align:right;margin-top:1rem;"><div>小計: <b>¥17,000</b></div><div>消費税（10%）: <b>¥1,700</b></div><div style="font-size:16px;font-weight:700;color:var(--ub-blue);margin-top:8px;">合計: ¥18,700</div></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">請求書サマリー</div>
+              <div class="kpi-grid" style="grid-template-columns:1fr 1fr;">
+                <div class="kpi-card"><div class="kpi-label">今月発行数</div><div class="kpi-value">42件</div></div>
+                <div class="kpi-card"><div class="kpi-label">未入金</div><div class="kpi-value" style="color:var(--ub-danger);">¥380万</div></div>
+              </div>
+              <div style="margin-top:1rem;padding:0.75rem;background:rgba(26,86,219,0.05);border:1px solid var(--ub-border);border-radius:8px;">
+                <div style="font-size:12px;font-weight:700;color:var(--ub-blue);">✓ 適格請求書発行事業者番号 自動付与</div>
+                <div style="font-size:11px;color:var(--ub-muted);margin-top:4px;">インボイス制度（適格請求書等保存方式）に完全対応</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI -->
+        <div id="tab-ai" style="display:none">
+          <div class="admin-grid-2">
+            <div class="ai-panel" style="padding:2rem;">
+              <div class="ai-panel-title" style="font-size:18px;">🤖 UMA BizFlow AI アシスト</div>
+              <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:1.5rem;">生成AIが業務を強力にサポートします</div>
+              <textarea id="ai-input-main" class="ai-input-area" placeholder="例：今月の承認遅延の原因を分析して、改善策を提案してください"></textarea>
+              <div class="ai-actions">
+                <button class="ai-btn" onclick="runAI('main')">送信</button>
+                <button class="ai-btn" onclick="document.getElementById('ai-input-main').value='今月のワークフロー処理状況を分析して'">処理分析</button>
+                <button class="ai-btn" onclick="document.getElementById('ai-input-main').value='稟議書の文面を添削して'">文書添削</button>
+                <button class="ai-btn" onclick="document.getElementById('ai-input-main').value='IT導入補助金の申請に必要な書類を整理して'">補助金ガイド</button>
+              </div>
+              <div class="ai-result" id="ai-result-main"></div>
+            </div>
+            <div class="card">
+              <div class="card-title">AI機能一覧</div>
+              <div style="display:flex;flex-direction:column;gap:0.75rem;">
+                <div style="padding:0.75rem;background:rgba(26,86,219,0.05);border-radius:8px;border-left:3px solid var(--ub-blue);"><div style="font-size:13px;font-weight:700;color:var(--ub-navy);">📝 文書自動生成</div><div style="font-size:12px;color:var(--ub-muted);margin-top:4px;">稟議書・議事録・報告書を自動生成</div></div>
+                <div style="padding:0.75rem;background:rgba(6,182,212,0.05);border-radius:8px;border-left:3px solid var(--ub-cyan);"><div style="font-size:13px;font-weight:700;color:var(--ub-navy);">📊 データ分析・レポート</div><div style="font-size:12px;color:var(--ub-muted);margin-top:4px;">業務データをAIが自動分析・可視化</div></div>
+                <div style="padding:0.75rem;background:rgba(16,185,129,0.05);border-radius:8px;border-left:3px solid var(--ub-success);"><div style="font-size:13px;font-weight:700;color:var(--ub-navy);">🔍 契約書レビュー</div><div style="font-size:12px;color:var(--ub-muted);margin-top:4px;">AIがリスク箇所を自動検知・指摘</div></div>
+                <div style="padding:0.75rem;background:rgba(245,158,11,0.05);border-radius:8px;border-left:3px solid var(--ub-gold);"><div style="font-size:13px;font-weight:700;color:var(--ub-navy);">💬 チャットサポート</div><div style="font-size:12px;color:var(--ub-muted);margin-top:4px;">24時間AIがシステム操作・業務をサポート</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- USERS -->
+        <div id="tab-users" style="display:none">
+          <div class="card">
+            <div class="card-title">ユーザー管理<button class="header-btn header-btn-primary" style="font-size:12px;padding:6px 14px;">+ ユーザー追加</button></div>
+            <table class="data-table">
+              <thead><tr><th>氏名</th><th>メール</th><th>ロール</th><th>部署</th><th>最終ログイン</th><th>状態</th></tr></thead>
+              <tbody>
+                <tr><td><div style="display:flex;align-items:center;gap:8px;"><div style="width:28px;height:28px;border-radius:50%;background:var(--ub-blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">山</div>山田 太郎</div></td><td>yamada@uma-biz.co.jp</td><td><span class="badge badge-info">管理者</span></td><td>情報システム部</td><td>今日</td><td><span class="badge badge-success">有効</span></td></tr>
+                <tr><td><div style="display:flex;align-items:center;gap:8px;"><div style="width:28px;height:28px;border-radius:50%;background:#E11D48;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">佐</div>佐藤 花子</div></td><td>sato@uma-biz.co.jp</td><td><span class="badge badge-neutral">一般</span></td><td>営業部</td><td>今日</td><td><span class="badge badge-success">有効</span></td></tr>
+                <tr><td><div style="display:flex;align-items:center;gap:8px;"><div style="width:28px;height:28px;border-radius:50%;background:#059669;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">田</div>田中 一郎</div></td><td>tanaka@uma-biz.co.jp</td><td><span class="badge badge-neutral">一般</span></td><td>購買部</td><td>昨日</td><td><span class="badge badge-success">有効</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════
+             会計・財務モジュール（複式簿記フル実装）
+        ════════════════════════════════════════════════════════ -->
+        <div id="tab-accounting" style="display:none">
+
+          <!-- バナー -->
+          <div class="acc-banner">
+            <div class="acc-banner-icon">
+              <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M6 8h4M6 11h6M6 14h3"/></svg>
+            </div>
+            <div>
+              <div class="acc-banner-title">会計・財務管理</div>
+              <div class="acc-banner-sub">本格的な複式簿記による財務管理 — 共P-04 対応</div>
+            </div>
+            <div class="acc-banner-right">
+              <span class="period-pill">会計期間</span>
+              <span class="period-pill">2025年5月〜2026年4月（当期）</span>
+            </div>
+          </div>
+
+          <!-- アクションバー -->
+          <div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:1rem;">
+            <button class="btn-acc-export" onclick="accExportCSV()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              仕訳CSV出力（弥生/freee連携）
+            </button>
+            <button class="header-btn header-btn-primary" onclick="accOpenModal('acc-modal-journal')">＋ 仕訳入力</button>
+          </div>
+
+          <!-- KPI -->
+          <div class="acc-kpi-grid">
+            <div class="acc-kpi"><div class="acc-kpi-label">総資産</div><div class="acc-kpi-val" id="acc-kpi-assets">¥0</div></div>
+            <div class="acc-kpi"><div class="acc-kpi-label">総負債</div><div class="acc-kpi-val" id="acc-kpi-liab">¥0</div></div>
+            <div class="acc-kpi"><div class="acc-kpi-label">純資産</div><div class="acc-kpi-val" id="acc-kpi-equity">¥0</div></div>
+            <div class="acc-kpi"><div class="acc-kpi-label">売上高</div><div class="acc-kpi-val" id="acc-kpi-rev">¥0</div></div>
+            <div class="acc-kpi"><div class="acc-kpi-label">当期純利益</div><div class="acc-kpi-val" id="acc-kpi-profit">¥0</div></div>
+          </div>
+
+          <!-- タブバー -->
+          <div class="acc-tabs">
+            <button class="acc-tab active" onclick="accTab('overview',this)">概要</button>
+            <button class="acc-tab" onclick="accTab('accounts',this)">勘定科目</button>
+            <button class="acc-tab" onclick="accTab('journal',this)">仕訳帳</button>
+            <button class="acc-tab" onclick="accTab('ledger',this)">総勘定元帳</button>
+            <button class="acc-tab" onclick="accTab('trial',this)">試算表</button>
+            <button class="acc-tab" onclick="accTab('pl',this)">損益計算書</button>
+            <button class="acc-tab" onclick="accTab('bs',this)">貸借対照表</button>
+          </div>
+
+          <!-- ── 概要パネル ─────────────────────────── -->
+          <div class="acc-panel active" id="acc-panel-overview">
+            <div class="acc-charts-row">
+              <div class="card" style="padding:1.25rem">
+                <div class="card-title" style="font-size:14px;margin-bottom:4px">財務構成</div>
+                <div style="font-size:12px;color:var(--ub-muted);margin-bottom:1rem">資産・負債・純資産の構成比</div>
+                <div style="position:relative;height:200px"><canvas id="acc-donut" aria-label="財務構成ドーナツ">財務構成</canvas></div>
+                <div class="acc-legend">
+                  <span><span class="acc-legend-dot" style="background:#3b82f6"></span>資産</span>
+                  <span><span class="acc-legend-dot" style="background:#10b981"></span>負債</span>
+                  <span><span class="acc-legend-dot" style="background:#ef4444"></span>純資産</span>
+                </div>
+              </div>
+              <div class="card" style="padding:1.25rem">
+                <div class="card-title" style="font-size:14px;margin-bottom:4px">収益・費用構成</div>
+                <div style="font-size:12px;color:var(--ub-muted);margin-bottom:1rem">売上と経費の内訳</div>
+                <div style="position:relative;height:200px"><canvas id="acc-bar" aria-label="収益費用グラフ">収益費用</canvas></div>
+              </div>
+            </div>
+            <div class="acc-stats-grid">
+              <div class="acc-stat"><div class="acc-stat-label">勘定科目数</div><div class="acc-stat-val" id="acc-stat-accts">0</div><div class="acc-stat-sub">登録済み科目</div></div>
+              <div class="acc-stat"><div class="acc-stat-label">仕訳件数</div><div class="acc-stat-val" id="acc-stat-jnls">0</div><div class="acc-stat-sub">登録済み仕訳</div></div>
+              <div class="acc-stat">
+                <div class="acc-stat-label">試算表バランス</div>
+                <div class="acc-stat-val"><span class="acc-badge acc-badge-success" id="acc-stat-bal">バランス</span></div>
+                <div class="acc-stat-sub" id="acc-stat-diff">差額: ¥0</div>
+              </div>
+              <div class="acc-stat"><div class="acc-stat-label">利益率</div><div class="acc-stat-val" id="acc-stat-margin">—</div><div class="acc-stat-sub">当期純利益率</div></div>
+            </div>
+          </div>
+
+          <!-- ── 勘定科目パネル ─────────────────────── -->
+          <div class="acc-panel" id="acc-panel-accounts">
+            <div class="acc-toolbar">
+              <select id="acc-filter-type" onchange="accRenderAccounts()">
+                <option value="">すべての分類</option>
+                <option>資産</option><option>負債</option><option>純資産</option><option>収益</option><option>費用</option>
+              </select>
+              <input type="text" id="acc-search" placeholder="科目名で検索..." oninput="accRenderAccounts()">
+              <button class="header-btn header-btn-primary acc-ml-auto" onclick="accOpenModal('acc-modal-account')" style="font-size:12px;padding:7px 14px;">＋ 科目追加</button>
+            </div>
+            <div class="card" style="padding:0;overflow:hidden">
+              <table class="acc-table"><thead><tr><th>コード</th><th>科目名</th><th>分類</th><th class="tr">残高</th><th class="tc">操作</th></tr></thead>
+              <tbody id="acc-accts-body"></tbody></table>
+            </div>
+          </div>
+
+          <!-- ── 仕訳帳パネル ──────────────────────── -->
+          <div class="acc-panel" id="acc-panel-journal">
+            <div class="acc-toolbar">
+              <input type="date" id="acc-j-from">
+              <span style="color:var(--ub-muted);font-size:13px">〜</span>
+              <input type="date" id="acc-j-to">
+              <button class="btn-acc-ghost" onclick="accFilterJournals()">絞り込み</button>
+              <button class="btn-acc-export acc-ml-auto" onclick="accExportCSV()">CSV出力</button>
+              <button class="header-btn header-btn-primary" onclick="accOpenModal('acc-modal-journal')" style="font-size:12px;padding:7px 14px;">＋ 仕訳入力</button>
+            </div>
+            <div class="card" style="padding:0;overflow:hidden">
+              <table class="acc-table">
+                <thead><tr><th>No.</th><th>日付</th><th>借方科目</th><th class="tr">借方金額</th><th>貸方科目</th><th class="tr">貸方金額</th><th>摘要</th><th class="tc">削除</th></tr></thead>
+                <tbody id="acc-journal-body"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ── 総勘定元帳パネル ──────────────────── -->
+          <div class="acc-panel" id="acc-panel-ledger">
+            <div class="acc-toolbar">
+              <select id="acc-ledger-sel" onchange="accRenderLedger()">
+                <option value="">科目を選択してください</option>
+              </select>
+            </div>
+            <div id="acc-ledger-content"></div>
+          </div>
+
+          <!-- ── 試算表パネル ──────────────────────── -->
+          <div class="acc-panel" id="acc-panel-trial">
+            <div class="card" style="padding:0;overflow:hidden">
+              <table class="acc-table">
+                <thead><tr><th>コード</th><th>科目名</th><th>分類</th><th class="tr">借方合計</th><th class="tr">貸方合計</th><th class="tr">残高</th></tr></thead>
+                <tbody id="acc-trial-body"></tbody>
+                <tfoot id="acc-trial-foot"></tfoot>
+              </table>
+            </div>
+          </div>
+
+          <!-- ── 損益計算書パネル ──────────────────── -->
+          <div class="acc-panel" id="acc-panel-pl">
+            <div class="card" style="max-width:680px">
+              <div class="card-title" style="font-size:15px;font-family:'Syne',sans-serif;font-weight:800">損益計算書</div>
+              <div style="font-size:12px;color:var(--ub-muted);margin-bottom:1.5rem">自 2025年5月1日　至 2026年4月30日</div>
+              <div id="acc-pl-content"></div>
+            </div>
+          </div>
+
+          <!-- ── 貸借対照表パネル ──────────────────── -->
+          <div class="acc-panel" id="acc-panel-bs">
+            <div class="card">
+              <div class="card-title" style="font-size:15px;font-family:'Syne',sans-serif;font-weight:800">貸借対照表</div>
+              <div style="font-size:12px;color:var(--ub-muted);margin-bottom:1.5rem">2026年4月30日 現在</div>
+              <div class="bs-grid" id="acc-bs-content"></div>
+            </div>
+          </div>
+        </div>
+        <!-- /tab-accounting -->
+
+      </div><!-- /admin-body -->
+    </main>
+  </div>
+</div>
+
+<!-- ══ 会計モーダル：仕訳入力 ════════════════════════ -->
+<div class="acc-modal-bg" id="acc-modal-journal">
+  <div class="acc-modal">
+    <h3>仕訳入力</h3>
+    <div class="acc-form-row"><label>日付</label><input type="date" id="acc-j-date"></div>
+    <div class="acc-two-col">
+      <div class="acc-form-row"><label>借方科目</label><select id="acc-j-debit"></select></div>
+      <div class="acc-form-row"><label>借方金額</label><input type="number" id="acc-j-amount" placeholder="0" min="1"></div>
+    </div>
+    <div class="acc-two-col">
+      <div class="acc-form-row"><label>貸方科目</label><select id="acc-j-credit"></select></div>
+      <div class="acc-form-row"><label>貸方金額</label><input type="text" disabled placeholder="借方金額と同額"></div>
+    </div>
+    <div class="acc-form-row"><label>摘要</label><textarea id="acc-j-memo" rows="2" placeholder="取引内容を入力..."></textarea></div>
+    <div class="acc-modal-footer">
+      <button class="btn-acc-ghost" onclick="accCloseModal('acc-modal-journal')">キャンセル</button>
+      <button class="btn-acc-primary" onclick="accAddJournal()">登録する</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 会計モーダル：勘定科目追加 ═══════════════════ -->
+<div class="acc-modal-bg" id="acc-modal-account">
+  <div class="acc-modal">
+    <h3>勘定科目追加</h3>
+    <div class="acc-two-col">
+      <div class="acc-form-row"><label>科目コード</label><input type="text" id="acc-new-code" placeholder="例: 1110"></div>
+      <div class="acc-form-row"><label>分類</label>
+        <select id="acc-new-type"><option>資産</option><option>負債</option><option>純資産</option><option>収益</option><option>費用</option></select>
+      </div>
+    </div>
+    <div class="acc-form-row"><label>科目名</label><input type="text" id="acc-new-name" placeholder="例: 電子マネー"></div>
+    <div class="acc-modal-footer">
+      <button class="btn-acc-ghost" onclick="accCloseModal('acc-modal-account')">キャンセル</button>
+      <button class="btn-acc-primary" onclick="accAddAccount()">追加する</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+// ═══ 既存 JS ════════════════════════════════════════════════
+function showLogin(){document.getElementById('login-modal').classList.add('show');}
+function hideLogin(){document.getElementById('login-modal').classList.remove('show');}
+function doLogin(){hideLogin();document.getElementById('lp-content').classList.add('hide');document.getElementById('admin-panel').classList.add('show');}
+function backToLP(){document.getElementById('admin-panel').classList.remove('show');document.getElementById('lp-content').classList.remove('hide');window.scrollTo(0,0);}
+
+var ALL_TABS=['dash','workflow','sign','order','invoice','accounting','ai','users'];
+function setTab(el,tabId){
+  document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+  ALL_TABS.forEach(t=>{var e=document.getElementById('tab-'+t);if(e)e.style.display=(t===tabId)?'block':'none';});
+  var titles={dash:'ダッシュボード',workflow:'ワークフロー管理',sign:'電子署名',order:'受発注管理',invoice:'インボイス請求書',accounting:'会計・財務管理',ai:'AIアシスト',users:'ユーザー管理'};
+  document.getElementById('admin-title').textContent=titles[tabId]||'';
+  if(tabId==='accounting'){accInit();}
+}
+
+var aiRes={
+  '今月の処理状況を要約して':'📊 今月の処理状況\n\n処理件数: 248件（前月比+23%）\n承認率: 97.2%（高水準維持）\n平均処理時間: 1.8日（目標2日以内）\n電子署名完了: 87件\n\n✅ 全体として順調に推移しています。',
+  '承認が遅れている案件を教えて':'⚠️ 要注意案件\n\n1. Q1営業報告書承認 (WF-0042)\n   期限: 04/12 / 残り2日\n   → 山田部長へリマインド推奨\n\n2. 新規取引先与信審査 (WF-0040)\n   外部署名待ち → ABC商事様へ連絡推奨',
+  '改善提案をして':'💡 業務改善提案\n\n1. 承認タイムアウト設定（推奨: 48時間）\n   → 自動エスカレーションで遅延防止\n\n2. AIによる優先度自動判定\n   → 金額・期限・相手先で自動ランク付け\n\n3. モバイル承認の活用促進\n   → 外出先承認率を向上させましょう'
+};
+function aiQuick(p){var r=document.getElementById('ai-result-dash');r.style.display='block';r.textContent='分析中...';setTimeout(function(){r.textContent=aiRes[p]||'🤖 AIが分析しました。詳細なレポートを作成しますか？';},800);}
+function runAI(suffix){var inp=document.getElementById('ai-input-'+suffix);var r=document.getElementById('ai-result-'+suffix);if(!inp||!inp.value.trim())return;r.style.display='block';r.textContent='AIが分析中...';setTimeout(function(){r.textContent='🤖 AIの回答\n\n「'+inp.value.trim()+'」について分析しました。\n\nUMA BizFlowのデータを元に、業務効率化のポイントと改善案をご提案します。具体的な数値は会計・財務タブでご確認ください。';},1200);}
+
+// ═══ 会計エンジン（複式簿記フル実装）══════════════════════
+var ACC_DEFAULTS=[
+  {code:'1000',name:'現金',type:'資産'},{code:'1010',name:'普通預金',type:'資産'},
+  {code:'1100',name:'売掛金',type:'資産'},{code:'1200',name:'商品',type:'資産'},
+  {code:'1500',name:'建物',type:'資産'},{code:'1600',name:'備品',type:'資産'},
+  {code:'2000',name:'買掛金',type:'負債'},{code:'2100',name:'短期借入金',type:'負債'},
+  {code:'2200',name:'未払金',type:'負債'},{code:'2300',name:'前受金',type:'負債'},
+  {code:'3000',name:'資本金',type:'純資産'},{code:'3100',name:'繰越利益剰余金',type:'純資産'},
+  {code:'4000',name:'売上高',type:'収益'},{code:'4100',name:'受取利息',type:'収益'},
+  {code:'5000',name:'仕入高',type:'費用'},{code:'5100',name:'給与手当',type:'費用'},
+  {code:'5200',name:'地代家賃',type:'費用'},{code:'5300',name:'通信費',type:'費用'},
+  {code:'5400',name:'旅費交通費',type:'費用'},{code:'5500',name:'消耗品費',type:'費用'},
+  {code:'5600',name:'広告宣伝費',type:'費用'},{code:'5700',name:'減価償却費',type:'費用'},
+  {code:'5800',name:'支払利息',type:'費用'},{code:'5900',name:'雑費',type:'費用'},
+];
+var accAccounts=[...ACC_DEFAULTS];
+var accJournals=[];
+var accDonut=null,accBarChart=null;
+var accInited=false;
+var accCurrentPanel='overview';
+
+const accFmt=v=>'¥'+Math.round(v).toLocaleString('ja-JP');
+const accToday=()=>new Date().toISOString().slice(0,10);
+function accGetRawBal(code){return accJournals.reduce((s,j)=>{if(j.debit===code)s+=j.amount;if(j.credit===code)s-=j.amount;return s;},0);}
+function accGetBal(code){const a=accAccounts.find(x=>x.code===code);if(!a)return 0;const raw=accGetRawBal(code);return ['負債','純資産','収益'].includes(a.type)?-raw:raw;}
+function accTypeTotal(type){return accAccounts.filter(a=>a.type===type).reduce((s,a)=>s+accGetBal(a.code),0);}
+
+function accUpdateKPIs(){
+  const assets=accTypeTotal('資産'),liab=accTypeTotal('負債'),eq=accTypeTotal('純資産'),rev=accTypeTotal('収益'),exp=accTypeTotal('費用'),profit=rev-exp;
+  document.getElementById('acc-kpi-assets').textContent=accFmt(assets);
+  document.getElementById('acc-kpi-liab').textContent=accFmt(liab);
+  document.getElementById('acc-kpi-equity').textContent=accFmt(eq);
+  document.getElementById('acc-kpi-rev').textContent=accFmt(rev);
+  const pEl=document.getElementById('acc-kpi-profit');pEl.textContent=accFmt(profit);pEl.className='acc-kpi-val'+(profit<0?' danger':'');
+  document.getElementById('acc-stat-accts').textContent=accAccounts.length;
+  document.getElementById('acc-stat-jnls').textContent=accJournals.length;
+  document.getElementById('acc-stat-diff').textContent='差額: ¥0';
+  document.getElementById('acc-stat-margin').textContent=rev>0?((profit/rev)*100).toFixed(1)+'%':'—';
+  if(accDonut){accDonut.data.datasets[0].data=[Math.max(assets,1),Math.max(liab,1),Math.max(eq,1)];accDonut.update();}
+  if(accBarChart){accBarChart.data.datasets[0].data=[rev,exp];accBarChart.update();}
+}
+
+function accInit(){
+  if(accInited)return;accInited=true;
+  const dc=document.getElementById('acc-donut');
+  if(dc)accDonut=new Chart(dc,{type:'doughnut',data:{labels:['資産','負債','純資産'],datasets:[{data:[33,33,33],backgroundColor:['#3b82f6','#10b981','#ef4444'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false}}}});
+  const bc=document.getElementById('acc-bar');
+  if(bc)accBarChart=new Chart(bc,{type:'bar',data:{labels:['収益','費用'],datasets:[{data:[0,0],backgroundColor:['#1A56DB','#f97316'],borderRadius:6,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{callback:v=>'¥'+v.toLocaleString('ja-JP')},grid:{color:'rgba(26,86,219,0.08)'}},x:{grid:{display:false}}}}});
+  accUpdateAll();
+}
+function accUpdateAll(){accUpdateKPIs();if(accCurrentPanel==='accounts')accRenderAccounts();if(accCurrentPanel==='journal')accRenderJournal();if(accCurrentPanel==='ledger')accRenderLedger();if(accCurrentPanel==='trial')accRenderTrial();if(accCurrentPanel==='pl')accRenderPL();if(accCurrentPanel==='bs')accRenderBS();}
+
+function accTab(name,el){
+  accCurrentPanel=name;
+  document.querySelectorAll('.acc-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');
+  document.querySelectorAll('.acc-panel').forEach(p=>p.classList.remove('active'));document.getElementById('acc-panel-'+name).classList.add('active');
+  if(name==='accounts')accRenderAccounts();if(name==='journal')accRenderJournal();if(name==='ledger'){accPopulateLedgerSel();accRenderLedger();}if(name==='trial')accRenderTrial();if(name==='pl')accRenderPL();if(name==='bs')accRenderBS();
+}
+
+function accRenderAccounts(){
+  const filter=document.getElementById('acc-filter-type')?.value||'';const search=(document.getElementById('acc-search')?.value||'').toLowerCase();
+  const tbody=document.getElementById('acc-accts-body');if(!tbody)return;
+  const tc={収益:'success',費用:'warn',資産:'info',負債:'info',純資産:'info'};
+  const list=accAccounts.filter(a=>(!filter||a.type===filter)&&(!search||a.name.includes(search)||a.code.includes(search)));
+  tbody.innerHTML=list.map(a=>`<tr><td><code>${a.code}</code></td><td>${a.name}</td><td><span class="acc-badge acc-badge-${tc[a.type]||'info'}">${a.type}</span></td><td class="tr mono">${accFmt(accGetBal(a.code))}</td><td class="tc"><button class="btn-acc-danger" onclick="accDeleteAccount('${a.code}')">削除</button></td></tr>`).join('')||'<tr><td colspan="5" class="acc-empty">科目がありません</td></tr>';
+}
+
+function accRenderJournal(){
+  const tbody=document.getElementById('acc-journal-body');if(!tbody)return;
+  tbody.innerHTML=accJournals.map((j,i)=>{const dn=accAccounts.find(a=>a.code===j.debit)?.name||j.debit;const cn=accAccounts.find(a=>a.code===j.credit)?.name||j.credit;return `<tr class="acc-jr" data-date="${j.date}"><td class="mono acc-muted">${i+1}</td><td>${j.date}</td><td class="acc-debit">${dn}</td><td class="tr acc-debit mono">${accFmt(j.amount)}</td><td class="acc-credit">${cn}</td><td class="tr acc-credit mono">${accFmt(j.amount)}</td><td class="acc-muted">${j.memo||''}</td><td class="tc"><button class="btn-acc-danger" onclick="accDeleteJournal(${i})">✕</button></td></tr>`;}).join('')||'<tr><td colspan="8" class="acc-empty">仕訳データがありません。「＋ 仕訳入力」から登録してください。</td></tr>';
+}
+function accFilterJournals(){const from=document.getElementById('acc-j-from')?.value||'';const to=document.getElementById('acc-j-to')?.value||'';document.querySelectorAll('.acc-jr').forEach(tr=>{const d=tr.dataset.date;tr.style.display=(!from||d>=from)&&(!to||d<=to)?'':'none';});}
+
+function accPopulateLedgerSel(){const sel=document.getElementById('acc-ledger-sel');if(!sel)return;const cur=sel.value;sel.innerHTML='<option value="">科目を選択してください</option>'+accAccounts.map(a=>`<option value="${a.code}" ${cur===a.code?'selected':''}>${a.code} ${a.name}</option>`).join('');}
+function accRenderLedger(){
+  const code=document.getElementById('acc-ledger-sel')?.value||'';const el=document.getElementById('acc-ledger-content');if(!el)return;
+  if(!code){el.innerHTML='<div class="card acc-empty">科目を選択してください</div>';return;}
+  const acct=accAccounts.find(a=>a.code===code);const relevant=accJournals.filter(j=>j.debit===code||j.credit===code);let running=0;const isNormal=['資産','費用'].includes(acct?.type);
+  const rows=relevant.map(j=>{const isDr=j.debit===code;const dr=isDr?j.amount:0;const cr=isDr?0:j.amount;running+=isNormal?(dr-cr):(cr-dr);const counter=isDr?(accAccounts.find(a=>a.code===j.credit)?.name||j.credit):(accAccounts.find(a=>a.code===j.debit)?.name||j.debit);return `<tr><td>${j.date}</td><td>${counter}</td><td class="tr acc-debit mono">${dr?accFmt(dr):''}</td><td class="tr acc-credit mono">${cr?accFmt(cr):''}</td><td class="tr mono">${accFmt(running)}</td><td class="acc-muted">${j.memo||''}</td></tr>`;});
+  el.innerHTML=`<div class="card" style="padding:0;overflow:hidden"><div style="padding:1rem 1.25rem;font-size:13px;font-weight:700;border-bottom:1px solid var(--ub-border)">${acct?.name}（${code}）/ 分類: ${acct?.type}</div><table class="acc-table"><thead><tr><th>日付</th><th>相手科目</th><th class="tr">借方</th><th class="tr">貸方</th><th class="tr">残高</th><th>摘要</th></tr></thead><tbody>${rows.join('')||'<tr><td colspan="6" class="acc-empty">取引がありません</td></tr>'}</tbody><tfoot><tr><td colspan="4" style="font-weight:700">残高</td><td class="tr mono" style="font-weight:700">${accFmt(running)}</td><td></td></tr></tfoot></table></div>`;
+}
+
+function accRenderTrial(){
+  const tbody=document.getElementById('acc-trial-body');const tfoot=document.getElementById('acc-trial-foot');if(!tbody)return;
+  let tDr=0,tCr=0;const tc={収益:'success',費用:'warn',資産:'info',負債:'info',純資産:'info'};
+  tbody.innerHTML=accAccounts.map(a=>{const dr=accJournals.filter(j=>j.debit===a.code).reduce((s,j)=>s+j.amount,0);const cr=accJournals.filter(j=>j.credit===a.code).reduce((s,j)=>s+j.amount,0);tDr+=dr;tCr+=cr;const bal=dr-cr;return `<tr><td><code>${a.code}</code></td><td>${a.name}</td><td><span class="acc-badge acc-badge-${tc[a.type]||'info'}">${a.type}</span></td><td class="tr acc-debit mono">${dr?accFmt(dr):''}</td><td class="tr acc-credit mono">${cr?accFmt(cr):''}</td><td class="tr mono" style="${bal<0?'color:var(--ub-danger)':''}">${accFmt(Math.abs(bal))}</td></tr>`;}).join('');
+  const ok=tDr===tCr;tfoot.innerHTML=`<tr><td colspan="3" style="font-weight:700">合計</td><td class="tr acc-debit mono">${accFmt(tDr)}</td><td class="tr acc-credit mono">${accFmt(tCr)}</td><td class="tr mono" style="color:${ok?'#16a34a':'var(--ub-danger)'};">${ok?'バランス ✓':'差額 '+accFmt(tDr-tCr)}</td></tr>`;
+}
+
+function accRenderPL(){
+  const el=document.getElementById('acc-pl-content');if(!el)return;
+  const rev=accAccounts.filter(a=>a.type==='収益');const exp=accAccounts.filter(a=>a.type==='費用');
+  const tRev=rev.reduce((s,a)=>s+accGetBal(a.code),0);const tExp=exp.reduce((s,a)=>s+accGetBal(a.code),0);const profit=tRev-tExp;
+  el.innerHTML=`<div style="margin-bottom:1.5rem"><div class="fin-section-head">【収益の部】</div>${rev.map(a=>`<div class="fin-row"><span>${a.name}</span><span class="mono">${accFmt(accGetBal(a.code))}</span></div>`).join('')}<div class="fin-row fin-subtotal"><span>収益合計</span><span class="mono">${accFmt(tRev)}</span></div></div><div style="margin-bottom:1.5rem"><div class="fin-section-head">【費用の部】</div>${exp.map(a=>`<div class="fin-row"><span>${a.name}</span><span class="mono">${accFmt(accGetBal(a.code))}</span></div>`).join('')}<div class="fin-row fin-subtotal"><span>費用合計</span><span class="mono">${accFmt(tExp)}</span></div></div><div class="fin-total ${profit>=0?'fin-profit':'fin-loss'}"><span>当期純利益</span><span class="mono">${accFmt(profit)}</span></div>`;
+}
+
+function accRenderBS(){
+  const el=document.getElementById('acc-bs-content');if(!el)return;
+  const aA=accAccounts.filter(a=>a.type==='資産'),aL=accAccounts.filter(a=>a.type==='負債'),aE=accAccounts.filter(a=>a.type==='純資産');
+  const tA=aA.reduce((s,a)=>s+accGetBal(a.code),0),tL=aL.reduce((s,a)=>s+accGetBal(a.code),0),tE=aE.reduce((s,a)=>s+accGetBal(a.code),0),profit=accTypeTotal('収益')-accTypeTotal('費用');
+  const ok=Math.abs(tA-(tL+tE+profit))<1;
+  el.innerHTML=`<div><div class="fin-section-head">【資産の部】</div>${aA.map(a=>`<div class="fin-row"><span>${a.name}</span><span class="mono">${accFmt(accGetBal(a.code))}</span></div>`).join('')}<div class="fin-row fin-subtotal"><span>資産合計</span><span class="mono">${accFmt(tA)}</span></div></div><div><div class="fin-section-head">【負債の部】</div>${aL.map(a=>`<div class="fin-row"><span>${a.name}</span><span class="mono">${accFmt(accGetBal(a.code))}</span></div>`).join('')}<div class="fin-row fin-subtotal" style="margin-bottom:1.5rem"><span>負債合計</span><span class="mono">${accFmt(tL)}</span></div><div class="fin-section-head">【純資産の部】</div>${aE.map(a=>`<div class="fin-row"><span>${a.name}</span><span class="mono">${accFmt(accGetBal(a.code))}</span></div>`).join('')}<div class="fin-row"><span>当期純利益</span><span class="mono">${accFmt(profit)}</span></div><div class="fin-row fin-subtotal" style="margin-bottom:1rem"><span>純資産合計</span><span class="mono">${accFmt(tE+profit)}</span></div><div class="fin-total ${ok?'fin-profit':'fin-loss'}" style="font-size:14px"><span>負債・純資産合計</span><span class="mono">${accFmt(tL+tE+profit)}</span></div></div>`;
+}
+
+function accOpenModal(id){
+  if(id==='acc-modal-journal'){const opts=accAccounts.map(a=>`<option value="${a.code}">${a.code} ${a.name}</option>`).join('');document.getElementById('acc-j-debit').innerHTML=opts;document.getElementById('acc-j-credit').innerHTML=opts;document.getElementById('acc-j-date').value=accToday();}
+  document.getElementById(id).classList.add('open');
+}
+function accCloseModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.acc-modal-bg').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+
+function accAddJournal(){
+  const date=document.getElementById('acc-j-date').value,debit=document.getElementById('acc-j-debit').value,credit=document.getElementById('acc-j-credit').value,amount=parseFloat(document.getElementById('acc-j-amount').value)||0,memo=document.getElementById('acc-j-memo').value;
+  if(!date||!debit||!credit||!amount){alert('日付・借方科目・貸方科目・金額を入力してください');return;}
+  if(debit===credit){alert('借方と貸方に同じ科目は使用できません');return;}
+  accJournals.push({date,debit,credit,amount,memo});accJournals.sort((a,b)=>a.date.localeCompare(b.date));
+  accCloseModal('acc-modal-journal');document.getElementById('acc-j-amount').value='';document.getElementById('acc-j-memo').value='';accUpdateAll();
+}
+function accDeleteJournal(i){if(!confirm('この仕訳を削除しますか？'))return;accJournals.splice(i,1);accUpdateAll();}
+function accAddAccount(){
+  const code=document.getElementById('acc-new-code').value.trim(),name=document.getElementById('acc-new-name').value.trim(),type=document.getElementById('acc-new-type').value;
+  if(!code||!name){alert('コードと科目名を入力してください');return;}
+  if(accAccounts.find(a=>a.code===code)){alert('そのコードは既に使用されています');return;}
+  accAccounts.push({code,name,type});accAccounts.sort((a,b)=>a.code.localeCompare(b.code));
+  accCloseModal('acc-modal-account');document.getElementById('acc-new-code').value='';document.getElementById('acc-new-name').value='';accUpdateAll();
+}
+function accDeleteAccount(code){const used=accJournals.some(j=>j.debit===code||j.credit===code);if(used){alert('この科目は仕訳で使用中のため削除できません');return;}if(!confirm('削除しますか？'))return;accAccounts=accAccounts.filter(a=>a.code!==code);accUpdateAll();}
+function accExportCSV(){
+  if(!accJournals.length){alert('仕訳データがありません');return;}
+  const BOM='\uFEFF',header='取引日,借方科目,貸方科目,金額,摘要\n',rows=accJournals.map(j=>[j.date,accAccounts.find(a=>a.code===j.debit)?.name||j.debit,accAccounts.find(a=>a.code===j.credit)?.name||j.credit,j.amount,j.memo||''].join(',')).join('\n');
+  const blob=new Blob([BOM+header+rows],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='仕訳帳_弥生連携用.csv';a.click();URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>

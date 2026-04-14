@@ -1,0 +1,16 @@
+{
+  "name": "uma-bizflow",
+  "version": "2.0.0",
+  "description": "UMA BizFlow — デジタル化・AI導入補助金2026 対応 統合業務システム",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^9.4.3",
+    "cors": "^2.8.5",
+    "express": "^4.18.3",
+    "uuid": "^9.0.1"
+  }
+}

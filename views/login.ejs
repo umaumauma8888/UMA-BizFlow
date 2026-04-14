@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ログイン - BizFlow Pro</title>
+  <style>
+    :root {
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      --color-text-primary: #1a1a1a;
+      --color-text-secondary: #666;
+      --color-background-primary: #ffffff;
+      --color-background-secondary: #f5f5f5;
+      --color-border-secondary: #ddd;
+      --border-radius-md: 6px;
+      --border-radius-lg: 10px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-sans); background: var(--color-background-secondary); color: var(--color-text-primary); display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+
+    .login-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-lg); padding: 36px 40px; width: 380px; }
+    .login-logo-area { text-align: center; margin-bottom: 28px; }
+    .login-product { font-size: 20px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px; }
+    .login-tagline { font-size: 11px; color: var(--color-text-secondary); }
+
+    .login-role-tabs { display: flex; gap: 0; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); overflow: hidden; margin-bottom: 18px; }
+    .role-tab { flex: 1; padding: 8px; text-align: center; font-size: 12px; cursor: pointer; color: var(--color-text-secondary); background: var(--color-background-primary); border: none; font-family: var(--font-sans); }
+    .role-tab.active { background: #185FA5; color: #fff; font-weight: 500; }
+
+    .login-btn { width: 100%; padding: 10px; background: #185FA5; color: #fff; border: none; border-radius: var(--border-radius-md); font-size: 13px; font-weight: 500; cursor: pointer; font-family: var(--font-sans); margin-top: 4px; }
+    .login-btn:hover { background: #0C447C; }
+
+    .login-err { display: <%= error ? 'block' : 'none' %>; background: #FCEBEB; border: 0.5px solid #F7C1C1; border-radius: var(--border-radius-md); padding: 8px 12px; font-size: 12px; color: #791F1F; margin-bottom: 12px; }
+
+    .login-field { margin-bottom: 14px; }
+    .login-label { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 5px; display: block; }
+    .login-input { width: 100%; padding: 9px 12px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); font-size: 13px; background: var(--color-background-primary); color: var(--color-text-primary); font-family: var(--font-sans); }
+    .login-input:focus { outline: none; border-color: #185FA5; box-shadow: 0 0 0 2px #E6F1FB; }
+
+    .login-footer { margin-top: 24px; padding-top: 16px; border-top: 0.5px solid #e0e0e0; text-align: center; }
+    .login-footer-dev { font-size: 10px; color: #999; line-height: 1.8; }
+  </style>
+</head>
+<body>
+  <div class="login-wrap">
+    <form class="login-card" method="POST" action="/login">
+      <div class="login-logo-area">
+        <div class="login-product">BizFlow Pro</div>
+        <div class="login-tagline">IT導入補助金2026対応 業務管理プラットフォーム</div>
+      </div>
+
+      <div class="login-role-tabs">
+        <button type="button" class="role-tab active" onclick="setRole('admin')">管理者</button>
+        <button type="button" class="role-tab" onclick="setRole('employee')">従業員</button>
+      </div>
+
+      <div class="login-err"><%= error || '' %></div>
+
+      <div class="login-field">
+        <label class="login-label" for="username">ユーザー名</label>
+        <input class="login-input" type="text" id="username" name="username" required>
+      </div>
+
+      <div class="login-field">
+        <label class="login-label" for="password">パスワード</label>
+        <input class="login-input" type="password" id="password" name="password" required>
+      </div>
+
+      <button class="login-btn" type="submit">ログイン</button>
+
+      <div class="login-footer">
+        <div class="login-footer-dev">
+          デモアカウント:<br>
+          管理者: admin / admin123<br>
+          従業員: employee / employee123<br>
+          <span style="color:var(--color-text-tertiary)">IT導入補助金対象ツール</span>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    function setRole(role) {
+      document.querySelectorAll('.role-tab').forEach(tab => tab.classList.remove('active'));
+      event.target.classList.add('active');
+      // For demo, just visual change
+    }
+  </script>
+</body>
+</html></content>
+<parameter name="filePath">c:\Users\ei-li\OneDrive\デスクトップ\AIサイト\IThojokin2026_BizFlow\views\login.ejs

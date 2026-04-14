@@ -1,0 +1,1587 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BizFlow Pro - システムデモ</title>
+  <style>
+    :root{
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Menlo, monospace;
+      --color-text-primary: #1a1a1a;
+      --color-text-secondary: #666;
+      --color-text-tertiary: #999;
+      --color-text-success: #27500A;
+      --color-background-primary: #ffffff;
+      --color-background-secondary: #f5f5f5;
+      --color-background-tertiary: #efefef;
+      --color-background-success: #EAF3DE;
+      --color-border-secondary: #ddd;
+      --color-border-tertiary: #e0e0e0;
+      --color-border-success: #3B6D11;
+      --border-radius-md: 6px;
+      --border-radius-lg: 10px;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:var(--font-sans);background:var(--color-background-tertiary);color:var(--color-text-primary)}
+    .app{display:flex;height:100vh;min-height:700px;overflow:hidden}
+
+    .sidebar{width:260px;min-width:260px;background:#0F1419;color:#E2E8F0;border-right:1px solid rgba(255,255,255,0.05);display:flex;flex-direction:column;overflow-y:auto}
+    .sidebar-header{padding:16px 16px 12px;border-bottom:1px solid rgba(255,255,255,0.05)}
+    .logo{font-size:14px;font-weight:700;color:#FFFFFF}
+    .logo-sub{font-size:10px;color:#94A3B8;margin-top:2px}
+    .logo-dev{font-size:9px;color:#64748B;margin-top:2px}
+    .nav-section{padding:4px 0}
+    .nav-label{font-size:9px;font-weight:700;color:#64748B;padding:8px 16px 6px;letter-spacing:.08em;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between}
+    .nav-label:hover{color:#94A3B8}
+    .nav-submenu{max-height:0;overflow:hidden;transition:max-height 0.28s ease}
+    .nav-submenu.expanded{max-height:320px}
+    .nav-item{display:flex;align-items:center;gap:8px;padding:8px 16px;cursor:pointer;font-size:12px;color:#CBD5E1;border-left:2px solid transparent;transition:all 0.15s ease}
+    .nav-item:hover{background:rgba(255,255,255,0.05);color:#FFFFFF}
+    .nav-item.active{background:rgba(56,189,248,0.1);color:#38BDF8;border-left-color:#38BDF8;font-weight:500}
+    .nav-item.parent{display:flex;justify-content:space-between;align-items:center;gap:8px}
+    .nav-item.parent .nav-arrow{transition:transform 0.2s;width:10px;height:10px;stroke:#94A3B8;flex-shrink:0}
+    .nav-item.parent:hover .nav-arrow{stroke:#CBD5E1}
+    .nav-item.parent.expanded .nav-arrow{transform:rotate(90deg);stroke:#CBD5E1}
+    .nav-item.child{padding:6px 16px 6px 38px;font-size:11px;border-left:2px solid transparent;color:#A5B4FC;position:relative}
+    .nav-item.child::before{content:'';position:absolute;left:16px;top:0;bottom:0;width:1px;background:rgba(165,180,252,0.2)}
+    .nav-item.child:hover{border-left-color:#38BDF8;color:#FFFFFF;background:rgba(56,189,248,0.08)}
+    .nav-invoice{font-size:8px;background:#FAEEDA;color:#633806;padding:2px 4px;border-radius:2px;margin-left:auto}
+    .nav-admin{font-size:8px;background:#FCEBEB;color:#791F1F;padding:2px 4px;border-radius:2px;margin-left:auto}
+    .user-bar{margin-top:auto;padding:10px 12px;border-top:1px solid rgba(255,255,255,0.05)}
+    .user-avatar{width:28px;height:28px;border-radius:50%;background:#38BDF8;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#0F1419;flex-shrink:0}
+    .logout-btn{margin-top:6px;width:100%;padding:4px 8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:4px;font-size:11px;cursor:pointer;color:#CBD5E1;font-family:var(--font-sans);transition:all 0.15s ease}
+    .logout-btn:hover{background:rgba(255,255,255,0.08);color:#FFFFFF}
+
+    .main{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+    .topbar{background:var(--color-background-primary);border-bottom:1px solid rgba(0,0,0,0.04);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+    .page-title{font-size:15px;font-weight:500;color:var(--color-text-primary)}
+    .page-meta{font-size:10px;color:var(--color-text-tertiary);margin-top:2px}
+    .topbar-actions{display:flex;gap:8px}
+    .btn{padding:6px 14px;border-radius:4px;border:1px solid #d0d7e0;background:var(--color-background-primary);font-size:12px;cursor:pointer;color:var(--color-text-primary);font-family:var(--font-sans);transition:all 0.15s ease}
+    .btn:hover{background:#f5f5f5;border-color:#b8c2d1}
+    .btn-primary{background:#1B5E9B;color:#fff;border-color:#1B5E9B;font-weight:500}
+    .btn-primary:hover{background:#154a7a}
+    .content{padding:16px 24px;flex:1;background:#ffffff}
+    .screen{display:none}
+    .screen.active{display:block}
+
+    .req-banner{background:var(--color-background-success);border:1px solid var(--color-border-success);border-radius:4px;padding:10px 14px;font-size:12px;color:var(--color-text-success);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+    .stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:20px}
+    .stat-card{background:#f8f9fa;border:1px solid #e5e7eb;border-radius:6px;padding:14px}
+    .stat-label{font-size:11px;color:var(--color-text-tertiary);margin-bottom:4px}
+    .stat-val{font-size:20px;font-weight:600;color:var(--color-text-primary)}
+    .stat-sub{font-size:10px;color:var(--color-text-tertiary);margin-top:4px}
+    .card{background:var(--color-background-primary);border:1px solid #e5e7eb;border-radius:6px;padding:16px;margin-bottom:16px}
+    .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+    .card-title{font-size:14px;font-weight:600;color:var(--color-text-primary)}
+    .tag{display:inline-flex;align-items:center;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500}
+    .tag-blue{background:#E6F1FB;color:#0C447C}
+    .tag-green{background:#EAF3DE;color:#27500A}
+    .tag-amber{background:#FAEEDA;color:#412402}
+    .tag-red{background:#FCEBEB;color:#791F1F}
+    table{width:100%;border-collapse:collapse;font-size:12px}
+    th{text-align:left;padding:10px 12px;background:#f8f9fa;font-size:11px;font-weight:600;color:var(--color-text-secondary);border-bottom:1px solid #e5e7eb}
+    td{padding:10px 12px;border-bottom:1px solid #f0f0f0;color:var(--color-text-primary)}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:#fafbfc}
+    .invoice-box{background:#FAEEDA;border:1px solid #FAC775;border-radius:4px;padding:12px 14px;margin-bottom:14px}
+    .invoice-title{font-size:11px;font-weight:600;color:#412402;margin-bottom:8px}
+    .invoice-req{font-size:11px;color:#633806;display:flex;align-items:flex-start;gap:6px;line-height:1.5;margin-bottom:4px}
+    .check-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin-top:12px}
+    .check-item{display:flex;align-items:center;gap:8px;padding:8px;background:#f9f9f9;border-radius:4px;font-size:12px}
+    .check-icon{color:#27500A;font-weight:bold}
+    .dashboard-widgets{display:flex;flex-direction:column;gap:14px}
+    .widget-row{display:flex;gap:14px;margin-bottom:14px}
+    .widget-card{flex:1;background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:16px;display:flex;gap:12px;align-items:center;box-shadow:0 1px 2px rgba(0,0,0,0.03);transition:all 0.2s}
+    .widget-card:hover{box-shadow:0 2px 4px rgba(0,0,0,0.05)}
+    .widget-wide{flex:2}
+    .widget-icon{font-size:28px}
+    .widget-content{flex:1}
+    .widget-title{font-size:13px;font-weight:500;color:#666;margin-bottom:4px}
+    .widget-value{font-size:22px;font-weight:700;color:var(--color-text-primary);margin-bottom:2px}
+    .widget-meta{font-size:11px;color:var(--color-text-tertiary)}
+    .widget-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+    .widget-actions{display:flex;gap:8px}
+    .btn-sm{padding:4px 8px;font-size:11px}
+    .schedule-list{display:flex;flex-direction:column;gap:10px}
+    .schedule-item{display:flex;gap:12px;padding:10px;border-radius:6px;border-left:2px solid #38BDF8;background:#f0f7ff}
+    .schedule-item.upcoming{border-left-color:#FBBF24;background:#FFFBF0}
+    .schedule-time{font-size:11px;font-weight:600;color:#666;min-width:45px}
+    .schedule-content{flex:1}
+    .schedule-title{font-size:13px;font-weight:500;margin-bottom:2px;color:var(--color-text-primary)}
+    .schedule-meta{font-size:11px;color:var(--color-text-tertiary)}
+    .activity-list{display:flex;flex-direction:column;gap:10px}
+    .activity-item{display:flex;gap:10px;padding:10px;border-radius:6px;background:#f8f9fa}
+    .activity-icon{font-size:16px;flex-shrink:0}
+    .activity-content{flex:1}
+    .activity-title{font-size:13px;font-weight:500;margin-bottom:2px;color:var(--color-text-primary)}
+    .activity-meta{font-size:11px;color:var(--color-text-tertiary)}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">BizFlow Pro</div>
+        <div class="logo-sub">業務管理プラットフォーム</div>
+        <div class="logo-dev">合同会社UMA</div>
+      </div>
+
+      <!-- HOME セクション -->
+      <div class="nav-section">
+        <div class="nav-label">HOME</div>
+        <div class="nav-submenu expanded">
+          <div class="nav-item active" data-page="dashboard">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.75L12.25 5.25V12.25H8.75V8.75H5.25V12.25H1.75V5.25L7 1.75Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            ダッシュボード
+          </div>
+        </div>
+      </div>
+
+      <!-- 顧客管理 セクション -->
+      <div class="nav-section">
+        <div class="nav-label">顧客管理</div>
+        <div class="nav-submenu expanded">
+          <div class="nav-item parent" data-menu="customers">
+            <div style="display:flex;align-items:center;gap:8px">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M11.0833 3.5H2.91667C2.27233 3.5 1.75 4.02233 1.75 4.66667V10.5C1.75 11.1443 2.27233 11.6667 2.91667 11.6667H11.0833C11.7277 11.6667 12.25 11.1443 12.25 10.5V4.66667C12.25 4.02233 11.7277 3.5 11.0833 3.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.66675 1.75V3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.33325 1.75V3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M1.75 6.41675H12.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              顧客一覧
+            </div>
+          </div>
+          <div class="nav-item child" data-page="customers-list">
+            顧客一覧
+          </div>
+          <div class="nav-item child" data-page="customers-new">
+            新規登録
+          </div>
+          <div class="nav-item child" data-page="customers-history">
+            対応履歴
+          </div>
+        </div>
+      </div>
+
+      <!-- 受発注管理 セクション -->
+      <div class="nav-section">
+        <div class="nav-label">受発注管理</div>
+        <div class="nav-submenu expanded">
+          <div class="nav-item parent" data-menu="orders">
+            <div style="display:flex;align-items:center;gap:8px">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M10.5 4.08325H3.5C2.85567 4.08325 2.33325 4.60567 2.33325 5.24992V10.4999C2.33325 11.1443 2.85567 11.6666 3.5 11.6666H10.5C11.1443 11.6666 11.6666 11.1443 11.6666 10.4999V5.24992C11.6666 4.60567 11.1443 4.08325 10.5 4.08325Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.66675 2.33325V4.08325" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.33325 2.33325V4.08325" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.33325 7.58325H11.6666" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              見積・受注
+            </div>
+          </div>
+          <div class="nav-item child" data-page="orders-quote">
+            見積書作成
+            <span class="nav-invoice">新</span>
+          </div>
+          <div class="nav-item child" data-page="orders-list">
+            受注一覧
+          </div>
+          <div class="nav-item child" data-page="orders-delivery">
+            納品管理
+          </div>
+        </div>
+      </div>
+
+      <!-- 請求・決済 セクション -->
+      <div class="nav-section">
+        <div class="nav-label">請求・決済</div>
+        <div class="nav-submenu expanded">
+          <div class="nav-item parent" data-menu="billing">
+            <div style="display:flex;align-items:center;gap:8px">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M10.5 4.08325H3.5C2.85567 4.08325 2.33325 4.60567 2.33325 5.24992V10.4999C2.33325 11.1443 2.85567 11.6666 3.5 11.6666H10.5C11.1443 11.6666 11.6666 11.1443 11.6666 10.4999V5.24992C11.6666 4.60567 11.1443 4.08325 10.5 4.08325Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.66675 2.33325V4.08325" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.33325 2.33325V4.08325" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.33325 7.58325H11.6666" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              請求・入金
+            </div>
+          </div>
+          <div class="nav-item child" data-page="billing-create">
+            請求書発行
+            <span class="nav-invoice">新</span>
+          </div>
+          <div class="nav-item child" data-page="billing-payment">
+            入金消込・管理
+          </div>
+          <div class="nav-item child" data-page="billing-reminder">
+            支払督促
+          </div>
+        </div>
+      </div>
+
+      <!-- 会計・財務 セクション -->
+      <div class="nav-section">
+        <div class="nav-label">会計・財務</div>
+        <div class="nav-submenu expanded">
+          <div class="nav-item parent" data-menu="accounting">
+            <div style="display:flex;align-items:center;gap:8px">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.75L12.25 5.25V12.25H8.75V8.75H5.25V12.25H1.75V5.25L7 1.75Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              会計・財務
+            </div>
+          </div>
+          <div class="nav-item child" data-page="sales-report">
+            売上レポート
+          </div>
+        </div>
+      </div>
+
+      <!-- 設定 セクション -->
+      <div class="nav-section">
+        <div class="nav-label">設定</div>
+        <div class="nav-submenu expanded">
+          <div class="nav-item parent" data-menu="settings">
+            <div style="display:flex;align-items:center;gap:8px">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.25" stroke="currentColor" stroke-width="1.5"/><circle cx="7" cy="7" r="2.1" stroke="currentColor" stroke-width="1.5"/></svg>
+              設定
+            </div>
+          </div>
+          <% if (user.role === 'admin') { %>
+          <div class="nav-item child" data-page="user-management">
+            ユーザー管理
+            <span class="nav-admin">!</span>
+          </div>
+          <div class="nav-item child" data-page="system-settings">
+            システム設定
+          </div>
+          <% } %>
+          <div class="nav-item child" data-page="ai-advisor">
+            AI経営参謀
+          </div>
+        </div>
+      </div>
+
+      <div class="user-bar">
+        <div style="display:flex;gap:8px">
+          <div class="user-avatar">A</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:12px;font-weight:500;color:var(--color-text-primary)">管理者</div>
+            <div style="font-size:10px;color:var(--color-text-secondary)">admin@uma-s.com</div>
+          </div>
+        </div>
+        <form method="POST" action="/logout">
+          <button class="logout-btn" type="submit">ログアウト</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="topbar">
+        <div>
+          <div class="page-title">ダッシュボード</div>
+          <div class="page-meta">BizFlow Pro システムデモ</div>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn">エクスポート</button>
+          <button class="btn-primary">新規作成</button>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="req-banner">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1.33325L10.6667 6.66659L16 8L10.6667 9.33325L8 14.6666L5.33333 9.33325L0 8L5.33333 6.66659L8 1.33325Z" fill="currentColor"/></svg>
+          IT導入補助金2026対応システム - デモ環境
+        </div>
+
+        <!-- Dashboard Page -->
+        <div id="dashboard" class="screen active">
+          <div class="dashboard-widgets">
+            <div class="widget-row">
+              <div class="widget-card">
+                <div class="widget-icon">💰</div>
+                <div class="widget-content">
+                  <div class="widget-title">今日の売上予定</div>
+                  <div class="widget-value" id="dashboard-today-sales">¥450,000</div>
+                  <div class="widget-meta">3件の受注予定</div>
+                </div>
+              </div>
+              <div class="widget-card">
+                <div class="widget-icon">⏰</div>
+                <div class="widget-content">
+                  <div class="widget-title">未処理タスク</div>
+                  <div class="widget-value" id="dashboard-open-tasks">7</div>
+                  <div class="widget-meta">期限内対応が必要</div>
+                </div>
+              </div>
+              <div class="widget-card">
+                <div class="widget-icon">📋</div>
+                <div class="widget-content">
+                  <div class="widget-title">今月の受注</div>
+                  <div class="widget-value" id="dashboard-orders">24</div>
+                  <div class="widget-meta">目標達成率 96%</div>
+                </div>
+              </div>
+              <div class="widget-card">
+                <div class="widget-icon">⚠️</div>
+                <div class="widget-content">
+                  <div class="widget-title">督促中</div>
+                  <div class="widget-value" id="dashboard-delinquencies">2</div>
+                  <div class="widget-meta">¥380,000 未入金</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="widget-row">
+              <div class="widget-card widget-wide">
+                <div class="widget-header">
+                  <div class="widget-title">月別売上推移</div>
+                </div>
+                <div style="width:100%;">
+                  <canvas id="dashboardSalesChart" height="220"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <div class="widget-row">
+              <div class="widget-card widget-wide">
+                <div class="widget-header">
+                  <div class="widget-title">本日のスケジュール</div>
+                  <div class="widget-actions">
+                    <button class="btn btn-sm">予定追加</button>
+                  </div>
+                </div>
+                <div class="schedule-list">
+                  <div class="schedule-item">
+                    <div class="schedule-time">10:00</div>
+                    <div class="schedule-content">
+                      <div class="schedule-title">株式会社ABC 商談</div>
+                      <div class="schedule-meta">オンライン会議</div>
+                    </div>
+                  </div>
+                  <div class="schedule-item">
+                    <div class="schedule-time">14:00</div>
+                    <div class="schedule-content">
+                      <div class="schedule-title">見積書作成</div>
+                      <div class="schedule-meta">株式会社XYZ プロジェクト</div>
+                    </div>
+                  </div>
+                  <div class="schedule-item upcoming">
+                    <div class="schedule-time">16:00</div>
+                    <div class="schedule-content">
+                      <div class="schedule-title">請求書確認</div>
+                      <div class="schedule-meta">今月の締め処理</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="widget-row">
+              <div class="widget-card widget-wide">
+                <div class="widget-header">
+                  <div class="widget-title">最近の活動</div>
+                </div>
+                <div class="activity-list">
+                  <div class="activity-item">
+                    <div class="activity-icon">📄</div>
+                    <div class="activity-content">
+                      <div class="activity-title">見積書を発行しました</div>
+                      <div class="activity-meta">株式会社DEF ¥150,000 - 2時間前</div>
+                    </div>
+                  </div>
+                  <div class="activity-item">
+                    <div class="activity-icon">💳</div>
+                    <div class="activity-content">
+                      <div class="activity-title">入金確認完了</div>
+                      <div class="activity-meta">株式会社GHI ¥200,000 - 4時間前</div>
+                    </div>
+                  </div>
+                  <div class="activity-item">
+                    <div class="activity-icon">👥</div>
+                    <div class="activity-content">
+                      <div class="activity-title">新規顧客を追加しました</div>
+                      <div class="activity-meta">株式会社JKL - 昨日</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Customers List Page -->
+        <div id="customers-list" class="screen">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">顧客一覧</div>
+              <div class="tag tag-blue">CRM</div>
+            </div>
+            <div style="margin-bottom:16px">
+              <button class="btn btn-primary">新規顧客追加</button>
+              <button class="btn">CSVインポート</button>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>会社名</th>
+                  <th>担当者</th>
+                  <th>メール</th>
+                  <th>電話</th>
+                  <th>業種</th>
+                  <th>アクション</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% customers.forEach(customer => { %>
+                <tr>
+                  <td><%= customer.name %></td>
+                  <td><%= customer.company %></td>
+                  <td><%= customer.email %></td>
+                  <td><%= customer.phone %></td>
+                  <td>ITサービス</td>
+                  <td>
+                    <button class="btn">編集</button>
+                    <button class="btn">削除</button>
+                  </td>
+                </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Customers New Page -->
+        <div id="customers-new" class="screen">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">顧客新規登録</div>
+              <div class="tag tag-blue">CRM</div>
+            </div>
+            <form style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+              <div>
+                <label style="display:block;font-size:12px;margin-bottom:4px">会社名 *</label>
+                <input type="text" required style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px">
+              </div>
+              <div>
+                <label style="display:block;font-size:12px;margin-bottom:4px">担当者名 *</label>
+                <input type="text" required style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px">
+              </div>
+              <div>
+                <label style="display:block;font-size:12px;margin-bottom:4px">メールアドレス *</label>
+                <input type="email" required style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px">
+              </div>
+              <div>
+                <label style="display:block;font-size:12px;margin-bottom:4px">電話番号</label>
+                <input type="tel" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px">
+              </div>
+              <div>
+                <label style="display:block;font-size:12px;margin-bottom:4px">業種</label>
+                <select style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px">
+                  <option>ITサービス</option>
+                  <option>製造業</option>
+                  <option>小売業</option>
+                  <option>その他</option>
+                </select>
+              </div>
+              <div>
+                <label style="display:block;font-size:12px;margin-bottom:4px">住所</label>
+                <input type="text" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px">
+              </div>
+              <div style="grid-column:span 2">
+                <label style="display:block;font-size:12px;margin-bottom:4px">備考</label>
+                <textarea style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;min-height:80px"></textarea>
+              </div>
+              <div style="grid-column:span 2;margin-top:16px">
+                <button class="btn btn-primary" type="submit">顧客登録</button>
+                <button class="btn" type="button">キャンセル</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Customers History Page -->
+        <div id="customers-history" class="screen">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">対応履歴</div>
+              <div class="tag tag-blue">CRM</div>
+            </div>
+            <div style="margin-bottom:16px">
+              <select style="padding:6px 12px;border:1px solid #ddd;border-radius:4px">
+                <option>全ての顧客</option>
+                <option>株式会社ABC</option>
+                <option>株式会社DEF</option>
+              </select>
+              <button class="btn">フィルタ適用</button>
+            </div>
+            <div class="activity-list">
+              <div class="activity-item">
+                <div class="activity-icon">📞</div>
+                <div class="activity-content">
+                  <div class="activity-title">電話対応: システム要件確認</div>
+                  <div class="activity-meta">株式会社ABC - 田中太郎 - 2時間前</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-icon">📧</div>
+                <div class="activity-content">
+                  <div class="activity-title">メール送信: 見積書送付</div>
+                  <div class="activity-meta">株式会社DEF - 佐藤花子 - 昨日</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-icon">👥</div>
+                <div class="activity-content">
+                  <div class="activity-title">面談: 新規プロジェクト相談</div>
+                  <div class="activity-meta">株式会社GHI - 鈴木次郎 - 3日前</div>
+                </div>
+              </div>
+            </div>
+            <div style="margin-top:16px">
+              <button class="btn btn-primary">新規対応記録</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Orders List Page -->
+        <div id="orders-list" class="screen">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">受注一覧</div>
+              <div class="tag tag-blue">インボイス対応</div>
+            </div>
+            <div style="margin-bottom:16px;display:flex;gap:8px">
+              <button class="btn btn-primary">新規見積作成</button>
+              <button class="btn">発注書作成</button>
+              <button class="btn">納品書作成</button>
+            </div>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>受注番号</th>
+                  <th>顧客名</th>
+                  <th>件名</th>
+                  <th>金額</th>
+                  <th>税込金額</th>
+                  <th>ステータス</th>
+                  <th>作成日</th>
+                  <th>アクション</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>ORD-2026-0001</td>
+                  <td>株式会社ABC</td>
+                  <td>システム開発</td>
+                  <td>¥135,000</td>
+                  <td>¥148,500</td>
+                  <td><span class="tag tag-blue">見積中</span></td>
+                  <td>2026-04-09</td>
+                  <td>
+                    <button class="btn">編集</button>
+                    <button class="btn">PDF</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>ORD-2026-0002</td>
+                  <td>株式会社DEF</td>
+                  <td>コンサルティング</td>
+                  <td>¥200,000</td>
+                  <td>¥220,000</td>
+                  <td><span class="tag tag-green">受注確定</span></td>
+                  <td>2026-04-08</td>
+                  <td>
+                    <button class="btn">編集</button>
+                    <button class="btn">PDF</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>ORD-2026-0003</td>
+                  <td>株式会社GHI</td>
+                  <td>保守契約</td>
+                  <td>¥50,000</td>
+                  <td>¥55,000</td>
+                  <td><span class="tag tag-amber">発注書送付済</span></td>
+                  <td>2026-04-07</td>
+                  <td>
+                    <button class="btn">編集</button>
+                    <button class="btn">PDF</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div style="margin-top:20px;padding:16px;background:#E6F1FB;border-radius:8px">
+              <h4 style="margin-bottom:8px;color:#0C447C">📋 インボイス制度対応</h4>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;font-size:12px">
+                <div>
+                  <strong>登録番号:</strong><br>
+                  T1234567890123
+                </div>
+                <div>
+                  <strong>事業者名:</strong><br>
+                  合同会社UMA
+                </div>
+                <div>
+                  <strong>税率別表示:</strong><br>
+                  標準: 10% / 軽減: 8%
+                </div>
+                <div>
+                  <strong>対応状況:</strong><br>
+                  ✅ 適格請求書発行事業者
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Orders Quote Page -->
+        <div id="orders-quote" class="screen">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">見積書作成</div>
+              <div class="tag tag-blue">インボイス対応</div>
+            </div>
+            <div class="invoice-form" style="margin-bottom:20px;padding:16px;border:1px solid #ddd;border-radius:8px;background:#f9f9f9">
+              <h4>見積書作成</h4>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
+                <div>
+                  <label style="display:block;font-size:12px;margin-bottom:4px">顧客名</label>
+                  <select style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px">
+                    <option>株式会社ABC</option>
+                    <option>株式会社DEF</option>
+                    <option>株式会社GHI</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="display:block;font-size:12px;margin-bottom:4px">件名</label>
+                  <input type="text" placeholder="システム開発見積" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px">
+                </div>
+                <div>
+                  <label style="display:block;font-size:12px;margin-bottom:4px">金額</label>
+                  <input type="number" placeholder="150000" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px">
+                </div>
+                <div>
+                  <label style="display:block;font-size:12px;margin-bottom:4px">消費税率</label>
+                  <select style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px">
+                    <option value="0.1">10%</option>
+                    <option value="0.08">8% (軽減税率)</option>
+                  </select>
+                </div>
+              </div>
+              <div style="margin-top:16px;display:flex;gap:8px">
+                <button class="btn btn-primary">見積書生成 (PDF)</button>
+                <button class="btn">下書き保存</button>
+                <button class="btn">キャンセル</button>
+              </div>
+            </div>
+            <div style="padding:16px;background:#FFF3CD;border-radius:8px;border:1px solid #FFEAA7">
+              <h4 style="margin-bottom:8px;color:#856404">💡 見積作成のヒント</h4>
+              <ul style="margin:0;padding-left:16px;font-size:12px;color:#856404">
+                <li>顧客のニーズを明確に記載しましょう</li>
+                <li>税率はインボイス制度に準拠したものを選択してください</li>
+                <li>有効期限を設定することをおすすめします</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Orders Delivery Page -->
+        <div id="orders-delivery" class="screen">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">納品管理</div>
+              <div class="tag tag-green">納品管理</div>
+            </div>
+            <div style="margin-bottom:16px;display:flex;gap:8px">
+              <button class="btn btn-primary">納品書作成</button>
+              <button class="btn">納品完了報告</button>
+            </div>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>納品番号</th>
+                  <th>顧客名</th>
+                  <th>件名</th>
+                  <th>納品予定日</th>
+                  <th>ステータス</th>
+                  <th>アクション</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>DEL-2026-0001</td>
+                  <td>株式会社ABC</td>
+                  <td>システム開発完了</td>
+                  <td>2026-04-15</td>
+                  <td><span class="tag tag-blue">準備中</span></td>
+                  <td>
+                    <button class="btn">詳細</button>
+                    <button class="btn btn-primary">納品完了</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>DEL-2026-0002</td>
+                  <td>株式会社DEF</td>
+                  <td>コンサルティング報告書</td>
+                  <td>2026-04-10</td>
+                  <td><span class="tag tag-green">納品済み</span></td>
+                  <td>
+                    <button class="btn">詳細</button>
+                    <button class="btn">再送</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div style="margin-top:20px;padding:16px;background:#D1ECF1;border-radius:8px;border:1px solid #B8DAFF">
+              <h4 style="margin-bottom:8px;color:#0C5460">📦 納品管理のポイント</h4>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;font-size:12px">
+                <div>
+                  <strong>納品書作成:</strong><br>
+                  インボイス対応の納品書を発行
+                </div>
+                <div>
+                  <strong>ステータス管理:</strong><br>
+                  納品状況をリアルタイムで追跡
+                </div>
+                <div>
+                  <strong>顧客確認:</strong><br>
+                  納品完了時の顧客フィードバック
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Billing Create Page -->
+        <div id="billing-create" class="screen">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">請求書発行</div>
+              <div class="tag tag-amber">決済管理</div>
+            </div>
+            <div style="margin-bottom:16px;display:flex;gap:8px">
+              <button class="btn btn-primary">新規請求書作成</button>
+              <button class="btn">一括請求</button>
+              <button class="btn">請求書テンプレート</button>
+            </div>
+
+            <div class="invoice-form" style="margin-bottom:20px;padding:16px;border:1px solid #ddd;border-radius:8px;background:#f9f9f9">
+              <h4>請求書作成</h4>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
+                <div>
+                  <label style="display:block;font-size:12px;margin-bottom:4px">顧客名</label>
+                  <select style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px">
+                    <option>株式会社ABC</option>
+                    <option>株式会社DEF</option>
+                    <option>株式会社GHI</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="display:block;font-size:12px;margin-bottom:4px">請求書番号</label>
+                  <input type="text" placeholder="INV-2026-0001" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px">
+                </div>
+                <div>
+                  <label style="display:block;font-size:12px;margin-bottom:4px">件名</label>
+                  <input type="text" placeholder="システム開発費用" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px">
+                </div>
+                <div>
+                  <label style="display:block;font-size:12px;margin-bottom:4px">支払期限</label>
+                  <input type="date" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px">
+                </div>
+                <div>
+                  <label style="display:block;font-size:12px;margin-bottom:4px">金額</label>
+                  <input type="number" placeholder="150000" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px">
+                </div>
+                <div>
+                  <label style="display:block;font-size:12px;margin-bottom:4px">消費税率</label>
+                  <select style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px">
+                    <option value="0.1">10%</option>
+                    <option value="0.08">8% (軽減税率)</option>
+                  </select>
+                </div>
+              </div>
+              <div style="margin-top:16px;display:flex;gap:8px">
+                <button class="btn btn-primary">請求書生成 (PDF)</button>
+                <button class="btn">下書き保存</button>
+                <button class="btn">キャンセル</button>
+              </div>
+            </div>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>請求書番号</th>
+                  <th>顧客名</th>
+                  <th>金額</th>
+                  <th>税込金額</th>
+                  <th>ステータス</th>
+                  <th>支払期限</th>
+                  <th>作成日</th>
+                  <th>アクション</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>INV-2026-0001</td>
+                  <td>株式会社ABC</td>
+                  <td>¥135,000</td>
+                  <td>¥148,500</td>
+                  <td><span class="tag tag-amber">未入金</span></td>
+                  <td>2026-04-30</td>
+                  <td>2026-04-09</td>
+                  <td>
+                    <button class="btn">編集</button>
+                    <button class="btn">PDF</button>
+                    <button class="btn btn-primary">決済実行</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>INV-2026-0002</td>
+                  <td>株式会社DEF</td>
+                  <td>¥200,000</td>
+                  <td>¥220,000</td>
+                  <td><span class="tag tag-green">入金済み</span></td>
+                  <td>2026-04-15</td>
+                  <td>2026-04-08</td>
+                  <td>
+                    <button class="btn">領収書</button>
+                    <button class="btn">詳細</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div style="margin-top:20px;padding:16px;background:#FFF3CD;border-radius:8px;border:1px solid #FFEAA7">
+              <h4 style="margin-bottom:8px;color:#856404">💡 請求書発行のポイント</h4>
+              <ul style="margin:0;padding-left:16px;font-size:12px;color:#856404">
+                <li>インボイス制度に対応した適格請求書を発行してください</li>
+                <li>支払期限は明確に記載し、顧客に通知しましょう</li>
+                <li>税率は取引内容に応じて適切に選択してください</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Billing Payment Page -->
+        <div id="billing-payment" class="screen">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">入金消込</div>
+              <div class="tag tag-green">決済管理</div>
+            </div>
+            <div style="margin-bottom:16px;display:flex;gap:8px">
+              <button class="btn btn-primary">入金登録</button>
+              <button class="btn">自動消込</button>
+              <button class="btn">入金履歴</button>
+            </div>
+
+            <div class="billing-filters" style="margin-bottom:16px;display:flex;gap:8px">
+              <select style="padding:6px 12px;border:1px solid #ddd;border-radius:4px">
+                <option>全てのステータス</option>
+                <option>未入金</option>
+                <option>入金済み</option>
+                <option>消込待ち</option>
+              </select>
+              <input type="date" placeholder="入金日" style="padding:6px 12px;border:1px solid #ddd;border-radius:4px">
+              <button class="btn">フィルタ適用</button>
+            </div>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>請求書番号</th>
+                  <th>顧客名</th>
+                  <th>請求金額</th>
+                  <th>入金額</th>
+                  <th>残額</th>
+                  <th>ステータス</th>
+                  <th>入金日</th>
+                  <th>アクション</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>INV-2026-0001</td>
+                  <td>株式会社ABC</td>
+                  <td>¥148,500</td>
+                  <td>¥148,500</td>
+                  <td>¥0</td>
+                  <td><span class="tag tag-green">入金済み</span></td>
+                  <td>2026-04-10</td>
+                  <td>
+                    <button class="btn">詳細</button>
+                    <button class="btn">領収書</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>INV-2026-0003</td>
+                  <td>株式会社GHI</td>
+                  <td>¥55,000</td>
+                  <td>¥0</td>
+                  <td>¥55,000</td>
+                  <td><span class="tag tag-amber">未入金</span></td>
+                  <td>-</td>
+                  <td>
+                    <button class="btn btn-primary">入金登録</button>
+                    <button class="btn">督促</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div style="margin-top:20px;padding:16px;background:#D1ECF1;border-radius:8px;border:1px solid #B8DAFF">
+              <h4 style="margin-bottom:8px;color:#0C5460">💰 入金消込のポイント</h4>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;font-size:12px">
+                <div>
+                  <strong>自動消込:</strong><br>
+                  入金データを自動で請求書に紐づけ
+                </div>
+                <div>
+                  <strong>手動消込:</strong><br>
+                  部分入金や手動での対応が可能
+                </div>
+                <div>
+                  <strong>残高管理:</strong><br>
+                  未入金の残額をリアルタイムで確認
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Billing Reminder Page -->
+        <div id="billing-reminder" class="screen">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">督促管理</div>
+              <div class="tag tag-red">決済管理</div>
+            </div>
+            <div style="margin-bottom:16px;display:flex;gap:8px">
+              <button class="btn btn-primary">督促状送信</button>
+              <button class="btn">一括督促</button>
+              <button class="btn">督促履歴</button>
+            </div>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>請求書番号</th>
+                  <th>顧客名</th>
+                  <th>金額</th>
+                  <th>支払期限</th>
+                  <th>督促回数</th>
+                  <th>最終督促日</th>
+                  <th>ステータス</th>
+                  <th>アクション</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>INV-2026-0003</td>
+                  <td>株式会社GHI</td>
+                  <td>¥55,000</td>
+                  <td>2026-04-10</td>
+                  <td>2回</td>
+                  <td>2026-04-12</td>
+                  <td><span class="tag tag-red">督促中</span></td>
+                  <td>
+                    <button class="btn btn-primary">督促状送信</button>
+                    <button class="btn">電話連絡</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>INV-2026-0004</td>
+                  <td>株式会社JKL</td>
+                  <td>¥120,000</td>
+                  <td>2026-04-05</td>
+                  <td>1回</td>
+                  <td>2026-04-08</td>
+                  <td><span class="tag tag-amber">要督促</span></td>
+                  <td>
+                    <button class="btn btn-primary">督促状送信</button>
+                    <button class="btn">詳細</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div style="margin-top:20px;padding:16px;background:#FCEBEB;border-radius:8px;border:1px solid #F5C6CB">
+              <h4 style="margin-bottom:8px;color:#791F1F">⚠️ 督促管理の重要性</h4>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;font-size:12px">
+                <div>
+                  <strong>タイミング:</strong><br>
+                  支払期限から3日以内に督促を開始
+                </div>
+                <div>
+                  <strong>回数管理:</strong><br>
+                  督促回数を記録し、適切な対応を
+                </div>
+                <div>
+                  <strong>法的対応:</strong><br>
+                  必要に応じて法的措置を検討
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Accounting Page -->
+        <div id="accounting" class="screen">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">会計・財務</div>
+              <div class="tag tag-green">財務管理</div>
+            </div>
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-label">当期純利益</div>
+                <div class="stat-val" id="accounting-profit">¥1,250,000</div>
+                <div class="stat-sub">前年比 +15%</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">資産総額</div>
+                <div class="stat-val" id="accounting-assets">¥5,800,000</div>
+                <div class="stat-sub">前年比 +8%</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">負債総額</div>
+                <div class="stat-val" id="accounting-liabilities">¥2,100,000</div>
+                <div class="stat-sub">前年比 -12%</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">自己資本</div>
+                <div class="stat-val" id="accounting-equity">¥3,700,000</div>
+                <div class="stat-sub">前年比 +25%</div>
+              </div>
+            </div>
+            <div style="margin-top:24px;display:grid;grid-template-columns:1fr 1fr;gap:16px">
+              <div class="card" style="padding:16px;">
+                <div class="card-header" style="margin-bottom:12px;">
+                  <div class="card-title">売上帳</div>
+                </div>
+                <table style="font-size:12px;">
+                  <thead>
+                    <tr>
+                      <th>日付</th>
+                      <th>顧客</th>
+                      <th>金額</th>
+                      <th>税率</th>
+                    </tr>
+                  </thead>
+                  <tbody id="ledger-body"></tbody>
+                </table>
+              </div>
+              <div class="card" style="padding:16px;">
+                <div class="card-header" style="margin-bottom:12px;">
+                  <div class="card-title">インボイス集計</div>
+                </div>
+                <div style="display:grid;gap:12px;">
+                  <div class="stat-card" style="padding:12px;">
+                    <div class="stat-label">売上合計</div>
+                    <div class="stat-val" id="invoice-total">¥0</div>
+                  </div>
+                  <div class="stat-card" style="padding:12px;">
+                    <div class="stat-label">消費税 10%</div>
+                    <div class="stat-val" id="invoice-tax10">¥0</div>
+                  </div>
+                  <div class="stat-card" style="padding:12px;">
+                    <div class="stat-label">消費税 8%</div>
+                    <div class="stat-val" id="invoice-tax8">¥0</div>
+                  </div>
+                  <div class="stat-card" style="padding:12px;">
+                    <div class="stat-label">請求書件数</div>
+                    <div class="stat-val" id="invoice-count">0</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div style="margin-top:20px">
+              <h4>仕訳入力</h4>
+              <button class="btn btn-primary">新規仕訳</button>
+              <button class="btn">自動仕訳</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="sales-report" class="screen">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">売上レポート</div>
+              <div class="tag tag-blue">レポート</div>
+            </div>
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-label">総売上</div>
+                <div class="stat-val" id="report-total-sales">¥0</div>
+                <div class="stat-sub">今月の売上合計</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">請求書件数</div>
+                <div class="stat-val" id="report-invoice-count">0</div>
+                <div class="stat-sub">発行済み請求書数</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">10%税合計</div>
+                <div class="stat-val" id="report-tax10">¥0</div>
+                <div class="stat-sub">インボイス10%</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">8%税合計</div>
+                <div class="stat-val" id="report-tax8">¥0</div>
+                <div class="stat-sub">インボイス8%</div>
+              </div>
+            </div>
+            <div style="margin-top:20px;">
+              <canvas id="salesChart" height="180"></canvas>
+            </div>
+            <div style="margin-top:20px;">
+              <h4>最近の売上</h4>
+              <table>
+                <thead>
+                  <tr>
+                    <th>請求書</th>
+                    <th>日付</th>
+                    <th>顧客</th>
+                    <th>金額</th>
+                    <th>税率</th>
+                  </tr>
+                </thead>
+                <tbody id="report-sales-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- User Management Page (Admin Only) -->
+        <% if (user.role === 'admin') { %>
+        <div id="user-management" class="screen">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">ユーザー管理</div>
+              <div class="tag tag-red">管理者専用</div>
+            </div>
+            <div style="margin-bottom:16px">
+              <button class="btn btn-primary">新規ユーザー追加</button>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>ユーザー名</th>
+                  <th>ロール</th>
+                  <th>作成日</th>
+                  <th>アクション</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>admin</td>
+                  <td><span class="tag tag-red">管理者</span></td>
+                  <td>2026-04-09</td>
+                  <td><button class="btn">編集</button></td>
+                </tr>
+                <tr>
+                  <td>employee</td>
+                  <td><span class="tag tag-blue">従業員</span></td>
+                  <td>2026-04-09</td>
+                  <td><button class="btn">編集</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <% } %>
+
+        <!-- System Settings Page (Admin Only) -->
+        <% if (user.role === 'admin') { %>
+        <div id="system-settings" class="screen">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">システム設定</div>
+              <div class="tag tag-red">管理者専用</div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+              <div>
+                <h4 style="margin-bottom:12px">基本設定</h4>
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <label style="font-size:12px">
+                    <input type="checkbox" checked> 自動バックアップ有効化
+                  </label>
+                  <label style="font-size:12px">
+                    <input type="checkbox" checked> メール通知有効化
+                  </label>
+                  <label style="font-size:12px">
+                    <input type="checkbox"> 二段階認証必須
+                  </label>
+                </div>
+              </div>
+              <div>
+                <h4 style="margin-bottom:12px">インボイス設定</h4>
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <div>
+                    <label style="display:block;font-size:12px;margin-bottom:4px">登録番号</label>
+                    <input type="text" value="T1234567890123" style="width:100%;padding:6px;border:1px solid #ddd;border-radius:4px">
+                  </div>
+                  <div>
+                    <label style="display:block;font-size:12px;margin-bottom:4px">事業者名</label>
+                    <input type="text" value="合同会社UMA" style="width:100%;padding:6px;border:1px solid #ddd;border-radius:4px">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div style="margin-top:20px">
+              <button class="btn btn-primary">設定保存</button>
+              <button class="btn">デフォルトに戻す</button>
+            </div>
+          </div>
+        </div>
+        <% } %>
+
+        <!-- AI Chat Page -->
+        <div id="ai-chat" class="screen">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">AIチャット</div>
+              <div class="tag tag-blue">AI機能</div>
+            </div>
+            <div style="height:400px;border:1px solid #ddd;border-radius:8px;padding:16px;margin-top:16px;background:#f9f9f9">
+              <div style="margin-bottom:16px">
+                <strong>AIアシスタント:</strong> こんにちは！BizFlowのAIチャットです。何をお手伝いできますか？
+              </div>
+              <div style="margin-bottom:16px;text-align:right">
+                <div style="display:inline-block;background:#185FA5;color:white;padding:8px 12px;border-radius:8px">
+                  顧客「株式会社ABC」の情報を教えて
+                </div>
+              </div>
+              <div style="margin-bottom:16px">
+                <strong>AIアシスタント:</strong> 株式会社ABCの情報をお調べします...<br>
+                担当者: 田中太郎<br>
+                メール: taro@abc.co.jp<br>
+                電話: 03-1234-5678<br>
+                最新の請求書: ¥150,000 (未入金)
+              </div>
+            </div>
+            <div style="margin-top:16px;display:flex;gap:8px">
+              <input type="text" placeholder="メッセージを入力..." style="flex:1;padding:8px;border:1px solid #ddd;border-radius:4px">
+              <button class="btn btn-primary">送信</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Advisor Page -->
+        <div id="ai-advisor" class="screen">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">AI経営参謀</div>
+              <div class="tag tag-green">AI機能</div>
+            </div>
+            <div style="margin-bottom:20px">
+              <h4>経営分析レポート</h4>
+              <p>現在の経営状況をAIが分析し、戦略的なアドバイスを提供します。</p>
+            </div>
+            <div class="check-grid">
+              <div class="check-item">
+                <div class="check-icon">✓</div>
+                <div class="check-text">売上予測: 来月 +8% 成長見込み</div>
+              </div>
+              <div class="check-item">
+                <div class="check-icon">✓</div>
+                <div class="check-text">キャッシュフロー: 安定した資金繰り</div>
+              </div>
+              <div class="check-item">
+                <div class="check-icon">✓</div>
+                <div class="check-text">顧客分析: LTV上位顧客の特定完了</div>
+              </div>
+              <div class="check-item">
+                <div class="check-icon">✓</div>
+                <div class="check-text">在庫最適化: 発注点の自動調整推奨</div>
+              </div>
+            </div>
+            <div style="margin-top:20px">
+              <button class="btn btn-primary">詳細レポート生成</button>
+              <button class="btn">シナリオ分析</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const salesData = [
+      { invoice: 'INV-1001', date: '2026-01-05', customer: '株式会社ABC', amount: 180000, taxRate: 0.10 },
+      { invoice: 'INV-1002', date: '2026-01-19', customer: '株式会社DEF', amount: 95000, taxRate: 0.08 },
+      { invoice: 'INV-1003', date: '2026-02-03', customer: '株式会社GHI', amount: 240000, taxRate: 0.10 },
+      { invoice: 'INV-1004', date: '2026-02-15', customer: '株式会社JKL', amount: 126000, taxRate: 0.10 },
+      { invoice: 'INV-1005', date: '2026-03-01', customer: '株式会社MNO', amount: 76000, taxRate: 0.08 },
+      { invoice: 'INV-1006', date: '2026-03-09', customer: '株式会社PQR', amount: 320000, taxRate: 0.10 },
+      { invoice: 'INV-1007', date: '2026-03-20', customer: '株式会社STU', amount: 142000, taxRate: 0.08 },
+      { invoice: 'INV-1008', date: '2026-04-02', customer: '株式会社VWX', amount: 210000, taxRate: 0.10 },
+      { invoice: 'INV-1009', date: '2026-04-10', customer: '株式会社YZA', amount: 98000, taxRate: 0.08 },
+      { invoice: 'INV-1010', date: '2026-04-18', customer: '株式会社BCD', amount: 174000, taxRate: 0.10 }
+    ];
+
+    function formatYen(value) {
+      return '¥' + value.toLocaleString();
+    }
+
+    function aggregateSales() {
+      return salesData.reduce((acc, item) => {
+        acc.total += item.amount;
+        if (item.taxRate === 0.10) {
+          acc.tax10 += Math.round(item.amount * 0.10);
+        }
+        if (item.taxRate === 0.08) {
+          acc.tax8 += Math.round(item.amount * 0.08);
+        }
+        return acc;
+      }, { total: 0, tax10: 0, tax8: 0 });
+    }
+
+    function buildMonthlySales() {
+      const monthMap = {};
+      salesData.forEach(item => {
+        const monthKey = item.date.slice(0, 7);
+        monthMap[monthKey] = (monthMap[monthKey] || 0) + item.amount;
+      });
+      const labels = Object.keys(monthMap).sort();
+      const values = labels.map(label => monthMap[label]);
+      return { labels, values };
+    }
+
+    function renderLedger() {
+      const body = document.getElementById('ledger-body');
+      if (!body) return;
+      body.innerHTML = salesData.map(item => `
+        <tr>
+          <td>${item.date}</td>
+          <td>${item.customer}</td>
+          <td>${formatYen(item.amount)}</td>
+          <td>${item.taxRate * 100}%</td>
+        </tr>
+      `).join('');
+    }
+
+    function renderSalesReport() {
+      const summary = aggregateSales();
+      document.getElementById('report-total-sales').textContent = formatYen(summary.total);
+      document.getElementById('report-invoice-count').textContent = salesData.length;
+      document.getElementById('report-tax10').textContent = formatYen(summary.tax10);
+      document.getElementById('report-tax8').textContent = formatYen(summary.tax8);
+
+      const reportBody = document.getElementById('report-sales-body');
+      if (reportBody) {
+        reportBody.innerHTML = salesData.slice().reverse().map(item => `
+          <tr>
+            <td>${item.invoice}</td>
+            <td>${item.date}</td>
+            <td>${item.customer}</td>
+            <td>${formatYen(item.amount)}</td>
+            <td>${item.taxRate * 100}%</td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    function renderAccountingSummary() {
+      const summary = aggregateSales();
+      document.getElementById('invoice-total').textContent = formatYen(summary.total);
+      document.getElementById('invoice-tax10').textContent = formatYen(summary.tax10);
+      document.getElementById('invoice-tax8').textContent = formatYen(summary.tax8);
+      document.getElementById('invoice-count').textContent = salesData.length;
+      renderLedger();
+    }
+
+    function renderDashboardSummary() {
+      const summary = aggregateSales();
+      const currentMonth = '2026-04';
+      const currentMonthSales = salesData
+        .filter(item => item.date.startsWith(currentMonth))
+        .reduce((sum, item) => sum + item.amount, 0);
+      const currentMonthOrders = salesData.filter(item => item.date.startsWith(currentMonth)).length;
+      document.getElementById('dashboard-today-sales').textContent = formatYen(currentMonthSales);
+      document.getElementById('dashboard-open-tasks').textContent = '5';
+      document.getElementById('dashboard-orders').textContent = currentMonthOrders;
+      document.getElementById('dashboard-delinquencies').textContent = '3';
+      if (document.getElementById('dashboardSalesChart')) {
+        const chartData = buildMonthlySales();
+        const ctx = document.getElementById('dashboardSalesChart').getContext('2d');
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: chartData.labels,
+            datasets: [{
+              label: '月別売上',
+              data: chartData.values,
+              backgroundColor: 'rgba(56,189,248,0.8)',
+              borderColor: 'rgba(56,189,248,1)',
+              borderWidth: 1,
+              borderRadius: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: { grid: { display: false }, ticks: { color: '#64748B' } },
+              y: { ticks: { color: '#64748B', callback: value => '¥' + value.toLocaleString() }, grid: { color: 'rgba(148,163,184,0.2)' } }
+            },
+            plugins: { legend: { display: false } }
+          }
+        });
+      }
+    }
+
+    function renderAIAdvisor() {
+      const commentContainer = document.createElement('div');
+      commentContainer.style.marginTop = '16px';
+      commentContainer.innerHTML = `
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:18px;">
+          <div style="font-size:14px;font-weight:600;color:#0f172a;margin-bottom:10px;">AI分析コメント</div>
+          <p style="font-size:13px;color:#334155;line-height:1.7;margin-bottom:10px;">今月は先月比で10%売上が向上しています。特にB2Bの受注が好調で、請求書の回収速度も改善しています。</p>
+          <p style="font-size:13px;color:#334155;line-height:1.7;">インボイス10%の売上が全体の55%を占めており、消費税10%対応の入金処理を優先するとキャッシュフローが安定します。</p>
+        </div>
+      `;
+      const aiAdvisorPage = document.getElementById('ai-advisor');
+      if (aiAdvisorPage) {
+        aiAdvisorPage.appendChild(commentContainer);
+      }
+    }
+
+    function showPage(pageId) {
+      document.querySelectorAll('.screen').forEach(screen => {
+        screen.classList.remove('active');
+      });
+      const targetScreen = document.getElementById(pageId);
+      if (targetScreen) {
+        targetScreen.classList.add('active');
+      }
+      const pageTitles = {
+        'dashboard': 'ダッシュボード',
+        'customers-list': '顧客一覧',
+        'customers-new': '顧客新規登録',
+        'customers-history': '対応履歴',
+        'orders-quote': '見積書作成',
+        'orders-list': '受注一覧',
+        'orders-delivery': '納品管理',
+        'billing-create': '請求書発行',
+        'billing-payment': '入金消込・管理',
+        'billing-reminder': '支払督促',
+        'accounting': '会計・財務',
+        'sales-report': '売上レポート',
+        'user-management': 'ユーザー管理',
+        'system-settings': 'システム設定',
+        'ai-chat': 'AIチャット',
+        'ai-advisor': 'AI経営参謀'
+      };
+      const titleElement = document.querySelector('.page-title');
+      if (titleElement && pageTitles[pageId]) {
+        titleElement.textContent = pageTitles[pageId];
+      }
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      const activeItem = document.querySelector(`[data-page="${pageId}"]`);
+      if (activeItem) {
+        activeItem.classList.add('active');
+      }
+    }
+
+    document.querySelectorAll('.nav-item.parent').forEach(parentItem => {
+      parentItem.addEventListener('click', function() {
+        const section = this.closest('.nav-section');
+        if (!section) return;
+        const submenu = section.querySelector('.nav-submenu');
+        if (!submenu) return;
+        submenu.classList.toggle('expanded');
+        this.classList.toggle('expanded');
+      });
+    });
+
+    document.querySelectorAll('.nav-item.child').forEach(childItem => {
+      childItem.addEventListener('click', function(event) {
+        event.stopPropagation();
+        const pageId = this.getAttribute('data-page');
+        if (pageId) {
+          showPage(pageId);
+        }
+      });
+    });
+
+    document.querySelectorAll('.nav-item[data-page]:not(.parent):not(.child)').forEach(item => {
+      item.addEventListener('click', function(event) {
+        event.stopPropagation();
+        const pageId = this.getAttribute('data-page');
+        if (pageId) {
+          showPage(pageId);
+        }
+      });
+    });
+
+    renderAccountingSummary();
+    renderSalesReport();
+    renderDashboardSummary();
+    renderAIAdvisor();
+  </script>
+      document.querySelectorAll('.screen').forEach(screen => {
+        screen.classList.remove('active');
+      });
+      const targetScreen = document.getElementById(pageId);
+      if (targetScreen) {
+        targetScreen.classList.add('active');
+      }
+      const pageTitles = {
+        'dashboard': 'ダッシュボード',
+        'customers-list': '顧客一覧',
+        'customers-new': '顧客新規登録',
+        'customers-history': '対応履歴',
+        'orders-quote': '見積書作成',
+        'orders-list': '受注一覧',
+        'orders-delivery': '納品管理',
+        'billing-create': '請求書発行',
+        'billing-payment': '入金消込・管理',
+        'billing-reminder': '支払督促',
+        'sales-report': '売上レポート',
+        'user-management': 'ユーザー管理',
+        'system-settings': 'システム設定',
+        'ai-advisor': 'AI経営参謀'
+      };
+      const titleElement = document.querySelector('.page-title');
+      if (titleElement && pageTitles[pageId]) {
+        titleElement.textContent = pageTitles[pageId];
+      }
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      const activeItem = document.querySelector(`[data-page="${pageId}"]`);
+      if (activeItem) {
+        activeItem.classList.add('active');
+      }
+    }
+
+    document.querySelectorAll('.nav-item.parent').forEach(parentItem => {
+      parentItem.addEventListener('click', function() {
+        const section = this.closest('.nav-section');
+        if (!section) return;
+        const submenu = section.querySelector('.nav-submenu');
+        if (!submenu) return;
+        submenu.classList.toggle('expanded');
+        this.classList.toggle('expanded');
+      });
+    });
+
+    document.querySelectorAll('.nav-item.child').forEach(childItem => {
+      childItem.addEventListener('click', function(event) {
+        event.stopPropagation();
+        const pageId = this.getAttribute('data-page');
+        if (pageId) {
+          showPage(pageId);
+        }
+      });
+    });
+
+    document.querySelectorAll('.nav-item[data-page]:not(.parent):not(.child)').forEach(item => {
+      item.addEventListener('click', function(event) {
+        event.stopPropagation();
+        const pageId = this.getAttribute('data-page');
+        if (pageId) {
+          showPage(pageId);
+        }
+      });
+    });
+  </script>
+</body>
+</html></content>
+<parameter name="filePath">c:\Users\ei-li\OneDrive\デスクトップ\AIサイト\IThojokin2026_BizFlow\views\system.ejs

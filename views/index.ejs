@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BizFlow | 中小企業向け業務管理システム</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Variables ── */
+    :root {
+      --bg:        #0d0f14;
+      --surface:   #161922;
+      --surface2:  #1e2330;
+      --border:    #2a3045;
+      --accent:    #3d7fff;
+      --accent2:   #00d4a0;
+      --warn:      #f59e0b;
+      --danger:    #ef4444;
+      --text:      #e8ecf5;
+      --muted:     #7a8499;
+      --radius:    10px;
+      --font:      'Noto Sans JP', sans-serif;
+      --mono:      'DM Mono', monospace;
+      --sidebar-w: 230px;
+      --header-h:  60px;
+    }
+
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      min-height: 100vh;
+      font-size: 14px;
+    }
+    a { color: inherit; text-decoration: none; }
+    input, select, textarea, button {
+      font-family: var(--font);
+      font-size: 14px;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 100;
+    }
+    .sidebar-logo {
+      padding: 20px 22px;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -.5px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text);
+    }
+    .sidebar-logo span { color: var(--accent); }
+    .nav-section {
+      padding: 18px 14px 6px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 7px;
+      margin: 2px 8px;
+      cursor: pointer;
+      color: var(--muted);
+      transition: all .18s;
+      font-size: 13.5px;
+    }
+    .nav-item:hover { background: var(--surface2); color: var(--text); }
+    .nav-item.active { background: rgba(61,127,255,.15); color: var(--accent); }
+    .nav-item .icon { font-size: 16px; width: 20px; text-align: center; }
+    .nav-badge {
+      margin-left: auto;
+      background: var(--accent);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 20px;
+    }
+    .sidebar-bottom {
+      margin-top: auto;
+      padding: 14px;
+      border-top: 1px solid var(--border);
+    }
+    .user-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px;
+      border-radius: 8px;
+      background: var(--surface2);
+    }
+    .user-avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 13px; color: #fff;
+      flex-shrink: 0;
+    }
+    .user-info { flex: 1; min-width: 0; }
+    .user-name { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .user-role { font-size: 11px; color: var(--muted); }
+    .logout-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px;
+      transition: color .18s;
+    }
+    .logout-btn:hover { color: var(--danger); }
+
+    /* ── Main layout ── */
+    .main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .topbar {
+      height: var(--header-h);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 28px;
+      gap: 16px;
+      background: var(--surface);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .topbar-title { font-size: 15px; font-weight: 600; }
+    .topbar-spacer { flex: 1; }
+    .topbar-date { font-size: 12px; color: var(--muted); font-family: var(--mono); }
+
+    /* ── Content ── */
+    .content {
+      padding: 28px;
+      flex: 1;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0;
+    }
+    .tab-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      padding: 10px 18px;
+      cursor: pointer;
+      font-size: 13.5px;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: all .18s;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── Cards & KPI ── */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .kpi-label { font-size: 11.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
+    .kpi-value { font-size: 26px; font-weight: 700; font-family: var(--mono); }
+    .kpi-value.green { color: var(--accent2); }
+    .kpi-value.blue  { color: var(--accent); }
+    .kpi-value.amber { color: var(--warn); }
+    .kpi-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+    /* ── Table ── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .section-title { font-size: 14px; font-weight: 600; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { background: var(--surface2); }
+    th {
+      padding: 11px 16px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13.5px;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: rgba(255,255,255,.025); }
+    .mono { font-family: var(--mono); font-size: 12.5px; }
+
+    /* Status badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11.5px;
+      font-weight: 500;
+    }
+    .badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; }
+    .badge-paid    { background: rgba(0,212,160,.15); color: var(--accent2); }
+    .badge-paid::before { background: var(--accent2); }
+    .badge-pending { background: rgba(245,158,11,.15); color: var(--warn); }
+    .badge-pending::before { background: var(--warn); }
+    .badge-draft   { background: rgba(122,132,153,.15); color: var(--muted); }
+    .badge-draft::before { background: var(--muted); }
+    .badge-signed  { background: rgba(0,212,160,.15); color: var(--accent2); }
+    .badge-signed::before { background: var(--accent2); }
+    .badge-expired { background: rgba(239,68,68,.15); color: var(--danger); }
+    .badge-expired::before { background: var(--danger); }
+    .badge-cancelled { background: rgba(122,132,153,.15); color: var(--muted); }
+    .badge-cancelled::before { background: var(--muted); }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 7px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: all .18s;
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: #5590ff; }
+    .btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+    .btn-ghost:hover { background: var(--surface2); color: var(--text); }
+    .btn-danger { background: rgba(239,68,68,.15); color: var(--danger); border: 1px solid rgba(239,68,68,.3); }
+    .btn-danger:hover { background: rgba(239,68,68,.25); }
+    .btn-sm { padding: 5px 10px; font-size: 12px; }
+    .btn-icon {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      width: 30px; height: 30px;
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all .18s; font-size: 13px;
+    }
+    .btn-icon:hover { color: var(--accent); border-color: var(--accent); }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.7);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      width: 480px;
+      max-width: 95vw;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: slideUp .2s ease;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .modal-title { font-size: 15px; font-weight: 600; }
+    .modal-close {
+      background: none; border: none;
+      color: var(--muted); cursor: pointer; font-size: 20px;
+      transition: color .18s;
+    }
+    .modal-close:hover { color: var(--text); }
+    .modal-body { padding: 24px; }
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* ── Form ── */
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 6px; }
+    .form-label .req { color: var(--danger); margin-left: 3px; }
+    .form-control {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 9px 12px;
+      color: var(--text);
+      transition: border-color .18s;
+    }
+    .form-control:focus { outline: none; border-color: var(--accent); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-hint { font-size: 11px; color: var(--muted); margin-top: 5px; }
+
+    /* ── 電子署名パネル ── */
+    .sign-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .sign-stat {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      text-align: center;
+    }
+    .sign-stat-num { font-size: 22px; font-weight: 700; font-family: var(--mono); }
+    .sign-stat-label { font-size: 11px; color: var(--muted); margin-top: 3px; }
+    .doc-type-badge {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: var(--mono);
+    }
+    .doc-contract { background: rgba(61,127,255,.15); color: var(--accent); }
+    .doc-order    { background: rgba(0,212,160,.15);  color: var(--accent2); }
+    .doc-nda      { background: rgba(245,158,11,.15); color: var(--warn); }
+    .doc-other    { background: rgba(122,132,153,.15); color: var(--muted); }
+    .sign-url-box {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 10px 12px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--accent2);
+      word-break: break-all;
+      margin-top: 14px;
+    }
+
+    /* ── Toast ── */
+    #toast {
+      position: fixed;
+      bottom: 28px; right: 28px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 18px;
+      font-size: 13px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 999;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all .25s;
+      pointer-events: none;
+    }
+    #toast.show { opacity: 1; transform: translateY(0); }
+    #toast.success .toast-icon { color: var(--accent2); }
+    #toast.error   .toast-icon { color: var(--danger); }
+
+    /* ── Empty state ── */
+    .empty {
+      text-align: center;
+      padding: 48px;
+      color: var(--muted);
+    }
+    .empty-icon { font-size: 36px; margin-bottom: 10px; }
+    .empty p { font-size: 13px; }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════ SIDEBAR ════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <span>Biz</span>Flow
+  </div>
+
+  <div class="nav-section">メイン</div>
+  <div class="nav-item active" onclick="switchTab('dashboard')">
+    <span class="icon">📊</span> ダッシュボード
+  </div>
+  <div class="nav-item" onclick="switchTab('customers')">
+    <span class="icon">👥</span> 顧客管理
+  </div>
+  <div class="nav-item" onclick="switchTab('invoices')">
+    <span class="icon">📄</span> 請求書管理
+  </div>
+
+  <div class="nav-section">新機能</div>
+  <div class="nav-item" onclick="switchTab('signatures')">
+    <span class="icon">✍️</span> 電子署名
+    <span class="nav-badge" id="pending-badge">-</span>
+  </div>
+
+  <div class="sidebar-bottom">
+    <div class="user-card">
+      <div class="user-avatar" id="user-avatar">-</div>
+      <div class="user-info">
+        <div class="user-name" id="user-name"><%= user.username %></div>
+        <div class="user-role" id="user-role"><%= user.role %></div>
+      </div>
+      <form action="/logout" method="POST" style="display:inline">
+        <button class="logout-btn" title="ログアウト">⏻</button>
+      </form>
+    </div>
+  </div>
+</aside>
+
+<!-- ════════════════ MAIN ════════════════ -->
+<main class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="topbar-title">ダッシュボード</div>
+    <div class="topbar-spacer"></div>
+    <div class="topbar-date" id="topbar-date"></div>
+  </div>
+
+  <div class="content">
+
+    <!-- ── Tab: Dashboard ── -->
+    <div class="tab-panel active" id="panel-dashboard">
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">登録顧客数</div>
+          <div class="kpi-value blue" id="kpi-customers"><%= customers.length %></div>
+          <div class="kpi-sub">アクティブ取引先</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">請求書件数</div>
+          <div class="kpi-value amber" id="kpi-invoices"><%= invoices.length %></div>
+          <div class="kpi-sub">直近10件表示</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">入金済み売上</div>
+          <div class="kpi-value green" id="kpi-revenue">
+            ¥<%= (stats.revenue || 0).toLocaleString() %>
+          </div>
+          <div class="kpi-sub">税込合計（paid）</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">署名依頼中</div>
+          <div class="kpi-value amber" id="kpi-pending-sig">
+            <%= signatures.filter(s => s.status === 'pending').length %>
+          </div>
+          <div class="kpi-sub">電子署名 未完了</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="padding:16px 20px; border-bottom:1px solid var(--border); font-size:13.5px; font-weight:600;">
+          最近の請求書
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>顧客名</th>
+              <th>金額（税抜）</th>
+              <th>消費税</th>
+              <th>合計（税込）</th>
+              <th>ステータス</th>
+              <th>作成日</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% invoices.slice(0,5).forEach(inv => { %>
+            <tr>
+              <td><strong><%= inv.customer_name %></strong><br><span style="font-size:11px;color:var(--muted)"><%= inv.company %></span></td>
+              <td class="mono">¥<%= inv.amount.toLocaleString() %></td>
+              <td class="mono">¥<%= (inv.tax_amount || 0).toLocaleString() %></td>
+              <td class="mono"><strong>¥<%= (inv.total_amount || inv.amount).toLocaleString() %></strong></td>
+              <td><span class="badge badge-<%= inv.status %>"><%= inv.status === 'paid' ? '入金済' : inv.status === 'pending' ? '未入金' : '下書き' %></span></td>
+              <td class="mono" style="color:var(--muted);font-size:12px"><%= new Date(inv.created_at).toLocaleDateString('ja-JP') %></td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div style="padding:16px 20px; border-bottom:1px solid var(--border); font-size:13.5px; font-weight:600;">
+          電子署名 最新状況
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>書類名</th>
+              <th>種別</th>
+              <th>送付先</th>
+              <th>ステータス</th>
+              <th>期限</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% signatures.slice(0,5).forEach(sig => { %>
+            <tr>
+              <td><%= sig.document_title %></td>
+              <td><span class="doc-type-badge doc-<%= sig.document_type %>"><%= sig.document_type %></span></td>
+              <td><%= sig.recipient_name %><br><span style="font-size:11px;color:var(--muted)"><%= sig.recipient_email %></span></td>
+              <td><span class="badge badge-<%= sig.status %>">
+                <%= sig.status === 'signed' ? '署名済' : sig.status === 'pending' ? '署名待ち' : sig.status === 'expired' ? '期限切れ' : 'キャンセル' %>
+              </span></td>
+              <td class="mono" style="font-size:11.5px;color:var(--muted)"><%= new Date(sig.expires_at).toLocaleDateString('ja-JP') %></td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── Tab: Customers ── -->
+    <div class="tab-panel" id="panel-customers">
+      <div class="section-header">
+        <div class="section-title">顧客一覧</div>
+        <button class="btn btn-primary" onclick="openModal('modal-add-customer')">＋ 顧客追加</button>
+      </div>
+      <div class="card">
+        <table>
+          <thead>
+            <tr>
+              <th>顧客名 / 会社名</th>
+              <th>メールアドレス</th>
+              <th>電話番号</th>
+              <th>インボイス登録番号</th>
+              <th>登録日</th>
+            </tr>
+          </thead>
+          <tbody id="customers-tbody">
+            <% customers.forEach(c => { %>
+            <tr>
+              <td>
+                <strong><%= c.name %></strong><br>
+                <span style="font-size:11px;color:var(--muted)"><%= c.company %></span>
+              </td>
+              <td><%= c.email %></td>
+              <td class="mono"><%= c.phone %></td>
+              <td class="mono" style="color:var(--accent2)"><%= c.invoice_number || '—' %></td>
+              <td class="mono" style="color:var(--muted);font-size:12px"><%= new Date(c.created_at).toLocaleDateString('ja-JP') %></td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── Tab: Invoices ── -->
+    <div class="tab-panel" id="panel-invoices">
+      <div class="section-header">
+        <div class="section-title">請求書管理</div>
+        <button class="btn btn-primary" onclick="openModal('modal-add-invoice')">＋ 請求書作成</button>
+      </div>
+      <div class="card">
+        <table>
+          <thead>
+            <tr>
+              <th>顧客名</th>
+              <th>適格請求書発行事業者番号</th>
+              <th>税抜金額</th>
+              <th>税率</th>
+              <th>消費税額</th>
+              <th>税込合計</th>
+              <th>ステータス</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="invoices-tbody">
+            <% invoices.forEach(inv => { %>
+            <tr>
+              <td><strong><%= inv.customer_name %></strong></td>
+              <td class="mono" style="color:var(--accent2);font-size:12px"><%= inv.invoice_reg_number || '—' %></td>
+              <td class="mono">¥<%= inv.amount.toLocaleString() %></td>
+              <td class="mono"><%= Math.round((inv.tax_rate || 0.1) * 100) %>%</td>
+              <td class="mono">¥<%= (inv.tax_amount || 0).toLocaleString() %></td>
+              <td class="mono"><strong>¥<%= (inv.total_amount || inv.amount).toLocaleString() %></strong></td>
+              <td><span class="badge badge-<%= inv.status %>">
+                <%= inv.status === 'paid' ? '入金済' : inv.status === 'pending' ? '未入金' : '下書き' %>
+              </span></td>
+              <td>
+                <% if (inv.status === 'pending') { %>
+                <button class="btn btn-sm btn-ghost" onclick="updateInvoiceStatus(<%= inv.id %>, 'paid')">入金済にする</button>
+                <% } %>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── Tab: Signatures (電子署名) ── -->
+    <div class="tab-panel" id="panel-signatures">
+      <div class="section-header">
+        <div class="section-title">電子署名管理</div>
+        <button class="btn btn-primary" onclick="openModal('modal-add-signature')">✍️ 署名依頼を作成</button>
+      </div>
+
+      <div class="sign-stats">
+        <div class="sign-stat">
+          <div class="sign-stat-num blue" id="stat-pending-count">
+            <%= signatures.filter(s => s.status === 'pending').length %>
+          </div>
+          <div class="sign-stat-label">署名待ち</div>
+        </div>
+        <div class="sign-stat">
+          <div class="sign-stat-num" style="color:var(--accent2)" id="stat-signed-count">
+            <%= signatures.filter(s => s.status === 'signed').length %>
+          </div>
+          <div class="sign-stat-label">署名完了</div>
+        </div>
+        <div class="sign-stat">
+          <div class="sign-stat-num amber" id="stat-expired-count">
+            <%= signatures.filter(s => s.status === 'expired').length %>
+          </div>
+          <div class="sign-stat-label">期限切れ</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <table>
+          <thead>
+            <tr>
+              <th>書類タイトル</th>
+              <th>種別</th>
+              <th>送付先</th>
+              <th>ステータス</th>
+              <th>署名期限</th>
+              <th>署名日時</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="signatures-tbody">
+            <% if (signatures.length === 0) { %>
+            <tr><td colspan="7">
+              <div class="empty">
+                <div class="empty-icon">✍️</div>
+                <p>署名依頼がありません</p>
+              </div>
+            </td></tr>
+            <% } %>
+            <% signatures.forEach(sig => { %>
+            <tr>
+              <td><strong><%= sig.document_title %></strong></td>
+              <td><span class="doc-type-badge doc-<%= sig.document_type %>"><%= sig.document_type %></span></td>
+              <td>
+                <%= sig.recipient_name %><br>
+                <span style="font-size:11px;color:var(--muted)"><%= sig.recipient_email %></span>
+              </td>
+              <td><span class="badge badge-<%= sig.status %>">
+                <%= {signed:'署名済', pending:'署名待ち', expired:'期限切れ', cancelled:'キャンセル'}[sig.status] %>
+              </span></td>
+              <td class="mono" style="font-size:12px;color:var(--muted)"><%= new Date(sig.expires_at).toLocaleDateString('ja-JP') %></td>
+              <td class="mono" style="font-size:12px;color:var(--accent2)">
+                <%= sig.signed_at ? new Date(sig.signed_at).toLocaleString('ja-JP') : '—' %>
+              </td>
+              <td>
+                <% if (sig.status === 'pending') { %>
+                <button class="btn btn-sm btn-ghost" onclick="copySignUrl('<%= sig.token %>')">🔗 URLコピー</button>
+                <button class="btn btn-sm btn-danger" onclick="cancelSignature(<%= sig.id %>)" style="margin-left:6px">取消</button>
+                <% } %>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</main>
+
+<!-- ════════════════ MODALS ════════════════ -->
+
+<!-- 顧客追加 -->
+<div class="modal-overlay" id="modal-add-customer">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">顧客を追加</div>
+      <button class="modal-close" onclick="closeModal('modal-add-customer')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">顧客名<span class="req">*</span></label>
+          <input class="form-control" id="c-name" placeholder="田中 太郎" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">会社名</label>
+          <input class="form-control" id="c-company" placeholder="株式会社◯◯" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">メールアドレス</label>
+        <input class="form-control" id="c-email" type="email" placeholder="example@company.co.jp" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">電話番号</label>
+          <input class="form-control" id="c-phone" placeholder="03-0000-0000" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">インボイス登録番号</label>
+          <input class="form-control" id="c-invoice-num" placeholder="T0000000000000" />
+          <div class="form-hint">適格請求書発行事業者のみ入力</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-customer')">キャンセル</button>
+      <button class="btn btn-primary" onclick="addCustomer()">登録する</button>
+    </div>
+  </div>
+</div>
+
+<!-- 請求書作成 -->
+<div class="modal-overlay" id="modal-add-invoice">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">請求書を作成</div>
+      <button class="modal-close" onclick="closeModal('modal-add-invoice')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">顧客<span class="req">*</span></label>
+        <select class="form-control" id="inv-customer">
+          <option value="">— 選択してください —</option>
+          <% customers.forEach(c => { %>
+          <option value="<%= c.id %>" data-reg="<%= c.invoice_number || '' %>">
+            <%= c.name %> (<%= c.company %>)
+          </option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">適格請求書発行事業者登録番号</label>
+        <input class="form-control" id="inv-reg-num" placeholder="顧客選択で自動入力" readonly style="color:var(--accent2)" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">税抜金額（円）<span class="req">*</span></label>
+          <input class="form-control" id="inv-amount" type="number" placeholder="100000" oninput="calcTax()" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">税率</label>
+          <select class="form-control" id="inv-tax-rate" onchange="calcTax()">
+            <option value="0.10">10%（標準税率）</option>
+            <option value="0.08">8%（軽減税率）</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">消費税額</label>
+          <input class="form-control" id="inv-tax" readonly style="color:var(--muted)" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">税込合計</label>
+          <input class="form-control" id="inv-total" readonly style="color:var(--accent2);font-weight:700" />
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-invoice')">キャンセル</button>
+      <button class="btn btn-primary" onclick="addInvoice()">作成する</button>
+    </div>
+  </div>
+</div>
+
+<!-- 電子署名依頼作成 -->
+<div class="modal-overlay" id="modal-add-signature">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">✍️ 電子署名依頼を作成</div>
+      <button class="modal-close" onclick="closeModal('modal-add-signature')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">書類タイトル<span class="req">*</span></label>
+        <input class="form-control" id="sig-title" placeholder="業務委託契約書_2026年◯月" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">書類種別</label>
+          <select class="form-control" id="sig-type">
+            <option value="contract">契約書 (contract)</option>
+            <option value="order">発注書 (order)</option>
+            <option value="nda">NDA</option>
+            <option value="other">その他</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">署名期限（日数）</label>
+          <select class="form-control" id="sig-expires">
+            <option value="3">3日</option>
+            <option value="7" selected>7日</option>
+            <option value="14">14日</option>
+            <option value="30">30日</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">送付先氏名<span class="req">*</span></label>
+          <input class="form-control" id="sig-recipient-name" placeholder="田中 太郎" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">送付先メール<span class="req">*</span></label>
+          <input class="form-control" id="sig-recipient-email" type="email" placeholder="example@company.co.jp" />
+        </div>
+      </div>
+      <div id="sig-result" style="display:none">
+        <div style="margin-top:6px;font-size:12.5px;color:var(--accent2);font-weight:600">
+          ✅ 署名依頼URLが発行されました
+        </div>
+        <div class="sign-url-box" id="sig-url-display"></div>
+        <div style="margin-top:8px;font-size:11px;color:var(--muted)">
+          このURLを署名者に送付してください（本番では自動メール送信）
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-signature'); document.getElementById('sig-result').style.display='none'">閉じる</button>
+      <button class="btn btn-primary" id="sig-submit-btn" onclick="createSignature()">依頼を送信</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast">
+  <span class="toast-icon" id="toast-icon">✓</span>
+  <span id="toast-msg"></span>
+</div>
+
+<!-- ════════════════ JS ════════════════ -->
+<script>
+  // ── 初期化 ──
+  const username = '<%= user.username %>';
+  document.getElementById('user-avatar').textContent = username.charAt(0).toUpperCase();
+  document.getElementById('topbar-date').textContent = new Date().toLocaleDateString('ja-JP', { year:'numeric', month:'long', day:'numeric', weekday:'short' });
+
+  // pending badge
+  const pendingCount = <%= signatures.filter(s => s.status === 'pending').length %>;
+  document.getElementById('pending-badge').textContent = pendingCount;
+
+  // ── Tab 切替 ──
+  const tabTitles = { dashboard:'ダッシュボード', customers:'顧客管理', invoices:'請求書管理', signatures:'電子署名' };
+  function switchTab(name) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('panel-' + name).classList.add('active');
+    event.currentTarget.classList.add('active');
+    document.getElementById('topbar-title').textContent = tabTitles[name] || name;
+  }
+
+  // ── Modal ──
+  function openModal(id) { document.getElementById(id).classList.add('open'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+  document.querySelectorAll('.modal-overlay').forEach(el => {
+    el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
+  });
+
+  // ── Toast ──
+  let toastTimer;
+  function showToast(msg, type='success') {
+    const el = document.getElementById('toast');
+    document.getElementById('toast-msg').textContent = msg;
+    document.getElementById('toast-icon').textContent = type === 'success' ? '✓' : '✕';
+    el.className = `show ${type}`;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+  }
+
+  // ── 顧客追加 ──
+  async function addCustomer() {
+    const name = document.getElementById('c-name').value.trim();
+    if (!name) return showToast('顧客名を入力してください', 'error');
+    const res = await fetch('/api/customers', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name,
+        email:          document.getElementById('c-email').value,
+        phone:          document.getElementById('c-phone').value,
+        company:        document.getElementById('c-company').value,
+        invoice_number: document.getElementById('c-invoice-num').value,
+      })
+    });
+    const data = await res.json();
+    if (!res.ok) return showToast(data.error, 'error');
+    showToast('顧客を登録しました');
+    closeModal('modal-add-customer');
+    setTimeout(() => location.reload(), 800);
+  }
+
+  // ── 税額計算 ──
+  function calcTax() {
+    const amt  = parseFloat(document.getElementById('inv-amount').value) || 0;
+    const rate = parseFloat(document.getElementById('inv-tax-rate').value) || 0.10;
+    const tax  = Math.floor(amt * rate);
+    document.getElementById('inv-tax').value   = tax   ? `¥${tax.toLocaleString()}` : '';
+    document.getElementById('inv-total').value = amt   ? `¥${(amt + tax).toLocaleString()}` : '';
+  }
+
+  // 顧客選択でインボイス番号を自動入力
+  document.getElementById('inv-customer').addEventListener('change', function() {
+    const opt = this.options[this.selectedIndex];
+    document.getElementById('inv-reg-num').value = opt.dataset.reg || '';
+  });
+
+  // ── 請求書作成 ──
+  async function addInvoice() {
+    const customer_id = document.getElementById('inv-customer').value;
+    const amount      = document.getElementById('inv-amount').value;
+    if (!customer_id || !amount) return showToast('顧客と金額は必須です', 'error');
+    const res = await fetch('/api/invoices', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        customer_id,
+        amount,
+        tax_rate:           document.getElementById('inv-tax-rate').value,
+        invoice_reg_number: document.getElementById('inv-reg-num').value,
+      })
+    });
+    const data = await res.json();
+    if (!res.ok) return showToast(data.error, 'error');
+    showToast(`請求書作成完了（税込 ¥${data.total_amount?.toLocaleString()}）`);
+    closeModal('modal-add-invoice');
+    setTimeout(() => location.reload(), 800);
+  }
+
+  // ── 請求書ステータス更新 ──
+  async function updateInvoiceStatus(id, status) {
+    const res = await fetch(`/api/invoices/${id}/status`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status })
+    });
+    if (res.ok) { showToast('ステータスを更新しました'); setTimeout(() => location.reload(), 800); }
+    else showToast('更新に失敗しました', 'error');
+  }
+
+  // ── 電子署名依頼作成 ──
+  async function createSignature() {
+    const title = document.getElementById('sig-title').value.trim();
+    const rName = document.getElementById('sig-recipient-name').value.trim();
+    const rMail = document.getElementById('sig-recipient-email').value.trim();
+    if (!title || !rName || !rMail) return showToast('必須項目を入力してください', 'error');
+
+    document.getElementById('sig-submit-btn').disabled = true;
+    const res = await fetch('/api/signatures', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        document_title:  title,
+        document_type:   document.getElementById('sig-type').value,
+        recipient_name:  rName,
+        recipient_email: rMail,
+        expires_days:    document.getElementById('sig-expires').value,
+      })
+    });
+    const data = await res.json();
+    document.getElementById('sig-submit-btn').disabled = false;
+    if (!res.ok) return showToast(data.error, 'error');
+
+    const url = location.origin + data.sign_url;
+    document.getElementById('sig-url-display').textContent = url;
+    document.getElementById('sig-result').style.display = 'block';
+    document.getElementById('sig-submit-btn').style.display = 'none';
+    showToast('署名依頼URLを発行しました');
+  }
+
+  // ── 署名URLをコピー ──
+  function copySignUrl(token) {
+    const url = location.origin + '/sign/' + token;
+    navigator.clipboard.writeText(url).then(() => showToast('署名URLをコピーしました'));
+  }
+
+  // ── 署名依頼キャンセル ──
+  async function cancelSignature(id) {
+    if (!confirm('この署名依頼をキャンセルしますか？')) return;
+    const res = await fetch(`/api/signatures/${id}`, { method: 'DELETE' });
+    if (res.ok) { showToast('キャンセルしました'); setTimeout(() => location.reload(), 800); }
+    else showToast('キャンセルに失敗しました', 'error');
+  }
+</script>
+
+</body>
+</html>

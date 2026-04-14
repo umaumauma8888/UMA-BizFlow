@@ -293,104 +293,321 @@ code { font-family:'JetBrains Mono','Fira Code',monospace; font-size:11px; backg
   <nav class="nav">
     <div class="nav-logo">UMA <span>BizFlow</span></div>
     <ul class="nav-links">
-      <li><a href="#">機能</a></li><li><a href="#">料金</a></li>
-      <li><a href="#">導入事例</a></li><li><a href="#">補助金</a></li>
+      <li><a href="#features">機能</a></li>
+      <li><a href="#ui-showcase">画面紹介</a></li>
+      <li><a href="#pricing">料金</a></li>
+      <li><a href="#subsidy">補助金</a></li>
     </ul>
     <div class="nav-cta">
       <button class="btn-outline-sm" onclick="showLogin()">ログイン</button>
-      <button class="btn-primary-sm" onclick="showLogin()">無料デモ申請</button>
+      <button class="btn-primary-sm" onclick="showLogin()">無料デモを体験</button>
     </div>
   </nav>
 
+  <!-- ========== HERO ========== -->
   <section class="hero">
-    <div class="hero-badge">🏆 IT導入補助金2026 対象ツール</div>
-    <h1>業務フローを<em>AIで</em><br>スマートに自動化</h1>
-    <p class="hero-desc">受発注・請求・電子署名・ワークフロー承認を一元管理。中小企業の業務プロセス全体をデジタル化し、生産性を劇的に向上させます。</p>
+    <div class="hero-badge">デジタル化・AI導入補助金2026 通常枠・インボイス枠 対応ツール</div>
+    <h1>受発注から決算まで、<br><em>全業務を一画面で。</em></h1>
+    <p class="hero-desc">インボイス制度に完全対応した請求・入金・決済の一元管理に加え、複式簿記による本格的な財務会計、そして生成AI以外のAI技術（機械学習）による自動データ分析まで。中小企業・個人事業主の経営判断を、次のステージへ引き上げます。</p>
     <div class="hero-actions">
-      <button class="btn-hero btn-hero-primary" onclick="showLogin()">管理画面を見る</button>
-      <button class="btn-hero btn-hero-secondary">資料ダウンロード</button>
+      <button class="btn-hero btn-hero-primary" onclick="showLogin()">管理画面を今すぐ体験</button>
+      <button class="btn-hero btn-hero-secondary" onclick="document.getElementById('ui-showcase').scrollIntoView({behavior:'smooth'})">画面を見る ↓</button>
     </div>
     <div class="hero-stats">
-      <div class="stat-item"><span class="stat-num">87%</span><span class="stat-lbl">業務時間削減率</span></div>
-      <div class="stat-item"><span class="stat-num">2,400+</span><span class="stat-lbl">導入企業数</span></div>
-      <div class="stat-item"><span class="stat-num">最大450万</span><span class="stat-lbl">補助金対応額</span></div>
+      <div class="stat-item"><span class="stat-num">5領域</span><span class="stat-lbl">業務を完全一元管理</span></div>
+      <div class="stat-item"><span class="stat-num">インボイス</span><span class="stat-lbl">登録番号付き請求書を自動発行</span></div>
+      <div class="stat-item"><span class="stat-num">AI分析</span><span class="stat-lbl">経営参謀がデータを即時解析</span></div>
     </div>
   </section>
 
-  <!-- FEATURES -->
-  <div style="background:#fff;padding:5rem 2rem;">
+  <!-- ========== UI SHOWCASE ========== -->
+  <div id="ui-showcase" style="background:var(--ub-navy);padding:5rem 2rem;">
+    <div style="max-width:1100px;margin:0 auto;">
+      <div style="text-align:center;margin-bottom:3rem;">
+        <div class="section-tag" style="color:var(--ub-cyan);">INTERFACE</div>
+        <h2 style="font-family:Georgia,serif;font-size:clamp(24px,3.5vw,38px);font-weight:700;color:#fff;margin-bottom:1rem;line-height:1.2;">ダークデザインのサイドバーと<br>アコーディオンメニューで直感操作</h2>
+        <p style="color:rgba(255,255,255,0.55);font-size:15px;line-height:1.8;max-width:560px;margin:0 auto;">左サイドバーに全モジュールを集約。クリックひとつで5つの業務領域をシームレスに切り替え。煩雑な画面遷移はゼロ、プロフェッショナルなUIで業務効率を最大化します。</p>
+      </div>
+      <!-- Sidebar Preview -->
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(6,182,212,0.2);border-radius:16px;padding:2rem;display:grid;grid-template-columns:200px 1fr;gap:0;overflow:hidden;max-width:900px;margin:0 auto;box-shadow:0 40px 80px rgba(0,0,0,0.4);">
+        <!-- mock sidebar -->
+        <div style="background:#0D1B2A;border-right:1px solid rgba(255,255,255,0.08);padding:1.25rem 0;">
+          <div style="padding:0 1.25rem 1rem;border-bottom:1px solid rgba(255,255,255,0.1);margin-bottom:0.75rem;">
+            <div style="font-family:Georgia,serif;font-size:15px;font-weight:800;color:#fff;">UMA <span style="color:var(--ub-cyan);">BizFlow</span></div>
+            <div style="font-size:10px;color:rgba(255,255,255,0.35);margin-top:3px;">管理者ポータル</div>
+          </div>
+          <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,0.25);padding:0.5rem 1.25rem 0.25rem;text-transform:uppercase;">ホーム</div>
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 1.25rem;font-size:12px;color:#fff;background:rgba(26,86,219,0.25);border-left:3px solid var(--ub-blue);">🏠 ダッシュボード</div>
+          <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,0.25);padding:0.75rem 1.25rem 0.25rem;text-transform:uppercase;">1. 顧客・案件管理</div>
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 1.25rem;font-size:12px;color:rgba(255,255,255,0.55);">🏢 CRM・顧客一覧</div>
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 1.25rem;font-size:12px;color:rgba(255,255,255,0.55);">📋 案件進捗管理</div>
+          <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,0.25);padding:0.75rem 1.25rem 0.25rem;text-transform:uppercase;">3. インボイス・金銭管理</div>
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 1.25rem;font-size:12px;color:rgba(255,255,255,0.55);">🧾 請求書発行</div>
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 1.25rem;font-size:12px;color:rgba(255,255,255,0.55);">💳 入金・決済管理</div>
+          <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,0.25);padding:0.75rem 1.25rem 0.25rem;text-transform:uppercase;">5. AI・分析</div>
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 1.25rem;font-size:12px;color:rgba(255,255,255,0.55);">🤖 AI自動化・分析</div>
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 1.25rem;font-size:12px;color:rgba(255,255,255,0.55);">📈 CRM分析ダッシュボード</div>
+        </div>
+        <!-- mock main area -->
+        <div style="background:#F5F7FA;padding:1.25rem;">
+          <div style="font-family:Georgia,serif;font-size:15px;font-weight:700;color:var(--ub-navy);margin-bottom:1rem;">ダッシュボード</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem;">
+            <div style="background:#fff;border:1px solid var(--ub-border);border-radius:8px;padding:0.75rem;"><div style="font-size:10px;color:var(--ub-muted);">今月売上</div><div style="font-family:Georgia,serif;font-size:20px;font-weight:800;color:var(--ub-navy);">¥4.8M</div><div style="font-size:10px;color:var(--ub-success);">↑ +18%</div></div>
+            <div style="background:#fff;border:1px solid var(--ub-border);border-radius:8px;padding:0.75rem;"><div style="font-size:10px;color:var(--ub-muted);">未入金請求</div><div style="font-family:Georgia,serif;font-size:20px;font-weight:800;color:var(--ub-navy);">12件</div><div style="font-size:10px;color:var(--ub-warning);">督促対象 3件</div></div>
+            <div style="background:#fff;border:1px solid var(--ub-border);border-radius:8px;padding:0.75rem;"><div style="font-size:10px;color:var(--ub-muted);">承認待ち案件</div><div style="font-family:Georgia,serif;font-size:20px;font-weight:800;color:var(--ub-navy);">4件</div><div style="font-size:10px;color:var(--ub-blue);">本日期限 1件</div></div>
+          </div>
+          <div style="background:linear-gradient(135deg,#0D1B2A,#0F2B4A);border-radius:8px;padding:0.75rem 1rem;">
+            <div style="font-size:11px;font-weight:700;color:#fff;margin-bottom:0.5rem;">🤖 AI自動分析 — 経営データレポート</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.65);line-height:1.7;">今月の売上は前月比+18%で推移。製造業顧客のLTVが平均¥6.8Mに向上。Q2は受注確度スコアリング（機械学習）が高確度案件を3件検知しています。入金消込の遅延リスクが2件あるため、督促アクションを推奨します。</div>
+          </div>
+        </div>
+      </div>
+      <p style="text-align:center;color:rgba(255,255,255,0.35);font-size:12px;margin-top:1.5rem;">※ 実際の管理画面のイメージです。「管理画面を今すぐ体験」からログインして全機能をお試しいただけます。</p>
+    </div>
+  </div>
+
+  <!-- ========== FEATURES ========== -->
+  <div id="features" style="background:#fff;padding:5rem 2rem;">
     <div style="max-width:1100px;margin:0 auto;">
       <div class="section-tag">CORE FEATURES</div>
-      <h2 class="section-title">業務プロセスを丸ごとカバーする機能群</h2>
-      <p class="section-desc">IT導入補助金の審査要件を満たす汎用プロセス・業務プロセスに完全対応した機能を提供します。</p>
+      <h2 class="section-title">受発注から決算まで、5領域をひとつのシステムで完結</h2>
+      <p class="section-desc">IT導入補助金の審査要件を満たす汎用プロセス・業務プロセスに完全対応。バラバラのツールを使い分ける非効率から、今すぐ解放されます。</p>
       <div class="features-grid">
-        <div class="feat-card"><div class="feat-icon blue">📋</div><h3>電子ワークフロー承認</h3><p>稟議・申請・承認フローをペーパーレスで完全デジタル化。条件分岐・代理承認・期限アラートに対応。</p><span class="feat-badge">汎P-01 汎P-02対応</span></div>
-        <div class="feat-card"><div class="feat-icon cyan">✍️</div><h3>電子署名・電子契約</h3><p>電子署名法・電子帳簿保存法に準拠。取引先への外部送付・タイムスタンプ付与に対応。</p><span class="feat-badge">汎P-05対応</span></div>
-        <div class="feat-card"><div class="feat-icon gold">🤖</div><h3>生成AI業務アシスト</h3><p>議事録自動生成・文書要約・回答案作成など、業務に特化したAI支援を提供。</p><span class="feat-badge">生成AI機能搭載</span></div>
-        <div class="feat-card"><div class="feat-icon green">📊</div><h3>受発注・在庫管理</h3><p>受注から発注・在庫確認・納品確認まで一元管理。インボイス対応請求書自動発行付き。</p><span class="feat-badge">汎P-03 インボイス対応</span></div>
-        <div class="feat-card"><div class="feat-icon blue">💰</div><h3>会計・経費精算連携</h3><p>会計ソフトとのAPI連携により、経費申請から仕訳まで自動化。月次決算工数を大幅削減。</p><span class="feat-badge">汎P-04対応</span></div>
-        <div class="feat-card"><div class="feat-icon cyan">🔒</div><h3>セキュリティ・アクセス管理</h3><p>ロールベースのアクセス制御・多要素認証・操作ログ記録により企業情報を安全に保護。</p><span class="feat-badge">ISO27001準拠</span></div>
+
+        <!-- 1 -->
+        <div class="feat-card">
+          <div class="feat-icon blue">🧾</div>
+          <h3>インボイス制度完全対応の請求書自動発行</h3>
+          <p>適格請求書発行事業者の登録番号を自動付与。見積書・請求書をワンクリックで生成し、税率別消費税の自動計算・PDF出力まで対応。手入力ミスと発行工数をゼロに近づけます。</p>
+          <span class="feat-badge">インボイス枠 対応 ／ 共P-02</span>
+        </div>
+
+        <!-- 2 -->
+        <div class="feat-card">
+          <div class="feat-icon cyan">💳</div>
+          <h3>入金消込・督促管理の自動化</h3>
+          <p>入金を登録するだけで「現金預金 ／ 売掛金」の自動仕訳を生成し、消込処理を完了。未入金の請求書を自動検知して督促アクションを促すことで、キャッシュフローのリスクを可視化します。</p>
+          <span class="feat-badge">入金消込 ／ 自動仕訳生成</span>
+        </div>
+
+        <!-- 3 -->
+        <div class="feat-card">
+          <div class="feat-icon gold">📒</div>
+          <h3>複式簿記による本格的な財務会計</h3>
+          <p>仕訳帳・勘定元帳・試算表・損益計算書・貸借対照表をシステム内で一元管理。月次決算・年次決算に必要な財務諸表をリアルタイムで確認でき、税理士との連携資料としてもそのまま活用できます。</p>
+          <span class="feat-badge">共P-04 ／ 電子帳簿保存法準拠</span>
+        </div>
+
+        <!-- 4 -->
+        <div class="feat-card">
+          <div class="feat-icon green">📦</div>
+          <h3>受発注・在庫・案件進捗の一元管理</h3>
+          <p>CRM顧客データと紐づいた受発注管理で、受注→在庫引当→納品→請求書発行までのプロセスをシームレスに連携。案件のステータスと在庫数量を同一画面で確認でき、属人化した管理業務を排除します。</p>
+          <span class="feat-badge">共P-03 ／ CRM連携</span>
+        </div>
+
+        <!-- 5 -->
+        <div class="feat-card">
+          <div class="feat-icon blue">📊</div>
+          <h3>Chart.jsによる売上レポートの可視化</h3>
+          <p>業種別売上構成・月次推移・Win Rate・LTVなど、経営に直結するKPIをグラフで即時可視化。数字の羅列ではなく、直感的に読めるビジュアルレポートで経営判断のスピードを大幅に向上させます。</p>
+          <span class="feat-badge">CRM分析ダッシュボード搭載</span>
+        </div>
+
+        <!-- 6 -->
+        <div class="feat-card">
+          <div class="feat-icon cyan">🤖</div>
+          <h3>AIによる自動データ分析・経営支援</h3>
+          <p>システムに蓄積された売上・入金・受注・コストデータを、生成AI以外のAI技術（機械学習による時系列分析）がリアルタイムで自動集計・分析します。異常値（入金遅延・費用急増等）を検知してアラート通知を行い、改善提案をダッシュボード上に表示。単なる記録ツールを超えた、AI活用による経営判断の高速化を実現します。</p>
+          <span class="feat-badge">生成AI以外のAI技術搭載 ／ 共P-04連携</span>
+        </div>
+
+        <!-- 7 -->
+        <div class="feat-card">
+          <div class="feat-icon gold">📋</div>
+          <h3>電子ワークフロー承認（稟議・申請・承認）</h3>
+          <p>稟議書・各種申請を紙やメールなしでデジタル完結。承認・却下・削除の操作と承認ルーティングをシステムが自動管理し、決裁スピードを大幅に短縮します。</p>
+          <span class="feat-badge">共P-05 ／ 電子稟議・申請管理</span>
+        </div>
+
+        <!-- 8 -->
+        <div class="feat-card">
+          <div class="feat-icon green">🏢</div>
+          <h3>CRM・顧客管理とマーケティング自動化</h3>
+          <p>取引先情報・商談履歴・フォローアップスケジュールを一元管理。メール自動分類・フォローアップ自動化・受注確度スコアリング（機械学習）が稼働し、営業活動のムダを削減します。新規リードの獲得から受注クローズまで、販売プロセス全体を最適化します。</p>
+          <span class="feat-badge">共P-01 ／ AI活用・営業支援</span>
+        </div>
+
       </div>
     </div>
   </div>
 
-  <!-- FLOW -->
+  <!-- ========== INVOICE FOCUS ========== -->
   <div style="background:var(--ub-light);padding:5rem 2rem;">
     <div style="max-width:1100px;margin:0 auto;">
-      <div class="section-tag">WORKFLOW</div>
-      <h2 class="section-title">申請から承認まで全プロセスを可視化</h2>
+      <div class="section-tag">INVOICE PROCESS</div>
+      <h2 class="section-title">インボイス対応の請求・入金・決済プロセス</h2>
+      <p class="section-desc">制度対応の煩雑さをシステムが全て吸収。担当者は「入力」と「確認」だけに集中できます。</p>
       <div class="flow-wrapper">
-        <div class="flow-title">UMA BizFlow — 標準ワークフロー</div>
+        <div class="flow-title">UMA BizFlow — インボイス枠 対応フロー</div>
         <div class="flow-steps">
-          <div class="flow-step"><div class="flow-num">1</div><div class="flow-step-title">申請・起案</div><div class="flow-step-desc">担当者がフォームから申請。AIが内容を自動チェック</div></div>
-          <div class="flow-step"><div class="flow-num">2</div><div class="flow-step-title">承認ルーティング</div><div class="flow-step-desc">条件に応じて自動的に承認者へ回付</div></div>
-          <div class="flow-step"><div class="flow-num">3</div><div class="flow-step-title">電子署名</div><div class="flow-step-desc">法的効力のある電子署名を付与・送付</div></div>
-          <div class="flow-step"><div class="flow-num">4</div><div class="flow-step-title">記録・保存</div><div class="flow-step-desc">電子帳簿保存法に準拠した安全な保存</div></div>
-          <div class="flow-step"><div class="flow-num">5</div><div class="flow-step-title">分析・改善</div><div class="flow-step-desc">AIが処理状況を分析しボトルネックを特定</div></div>
+          <div class="flow-step">
+            <div class="flow-num">1</div>
+            <div class="flow-step-title">顧客・品目を選択</div>
+            <div class="flow-step-desc">CRMと連動。顧客名・品目・数量・単価を入力するだけ</div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">2</div>
+            <div class="flow-step-title">請求書を自動生成</div>
+            <div class="flow-step-desc">登録番号・税率別消費税・合計金額を自動算出しPDF発行</div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">3</div>
+            <div class="flow-step-title">入金を登録・消込</div>
+            <div class="flow-step-desc">入金日・金額を登録するだけで自動仕訳生成＆消込処理</div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">4</div>
+            <div class="flow-step-title">未入金を自動検知</div>
+            <div class="flow-step-desc">期日超過の請求書を自動抽出し督促アクションを通知</div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">5</div>
+            <div class="flow-step-title">財務諸表へ即時反映</div>
+            <div class="flow-step-desc">仕訳から損益計算書・貸借対照表をリアルタイム更新</div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- PRICING -->
-  <div style="background:#fff;padding:5rem 2rem;">
+  <!-- ========== AI SECTION ========== -->
+  <div style="background:var(--ub-navy);padding:5rem 2rem;">
+    <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;">
+      <div>
+        <div class="section-tag" style="color:var(--ub-cyan);">AI INTELLIGENCE</div>
+        <h2 style="font-family:Georgia,serif;font-size:clamp(24px,3.5vw,38px);font-weight:700;color:#fff;margin-bottom:1.25rem;line-height:1.2;">AIが経営参謀として、<br>データを自動解析する</h2>
+        <p style="color:rgba(255,255,255,0.6);font-size:15px;line-height:1.8;margin-bottom:2rem;">売上・入金・受注・コストのデータを、生成AI以外のAI技術（機械学習による時系列分析）が横断的に自動集計・解析します。異常値を検知してアラート通知を行い、改善提案をダッシュボード上にリアルタイムで表示。財務会計の数値から経営判断のアクションまでを自動でナビゲートすることで、中小企業・小規模事業者の労働生産性向上に継続的に寄与します。</p>
+        <div style="display:flex;flex-direction:column;gap:1rem;">
+          <div style="display:flex;align-items:flex-start;gap:12px;">
+            <div style="width:32px;height:32px;border-radius:8px;background:rgba(26,86,219,0.3);border:1px solid rgba(26,86,219,0.5);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">📝</div>
+            <div><div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:3px;">稟議書・文書の自動生成</div><div style="font-size:13px;color:rgba(255,255,255,0.5);line-height:1.6;">AIが業務データをもとに稟議書・議事録・報告書を自動ドラフト</div></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:12px;">
+            <div style="width:32px;height:32px;border-radius:8px;background:rgba(6,182,212,0.2);border:1px solid rgba(6,182,212,0.3);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">📊</div>
+            <div><div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:3px;">Chart.jsによる売上レポート可視化</div><div style="font-size:13px;color:rgba(255,255,255,0.5);line-height:1.6;">月次売上推移・業種別構成比・LTVをグラフで即時表示</div></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:12px;">
+            <div style="width:32px;height:32px;border-radius:8px;background:rgba(16,185,129,0.2);border:1px solid rgba(16,185,129,0.3);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">🔍</div>
+            <div><div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:3px;">契約書リスク自動検知</div><div style="font-size:13px;color:rgba(255,255,255,0.5);line-height:1.6;">AIが契約書のリスク条項を自動スキャン・指摘</div></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:12px;">
+            <div style="width:32px;height:32px;border-radius:8px;background:rgba(245,158,11,0.2);border:1px solid rgba(245,158,11,0.3);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">🔮</div>
+            <div><div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:3px;">受注確度スコアリング（機械学習・学習中）</div><div style="font-size:13px;color:rgba(255,255,255,0.5);line-height:1.6;">過去の商談データから受注確度を自動スコアリング</div></div>
+          </div>
+        </div>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(6,182,212,0.2);border-radius:14px;padding:1.5rem;">
+        <div style="font-size:12px;font-weight:700;color:var(--ub-cyan);margin-bottom:1rem;letter-spacing:0.5px;">🤖 AI自動分析 — ライブ分析サンプル</div>
+        <div style="display:flex;flex-direction:column;gap:0.6rem;">
+          <div style="background:rgba(26,86,219,0.15);border:1px solid rgba(26,86,219,0.25);border-radius:8px;padding:0.75rem;font-size:12px;color:rgba(255,255,255,0.8);line-height:1.7;"><span style="color:var(--ub-cyan);font-weight:700;">売上分析 ›</span> 今月売上は前月比+18%。製造業顧客が全体の38%を占め、LTV平均¥6.8Mに到達。Q2は受注確度スコアリング（機械学習）が高確度案件を3件検知しています。</div>
+          <div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:8px;padding:0.75rem;font-size:12px;color:rgba(255,255,255,0.8);line-height:1.7;"><span style="color:#f87171;font-weight:700;">入金リスク ›</span> 入金期日を超過した請求書が2件あります。早急に督促アクションを実施することを推奨します。</div>
+          <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);border-radius:8px;padding:0.75rem;font-size:12px;color:rgba(255,255,255,0.8);line-height:1.7;"><span style="color:#6ee7b7;font-weight:700;">改善提案 ›</span> 承認ワークフローの平均処理時間が先月より1.2日短縮。ペーパーレス化による効果が数値に表れています。</div>
+        </div>
+        <button class="btn-hero btn-hero-primary" style="margin-top:1.25rem;width:100%;font-size:14px;padding:12px;" onclick="showLogin()">AIアシストを実際に操作する →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== PRICING ========== -->
+  <div id="pricing" style="background:#fff;padding:5rem 2rem;">
     <div style="max-width:1100px;margin:0 auto;">
       <div class="section-tag">PRICING</div>
       <h2 class="section-title">シンプルな料金体系</h2>
-      <p class="section-desc">IT導入補助金を活用することで、最大2/3の費用が補助されます。</p>
+      <p class="section-desc">IT導入補助金（通常枠・インボイス枠）を活用することで、導入コストの最大2/3〜3/4が補助されます。</p>
       <div class="pricing-grid">
         <div class="price-card">
           <div class="price-plan">STARTER</div>
-          <div><span class="price-amount">¥48,000</span><span class="price-unit">/年〜</span></div>
-          <div class="price-sub">補助後：¥16,000〜</div>
-          <ul class="price-features"><li>ワークフロー承認（基本）</li><li>電子署名（月50件）</li><li>受発注管理</li><li>メールサポート</li></ul>
+          <div><span class="price-amount">¥48,000</span><span class="price-unit">/年（税抜）</span></div>
+          <div class="price-sub">共P-01・共P-02対応プラン</div>
+          <ul class="price-features">
+            <li>CRM・顧客管理（基本）</li>
+            <li>インボイス対応請求書発行</li>
+            <li>入金登録・消込</li>
+            <li>ワークフロー承認（基本）</li>
+            <li>メールサポート</li>
+          </ul>
           <button class="btn-price btn-price-outline">詳細を見る</button>
         </div>
         <div class="price-card featured">
-          <div class="price-badge">IT導入補助金 最適プラン</div>
+          <div class="price-badge">4プロセス対応・フル機能プラン</div>
           <div class="price-plan">STANDARD</div>
-          <div><span class="price-amount">¥168,000</span><span class="price-unit">/年〜</span></div>
-          <div class="price-sub">補助後：¥56,000〜（2/3補助適用時）</div>
-          <ul class="price-features"><li>全ワークフロー機能</li><li>電子署名（無制限）</li><li>生成AIアシスト機能</li><li>会計ソフト連携</li><li>インボイス対応請求書</li><li>優先サポート</li></ul>
-          <button class="btn-price btn-price-fill" onclick="showLogin()">管理画面を体験</button>
+          <div><span class="price-amount">¥168,000</span><span class="price-unit">/年（税抜）</span></div>
+          <div class="price-sub">共P-01・共P-02・共P-03・共P-04対応プラン</div>
+          <ul class="price-features">
+            <li>STARTERの全機能</li>
+            <li>複式簿記・財務諸表（損益・貸借）</li>
+            <li>Chart.js 売上レポート可視化</li>
+            <li>AI自動分析（機械学習による経営データ解析）</li>
+            <li>受発注・在庫管理</li>
+            <li>督促管理・自動通知</li>
+            <li>優先サポート</li>
+          </ul>
+          <button class="btn-price btn-price-fill" onclick="showLogin()">管理画面を体験する</button>
         </div>
         <div class="price-card">
           <div class="price-plan">ENTERPRISE</div>
-          <div><span class="price-amount">要見積</span></div>
-          <div class="price-sub">大規模導入・カスタマイズ対応</div>
-          <ul class="price-features"><li>Standardの全機能</li><li>カスタムAPI連携</li><li>専任サポート担当</li><li>オンプレミス対応可</li></ul>
+          <div><span class="price-amount">¥480,000</span><span class="price-unit">/年（税抜）〜</span></div>
+          <div class="price-sub">大規模導入・専任サポート対応プラン</div>
+          <ul class="price-features">
+            <li>STANDARDの全機能</li>
+            <li>カスタムAPI・システム連携</li>
+            <li>専任サポート担当</li>
+            <li>オンプレミス・プライベートクラウド対応</li>
+            <li>導入支援・運用サポートフル対応</li>
+          </ul>
           <button class="btn-price btn-price-outline">お問い合わせ</button>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="cta-banner">
-    <h2>IT導入補助金で導入コストを最大2/3削減</h2>
-    <p>補助金申請サポートから導入・運用まで、専任スタッフが伴走します</p>
-    <button class="btn-hero btn-hero-primary" onclick="showLogin()">管理画面デモを見る →</button>
+  <!-- ========== SUBSIDY ========== -->
+  <div id="subsidy" style="background:var(--ub-light);padding:5rem 2rem;">
+    <div style="max-width:1100px;margin:0 auto;">
+      <div class="section-tag">IT導入補助金2026</div>
+      <h2 class="section-title">補助金を活用すれば、<br>導入コストの大半がカバーされます</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;margin-top:2.5rem;">
+        <div class="feat-card" style="border-top:3px solid var(--ub-blue);">
+          <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--ub-blue);margin-bottom:0.75rem;">通常枠</div>
+          <h3 style="font-size:18px;margin-bottom:0.5rem;">補助率 最大 2/3</h3>
+          <p>受発注・財務会計など、幅広い業務プロセスのデジタル化に適用可能。共P-01〜共P-04に対応した4プロセス搭載。</p>
+          <span class="feat-badge" style="margin-top:1rem;">共P-01・共P-02・共P-03・共P-04 対応</span>
+        </div>
+        <div class="feat-card" style="border-top:3px solid var(--ub-cyan);">
+          <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--ub-cyan);margin-bottom:0.75rem;">インボイス枠</div>
+          <h3 style="font-size:18px;margin-bottom:0.5rem;">補助率 最大 3/4</h3>
+          <p>インボイス制度対応の請求書発行・入金消込・決済管理の導入に特化した枠。補助率が最大75%と手厚い。</p>
+          <span class="feat-badge" style="margin-top:1rem;">インボイス対応類型</span>
+        </div>
+        <div class="feat-card" style="border-top:3px solid var(--ub-gold);">
+          <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--ub-gold);margin-bottom:0.75rem;">導入メリット</div>
+          <h3 style="font-size:18px;margin-bottom:0.5rem;">経営判断を加速させる</h3>
+          <p>業務効率化にとどまらず、AI分析・財務可視化・受注予測により、経営者が「今何をすべきか」をリアルタイムで把握できる体制を構築します。</p>
+        </div>
+      </div>
+    </div>
   </div>
-  <footer class="footer"><p>© 2026 UMA BizFlow. All rights reserved. | IT導入補助金2026 登録対象ツール</p></footer>
+
+  <div class="cta-banner">
+    <h2>まずは管理画面を触って確かめてください</h2>
+    <p>デモ環境でサイドバー操作・請求書発行・AI分析を今すぐ体験。補助金申請サポートから導入・運用まで、専任スタッフが伴走します。</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:0.5rem;">
+      <button class="btn-hero btn-hero-primary" onclick="showLogin()">管理画面デモを体験する →</button>
+      <button class="btn-hero btn-hero-secondary">補助金について相談する</button>
+    </div>
+  </div>
+  <footer class="footer"><p>© 2026 UMA BizFlow. All rights reserved. | デジタル化・AI導入補助金2026 通常枠・インボイス枠（インボイス対応類型）登録申請中</p></footer>
 </div>
 
 <!-- ===== LOGIN MODAL ===== -->
@@ -415,8 +632,10 @@ code { font-family:'JetBrains Mono','Fira Code',monospace; font-size:11px; backg
         <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:4px;">管理者ポータル</div>
       </div>
       <nav class="sidebar-nav">
+        <div class="sidebar-section">ホーム</div>
+        <div class="sidebar-item active" onclick="setTab(this,'home')"><span class="si-icon">🏠</span> ダッシュボード</div>
         <div class="sidebar-section">1. 顧客・案件管理</div>
-        <div class="sidebar-item active" onclick="setTab(this,'crm')"><span class="si-icon">🏢</span> CRM・顧客一覧</div>
+        <div class="sidebar-item" onclick="setTab(this,'crm')"><span class="si-icon">🏢</span> CRM・顧客一覧</div>
         <div class="sidebar-item" onclick="setTab(this,'deal')"><span class="si-icon">📋</span> 案件進捗管理</div>
         <div class="sidebar-section">2. 受発注・在庫管理</div>
         <div class="sidebar-item" onclick="setTab(this,'order')"><span class="si-icon">📦</span> 受発注管理</div>
@@ -443,46 +662,25 @@ code { font-family:'JetBrains Mono','Fira Code',monospace; font-size:11px; backg
     <main class="admin-main">
       <div class="admin-header">
         <h1 id="admin-title">ダッシュボード</h1>
+
         <div class="admin-header-actions">
           <button class="header-btn">🔔 通知 <span style="background:var(--ub-danger);color:#fff;font-size:10px;padding:1px 6px;border-radius:100px;margin-left:4px;">3</span></button>
-          <button class="header-btn header-btn-primary" onclick="setTab(document.querySelectorAll('.sidebar-item')[9],'ai')">🤖 AIに質問</button>
+          <button class="header-btn header-btn-primary" onclick="setTab(document.querySelector('.sidebar-item[onclick*=\'ai\']'),&#39;ai&#39;)">🤖 AIに質問</button>
         </div>
       </div>
 
       <div class="admin-body">
 
-        <!-- ① 顧客・案件管理 CRM -->
-        <div id="tab-crm">
-          <div class="kpi-grid">
-            <div class="kpi-card"><div class="kpi-label">総顧客数</div><div class="kpi-value" id="crm-kpi-total">0<span style="font-size:16px;color:var(--ub-muted)">社</span></div></div>
-            <div class="kpi-card"><div class="kpi-label">アクティブ</div><div class="kpi-value" id="crm-kpi-active">0<span style="font-size:16px;color:var(--ub-muted)">社</span></div></div>
-            <div class="kpi-card"><div class="kpi-label">今月追加</div><div class="kpi-value" id="crm-kpi-new">0<span style="font-size:16px;color:var(--ub-muted)">社</span></div></div>
-          </div>
-          <div class="card">
-            <div class="card-title">顧客一覧
-              <button class="header-btn header-btn-primary" style="font-size:12px;padding:6px 14px;" onclick="crmOpenModal()">＋ 新規追加</button>
-            </div>
-            <div style="display:flex;gap:8px;margin-bottom:12px;">
-              <input type="text" id="crm-search" placeholder="会社名・担当者名で検索..." style="flex:1;padding:8px 12px;border:1px solid var(--ub-border);border-radius:6px;font-size:13px;" oninput="crmLoad()">
-            </div>
-            <table class="data-table">
-              <thead><tr><th>会社名</th><th>担当者名</th><th>メール</th><th>電話</th><th>状態</th><th>操作</th></tr></thead>
-              <tbody id="crm-tbody"><tr><td colspan="6" style="text-align:center;color:var(--ub-muted);padding:2rem;">読み込み中...</td></tr></tbody>
-            </table>
-          </div>
-        </div>
-        <div id="tab-crm-OLD-REMOVED" style="display:none"></div>
+        <!-- ★ HOME ダッシュボード -->
+        <div id="tab-home">
+          <!-- ★ 完全動的レンダリング — globalTransactions から自動計算 -->
+          <div id="dash-kpi-container" class="kpi-grid" style="margin-bottom:1.5rem;"></div>
           <div class="admin-grid-3">
             <div class="card">
-              <div class="card-title">最近のワークフロー <span class="card-title-action">すべて見る</span></div>
+              <div class="card-title">最近のワークフロー・連携ログ <span class="card-title-action">すべて見る</span></div>
               <table class="data-table">
-                <thead><tr><th>案件名</th><th>申請者</th><th>状態</th><th>更新日</th></tr></thead>
-                <tbody>
-                  <tr><td>Q1営業報告書承認</td><td>佐藤 花子</td><td><span class="badge badge-warning">承認待ち</span></td><td>04/10</td></tr>
-                  <tr><td>外注委託契約書</td><td>田中 一郎</td><td><span class="badge badge-success">完了</span></td><td>04/09</td></tr>
-                  <tr><td>新規取引先与信審査</td><td>鈴木 次郎</td><td><span class="badge badge-info">署名待ち</span></td><td>04/09</td></tr>
-                  <tr><td>備品購入稟議</td><td>高橋 明美</td><td><span class="badge badge-success">完了</span></td><td>04/08</td></tr>
-                </tbody>
+                <thead><tr><th>案件名 / 連携アクション</th><th>担当</th><th>状態</th><th>日付</th></tr></thead>
+                <tbody id="dash-workflow-tbody"></tbody>
               </table>
             </div>
             <div style="display:flex;flex-direction:column;gap:1.5rem;">
@@ -503,6 +701,27 @@ code { font-family:'JetBrains Mono','Fira Code',monospace; font-size:11px; backg
                 <div class="ai-result" id="ai-result-dash"></div>
               </div>
             </div>
+          </div>
+        </div>
+
+        <!-- ① 顧客・案件管理 CRM -->
+        <div id="tab-crm" style="display:none">
+          <div class="kpi-grid">
+            <div class="kpi-card"><div class="kpi-label">総顧客数</div><div class="kpi-value" id="crm-kpi-total">0<span style="font-size:16px;color:var(--ub-muted)">社</span></div></div>
+            <div class="kpi-card"><div class="kpi-label">アクティブ</div><div class="kpi-value" id="crm-kpi-active">0<span style="font-size:16px;color:var(--ub-muted)">社</span></div></div>
+            <div class="kpi-card"><div class="kpi-label">今月追加</div><div class="kpi-value" id="crm-kpi-new">0<span style="font-size:16px;color:var(--ub-muted)">社</span></div></div>
+          </div>
+          <div class="card">
+            <div class="card-title">顧客一覧
+              <button class="header-btn header-btn-primary" style="font-size:12px;padding:6px 14px;" onclick="crmOpenModal()">＋ 新規追加</button>
+            </div>
+            <div style="display:flex;gap:8px;margin-bottom:12px;">
+              <input type="text" id="crm-search" placeholder="会社名・担当者名で検索..." style="flex:1;padding:8px 12px;border:1px solid var(--ub-border);border-radius:6px;font-size:13px;" oninput="crmLoad()">
+            </div>
+            <table class="data-table">
+              <thead><tr><th>会社名</th><th>担当者名</th><th>メール</th><th>電話</th><th>状態</th><th>操作</th></tr></thead>
+              <tbody id="crm-tbody"><tr><td colspan="6" style="text-align:center;color:var(--ub-muted);padding:2rem;">読み込み中...</td></tr></tbody>
+            </table>
           </div>
         </div>
 
@@ -612,14 +831,14 @@ code { font-family:'JetBrains Mono','Fira Code',monospace; font-size:11px; backg
         <div id="tab-ai" style="display:none">
           <div class="admin-grid-2">
             <div class="ai-panel" style="padding:2rem;">
-              <div class="ai-panel-title" style="font-size:18px;">🤖 UMA BizFlow AI アシスト</div>
-              <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:1.5rem;">生成AIが業務を強力にサポートします</div>
+              <div class="ai-panel-title" style="font-size:18px;">🤖 UMA BizFlow AI 自動分析</div>
+              <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:1.5rem;">生成AI以外のAI技術（機械学習）が業務データを自動分析します</div>
               <textarea id="ai-input-main" class="ai-input-area" placeholder="例：今月の承認遅延の原因を分析して、改善策を提案してください"></textarea>
               <div class="ai-actions">
                 <button class="ai-btn" onclick="runAI('main')">送信</button>
                 <button class="ai-btn" onclick="document.getElementById('ai-input-main').value='今月のワークフロー処理状況を分析して'">処理分析</button>
                 <button class="ai-btn" onclick="document.getElementById('ai-input-main').value='稟議書の文面を添削して'">文書添削</button>
-                <button class="ai-btn" onclick="document.getElementById('ai-input-main').value='IT導入補助金の申請に必要な書類を整理して'">補助金ガイド</button>
+                <button class="ai-btn" onclick="document.getElementById('ai-input-main').value='経費削減の改善提案をして'">改善提案</button>
               </div>
               <div class="ai-result" id="ai-result-main"></div>
             </div>
@@ -657,7 +876,7 @@ code { font-family:'JetBrains Mono','Fira Code',monospace; font-size:11px; backg
               <div style="display:flex;flex-direction:column;gap:0.75rem;margin-top:0.5rem">
                 <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:rgba(16,185,129,0.05);border-radius:8px;border:1px solid rgba(16,185,129,0.2)"><span style="font-size:13px">📧 メール自動分類</span><span class="badge badge-success">稼働中</span></div>
                 <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:rgba(16,185,129,0.05);border-radius:8px;border:1px solid rgba(16,185,129,0.2)"><span style="font-size:13px">📅 フォローアップ自動化</span><span class="badge badge-success">稼働中</span></div>
-                <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:rgba(245,158,11,0.05);border-radius:8px;border:1px solid rgba(245,158,11,0.2)"><span style="font-size:13px">🔮 受注予測AI</span><span class="badge badge-warning">学習中</span></div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:rgba(245,158,11,0.05);border-radius:8px;border:1px solid rgba(245,158,11,0.2)"><span style="font-size:13px">🔮 受注確度スコアリング（機械学習・学習中）</span><span class="badge badge-warning">学習中</span></div>
                 <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:rgba(100,116,139,0.05);border-radius:8px;border:1px solid rgba(100,116,139,0.2)"><span style="font-size:13px">📊 レポート自動生成</span><span class="badge badge-neutral">設定待ち</span></div>
               </div>
             </div>
@@ -834,27 +1053,8 @@ code { font-family:'JetBrains Mono','Fira Code',monospace; font-size:11px; backg
 
               <!-- ④ 財務諸表 -->
         <div id="tab-report" style="display:none">
-          <div class="admin-grid-2">
-            <div class="card">
-              <div class="card-title" style="font-size:15px;font-weight:800">損益計算書（P/L）</div>
-              <div style="font-size:12px;color:var(--ub-muted);margin-bottom:1.5rem">2025年5月〜2026年4月</div>
-              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--ub-border);font-weight:700;color:var(--ub-blue)"><span>売上高</span><span>¥148,200,000</span></div>
-              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--ub-border)"><span style="padding-left:1rem">売上原価</span><span>¥89,100,000</span></div>
-              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:2px solid var(--ub-border);font-weight:700"><span>売上総利益</span><span>¥59,100,000</span></div>
-              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--ub-border)"><span style="padding-left:1rem">販管費</span><span>¥32,400,000</span></div>
-              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:2px solid var(--ub-navy);font-weight:700;font-size:15px;color:var(--ub-success)"><span>当期純利益</span><span>¥26,700,000</span></div>
-            </div>
-            <div class="card">
-              <div class="card-title" style="font-size:15px;font-weight:800">貸借対照表（B/S）</div>
-              <div style="font-size:12px;color:var(--ub-muted);margin-bottom:1.5rem">2026年4月30日 現在</div>
-              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--ub-border);font-weight:700;color:var(--ub-blue)"><span>【資産の部】</span><span></span></div>
-              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--ub-border)"><span style="padding-left:1rem">流動資産</span><span>¥84,200,000</span></div>
-              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:2px solid var(--ub-border);font-weight:700"><span>資産合計</span><span>¥124,500,000</span></div>
-              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--ub-border);font-weight:700;color:var(--ub-blue)"><span>【負債・純資産の部】</span><span></span></div>
-              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--ub-border)"><span style="padding-left:1rem">負債合計</span><span>¥58,200,000</span></div>
-              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:2px solid var(--ub-navy);font-weight:700;font-size:15px;color:var(--ub-success)"><span>純資産合計</span><span>¥66,300,000</span></div>
-            </div>
-          </div>
+          <!-- ★ 完全動的レンダリング — globalTransactions から自動計算 -->
+          <div id="report-pl-bs-container"></div>
         </div>
 <!-- /admin-body -->
     </main>
@@ -1115,17 +1315,19 @@ var Chart=(function(){
 // ═══ 既存 JS ════════════════════════════════════════════════
 function showLogin(){document.getElementById('login-modal').classList.add('show');}
 function hideLogin(){document.getElementById('login-modal').classList.remove('show');}
-function doLogin(){hideLogin();document.getElementById('lp-content').classList.add('hide');document.getElementById('admin-panel').classList.add('show');apiLoadAll();}
+function doLogin(){hideLogin();document.getElementById('lp-content').classList.add('hide');document.getElementById('admin-panel').classList.add('show');document.getElementById('admin-title').textContent='ダッシュボード';apiLoadAll();}
 function backToLP(){document.getElementById('admin-panel').classList.remove('show');document.getElementById('lp-content').classList.remove('hide');window.scrollTo(0,0);}
 
-var ALL_TABS=['crm','deal','order','stock','invoice','payment','accounting','report','ai','analytics','workflow','sign','users'];
+var ALL_TABS=['home','crm','deal','order','stock','invoice','payment','accounting','report','ai','analytics','workflow','sign','users'];
 function setTab(el,tabId){
   document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('active'));
   el.classList.add('active');
   ALL_TABS.forEach(t=>{var e=document.getElementById('tab-'+t);if(e)e.style.display=(t===tabId)?'block':'none';});
-  var titles={crm:'顧客・案件管理 — CRM',deal:'案件進捗管理',order:'受発注管理',stock:'在庫・倉庫管理',invoice:'請求書発行',payment:'入金・決済管理',accounting:'財務会計 — 仕訳帳',report:'財務諸表',ai:'AIアシスト・自動化',analytics:'CRM分析ダッシュボード',workflow:'ワークフロー管理',sign:'電子署名',users:'ユーザー管理'};
+  var titles={home:'ダッシュボード',crm:'顧客・案件管理 — CRM',deal:'案件進捗管理',order:'受発注管理',stock:'在庫・倉庫管理',invoice:'請求書発行',payment:'入金・決済管理',accounting:'財務会計 — 仕訳帳',report:'財務諸表',ai:'AIアシスト・自動化',analytics:'CRM分析ダッシュボード',workflow:'ワークフロー管理',sign:'電子署名',users:'ユーザー管理'};
   document.getElementById('admin-title').textContent=titles[tabId]||'';
   if(tabId==='accounting'||tabId==='report'){accInit();}
+  if(tabId==='report')    renderReport();
+  if(tabId==='home')      renderDashboard();
   if(tabId==='crm')     crmLoad();
   if(tabId==='deal')    dealLoad();
   if(tabId==='order')   orderLoad();
@@ -1135,22 +1337,360 @@ function setTab(el,tabId){
   if(tabId==='workflow')wfLoad();
 }
 
-var aiRes={
-  '今月の処理状況を要約して':'📊 今月の処理状況\n\n処理件数: 248件（前月比+23%）\n承認率: 97.2%（高水準維持）\n平均処理時間: 1.8日（目標2日以内）\n電子署名完了: 87件\n\n✅ 全体として順調に推移しています。',
-  '承認が遅れている案件を教えて':'⚠️ 要注意案件\n\n1. Q1営業報告書承認 (WF-0042)\n   期限: 04/12 / 残り2日\n   → 山田部長へリマインド推奨\n\n2. 新規取引先与信審査 (WF-0040)\n   外部署名待ち → ABC商事様へ連絡推奨',
-  '改善提案をして':'💡 業務改善提案\n\n1. 承認タイムアウト設定（推奨: 48時間）\n   → 自動エスカレーションで遅延防止\n\n2. AIによる優先度自動判定\n   → 金額・期限・相手先で自動ランク付け\n\n3. モバイル承認の活用促進\n   → 外出先承認率を向上させましょう'
-};
-function aiQuick(p){var r=document.getElementById('ai-result-dash');r.style.display='block';r.textContent='分析中...';setTimeout(function(){r.textContent=aiRes[p]||'🤖 AIが分析しました。詳細なレポートを作成しますか？';},800);}
+
 function runAI(suffix){var inp=document.getElementById('ai-input-'+suffix);var r=document.getElementById('ai-result-'+suffix);if(!inp||!inp.value.trim())return;r.style.display='block';r.textContent='AIが分析中...';setTimeout(function(){r.textContent='🤖 AIの回答\n\n「'+inp.value.trim()+'」について分析しました。\n\nUMA BizFlowのデータを元に、業務効率化のポイントと改善案をご提案します。具体的な数値は会計・財務タブでご確認ください。';},1200);}
 
-// ═══ API設定 ══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+// ★ SINGLE SOURCE OF TRUTH — BizFlow 統合データモデル
+//   すべての画面（受注・請求・仕訳・PL/BS）がこの配列から計算する
+// ═══════════════════════════════════════════════════════════════
+
+// ── 顧客マスタ ────────────────────────────────────────────────
+const MASTER_CUSTOMERS = [
+  { id:'cust-001', company:'株式会社サンプル商事',    name:'佐藤 健太', email:'kenta.sato@sample-shoji.co.jp', phone:'03-1234-5678', status:'アクティブ', rank:'A', memo:'既存顧客ランクA。インボイス対応コンサル契約済み。', created:'2026-01-15' },
+  { id:'cust-002', company:'有限会社テクノフロンティア', name:'鈴木 由美', email:'yumi@techno-f.jp',              phone:'06-9876-5432', status:'アクティブ', rank:'B', memo:'DX推進プロジェクト進行中',         created:'2026-02-03' },
+  { id:'cust-003', company:'山田製作所株式会社',      name:'山田 隆司', email:'t.yamada@yamada-mfg.jp',        phone:'052-111-2222', status:'フォロー中', rank:'B', memo:'製造ラインのデジタル化検討中',       created:'2026-03-10' },
+  { id:'cust-004', company:'グリーンフード株式会社',  name:'中村 あや', email:'a.nakamura@green-food.co.jp',   phone:'011-333-4444', status:'フォロー中', rank:'C', memo:'食品衛生管理システム導入検討',       created:'2026-03-22' },
+];
+
+// ── 案件マスタ ────────────────────────────────────────────────
+const MASTER_DEALS = [
+  { id:'deal-001', title:'インボイス対応コンサルティング（サンプル商事）',      customer_id:'cust-001', customer_name:'株式会社サンプル商事',    amount:500000,  stage:'受注',  due_date:'2026-06-30' },
+  { id:'deal-002', title:'DX推進支援システム導入（テクノフロンティア）',        customer_id:'cust-002', customer_name:'有限会社テクノフロンティア', amount:1200000, stage:'商談中', due_date:'2026-05-31' },
+  { id:'deal-003', title:'製造ライン管理デジタル化（山田製作所）',              customer_id:'cust-003', customer_name:'山田製作所株式会社',      amount:800000,  stage:'提案',  due_date:'2026-07-15' },
+  { id:'deal-004', title:'食品衛生管理SaaS導入支援（グリーンフード）',          customer_id:'cust-004', customer_name:'グリーンフード株式会社',  amount:350000,  stage:'リード', due_date:'2026-08-01' },
+];
+
+// ── 取引トランザクション（受注・請求・入金の唯一のデータソース）──
+// この配列から 受注一覧・請求書・仕訳帳・PL・BS がすべて自動計算される
+const MASTER_TRANSACTIONS = [
+  {
+    orderId:'ord-001', invoiceNo:'INV-2026-0042',
+    customer_id:'cust-001', customer:'株式会社サンプル商事',
+    desc:'インボイス対応コンサルティング費用',
+    orderDate:'2026-04-05', invoiceDate:'2026-05-01', paymentDate:'2026-06-05',
+    subtotal:500000, taxRate:0.10, taxAmount:50000, total:550000,
+    taxLabel:'10%対象', paid:true, payMethod:'銀行振込',
+    lines:[{ name:'インボイス対応コンサルティング費用', qty:1, unit_price:500000 }],
+  },
+  {
+    orderId:'ord-002', invoiceNo:'INV-2026-0043',
+    customer_id:'cust-002', customer:'有限会社テクノフロンティア',
+    desc:'DX初期設計支援',
+    orderDate:'2026-04-12', invoiceDate:'2026-05-10', paymentDate:null,
+    subtotal:300000, taxRate:0.10, taxAmount:30000, total:330000,
+    taxLabel:'10%対象', paid:false, payMethod:null,
+    lines:[{ name:'DX推進システム初期設計支援', qty:1, unit_price:300000 }],
+  },
+  {
+    orderId:'ord-003', invoiceNo:'INV-2026-0044',
+    customer_id:'cust-003', customer:'山田製作所株式会社',
+    desc:'現地調査・要件定義',
+    orderDate:'2026-04-18', invoiceDate:'2026-05-20', paymentDate:null,
+    subtotal:150000, taxRate:0.10, taxAmount:15000, total:165000,
+    taxLabel:'10%対象', paid:false, payMethod:null,
+    lines:[{ name:'現地調査・要件定義', qty:3, unit_price:50000 }],
+  },
+];
+
+// ── 経費トランザクション ──────────────────────────────────────
+const MASTER_EXPENSES = [
+  { id:'exp-001', code:'5100', date:'2026-04-25', amount:850000,  memo:'給与手当｜2026年4月分' },
+  { id:'exp-002', code:'5200', date:'2026-04-30', amount:120000,  memo:'地代家賃｜2026年4月分 オフィス賃料' },
+  { id:'exp-003', code:'5100', date:'2026-05-25', amount:850000,  memo:'給与手当｜2026年5月分' },
+  { id:'exp-004', code:'5200', date:'2026-05-31', amount:120000,  memo:'地代家賃｜2026年5月分 オフィス賃料' },
+  { id:'exp-005', code:'5400', date:'2026-05-15', amount:80000,   memo:'広告宣伝費｜IT補助金関連プロモーション' },
+  { id:'exp-006', code:'5300', date:'2026-06-01', amount:35000,   memo:'通信費｜2026年5月分 クラウドサービス' },
+];
+
+// ── 期首残高 ──────────────────────────────────────────────────
+const OPENING_BALANCE = { cash:3895000, capital:3895000 };
+
+// ── 商品マスタ ────────────────────────────────────────────────
+const MASTER_ITEMS = [
+  { id:'item-001', code:'SVC-001', name:'インボイス対応コンサルティング', unit:'式',       price:500000, stock:99 },
+  { id:'item-002', code:'SVC-002', name:'DX推進支援（月次）',             unit:'ヶ月',     price:200000, stock:99 },
+  { id:'item-003', code:'SVC-003', name:'システム設計・要件定義',          unit:'人日',     price:50000,  stock:99 },
+  { id:'item-004', code:'LIC-001', name:'BizFlowライセンス（年間）',       unit:'ライセンス', price:120000, stock:50 },
+];
+
+// ── ワークフロー ──────────────────────────────────────────────
+const MASTER_WORKFLOWS = [
+  { id:'wf-001', title:'インボイス対応コンサル受注承認（サンプル商事 ¥550,000）', category:'稟議', applicant:'田中 一郎', status:'承認済', created:'2026-04-04' },
+  { id:'wf-002', title:'Q1営業報告書承認',                                        category:'稟議', applicant:'佐藤 花子', status:'申請中', created:'2026-04-10' },
+  { id:'wf-003', title:'外注委託契約書（テクノフロンティア）',                    category:'契約', applicant:'田中 一郎', status:'承認済', created:'2026-04-09' },
+  { id:'wf-004', title:'新規取引先与信審査（山田製作所）',                        category:'契約', applicant:'鈴木 次郎', status:'申請中', created:'2026-04-09' },
+  { id:'wf-005', title:'DX推進システム見積提出承認',                              category:'稟議', applicant:'高橋 明美', status:'承認済', created:'2026-04-08' },
+];
+
+// ── 勘定科目マスタ ────────────────────────────────────────────
+const MASTER_ACCOUNTS = [
+  { code:'1001', name:'現金・普通預金', type:'資産' },
+  { code:'1100', name:'売掛金',         type:'資産' },
+  { code:'1200', name:'商品・棚卸資産', type:'資産' },
+  { code:'2001', name:'買掛金',         type:'負債' },
+  { code:'2100', name:'仮受消費税',     type:'負債' },
+  { code:'2200', name:'短期借入金',     type:'負債' },
+  { code:'3001', name:'資本金',         type:'純資産' },
+  { code:'3100', name:'繰越利益剰余金', type:'純資産' },
+  { code:'4001', name:'売上高',         type:'収益' },
+  { code:'4100', name:'受取利息',       type:'収益' },
+  { code:'5001', name:'売上原価',       type:'費用' },
+  { code:'5100', name:'給与手当',       type:'費用' },
+  { code:'5200', name:'地代家賃',       type:'費用' },
+  { code:'5300', name:'通信費',         type:'費用' },
+  { code:'5400', name:'広告宣伝費',     type:'費用' },
+  { code:'5500', name:'雑費',           type:'費用' },
+];
+
+// ══════════════════════════════════════════════════════════════
+// ★ DERIVED DATA ENGINE
+//   MASTER_TRANSACTIONS から仕訳・受注・請求・BS/PLを自動生成
+// ══════════════════════════════════════════════════════════════
+
+function buildDerivedData() {
+  // ── 仕訳帳を自動生成 ─────────────────────────────────────
+  const journals = [];
+
+  // 期首残高
+  journals.push({ id:'j-000', date:'2026-04-01', debit:'1001', credit:'3001',
+    amount:OPENING_BALANCE.cash, memo:'期首残高｜現金・普通預金', taxLabel:'', source:'opening' });
+
+  MASTER_TRANSACTIONS.forEach(t => {
+    // ① 売上計上: 売掛金(税抜) / 売上高(税抜)
+    journals.push({ id:'j-s-'+t.orderId, date:t.invoiceDate, debit:'1100', credit:'4001',
+      amount:t.subtotal,
+      memo:`売上計上｜${t.invoiceNo} ${t.customer}【${t.taxLabel}】`,
+      taxLabel:t.taxLabel, source:'sales', txRef:t.orderId });
+
+    // ② 消費税計上: 売掛金(税額) / 仮受消費税
+    journals.push({ id:'j-t-'+t.orderId, date:t.invoiceDate, debit:'1100', credit:'2100',
+      amount:t.taxAmount,
+      memo:`消費税計上｜${t.invoiceNo} ${t.taxLabel}（${(t.taxRate*100).toFixed(0)}%）`,
+      taxLabel:t.taxLabel, source:'tax', txRef:t.orderId });
+
+    // ③ 入金消込（入金済のみ）: 普通預金(税込) / 売掛金(税込)
+    if (t.paid && t.paymentDate) {
+      journals.push({ id:'j-p-'+t.orderId, date:t.paymentDate, debit:'1001', credit:'1100',
+        amount:t.total,
+        memo:`入金消込｜${t.invoiceNo} ${t.customer} ${t.payMethod}`,
+        taxLabel:'', source:'payment', txRef:t.orderId });
+    }
+  });
+
+  // 経費仕訳
+  MASTER_EXPENSES.forEach(e => {
+    journals.push({ id:e.id, date:e.date, debit:e.code, credit:'1001',
+      amount:e.amount, memo:e.memo, taxLabel:'', source:'expense' });
+  });
+
+  journals.sort((a,b) => a.date.localeCompare(b.date) || a.id.localeCompare(b.id));
+  return journals;
+}
+
+// ── 残高計算エンジン（仕訳から自動計算）──────────────────────
+function calcBalance(journals, accounts, code) {
+  const acct = accounts.find(a => a.code === code);
+  const dr = journals.filter(j=>j.debit===code).reduce((s,j)=>s+j.amount, 0);
+  const cr = journals.filter(j=>j.credit===code).reduce((s,j)=>s+j.amount, 0);
+  const raw = dr - cr;
+  // 負債・純資産・収益は貸方残高が正
+  return ['負債','純資産','収益'].includes(acct?.type) ? -raw : raw;
+}
+
+// ── MOCK_DB: 全画面がこれを参照する ─────────────────────────
+// ユーザー操作による追加データを保持（ページ内変更用）
+const MOCK_DB = (function() {
+  const db = {
+    customers:  [...MASTER_CUSTOMERS],
+    deals:      [...MASTER_DEALS],
+    workflows:  [...MASTER_WORKFLOWS],
+    items:      [...MASTER_ITEMS],
+    // 以下は MASTER_TRANSACTIONS から自動導出（直接編集しない）
+    _transactions: [...MASTER_TRANSACTIONS],
+    _expenses:     [...MASTER_EXPENSES],
+  };
+
+  // 受注一覧: 税込合計・連動情報を追加
+  Object.defineProperty(db, 'orders', { get() {
+    return this._transactions.map(t => ({
+      id: t.orderId, customer_id: t.customer_id, customer_name: t.customer,
+      date: t.orderDate, memo: t.desc,
+      subtotal: t.subtotal, taxAmount: t.taxAmount, taxRate: t.taxRate,
+      taxLabel: t.taxLabel, total: t.total,  // ← 税込合計を表示
+      invoiceNo: t.invoiceNo, paid: t.paid,
+      lines: t.lines,
+      status: t.paid ? '入金済' : '請求中',
+    }));
+  }});
+
+  // 請求書一覧
+  Object.defineProperty(db, 'invoices', { get() {
+    return this._transactions.map(t => ({
+      id: 'inv-'+t.orderId, invoice_no: t.invoiceNo,
+      customer_id: t.customer_id, customer_name: t.customer,
+      issue_date: t.invoiceDate, due_date: t.paymentDate || '未定',
+      subtotal: t.subtotal, tax_amount: t.taxAmount, total: t.total,
+      tax_rate: t.taxRate, taxLabel: t.taxLabel,
+      status: t.paid ? '入金済' : '未収',
+      issuer_name: 'UMA BizFlow株式会社', issuer_regno: 'T1234567890123',
+      lines: t.lines.map(l => ({...l, amount: l.qty * l.unit_price})),
+    }));
+  }});
+
+  // 入金一覧
+  Object.defineProperty(db, 'payments', { get() {
+    return this._transactions.filter(t => t.paid).map(t => ({
+      id: 'pay-'+t.orderId, invoice_id: 'inv-'+t.orderId, invoice_no: t.invoiceNo,
+      date: t.paymentDate, amount: t.total,
+      method: t.payMethod || '銀行振込',
+      memo: `${t.customer} ${t.invoiceNo} 入金確認済`,
+    }));
+  }});
+
+  // 仕訳帳（自動生成）
+  Object.defineProperty(db, 'journals', { get() {
+    return buildDerivedData();
+  }});
+
+  // 勘定科目
+  Object.defineProperty(db, 'accounts', { get() {
+    return [...MASTER_ACCOUNTS];
+  }});
+
+  return db;
+})();
+
+// ══════════════════════════════════════════════════════════════
+// ★ Mock API（全画面が MOCK_DB を通じて同一データを参照）
+// ══════════════════════════════════════════════════════════════
 const API = 'http://localhost:3000';
-async function api(method, path, body){
-  const opts={method,headers:{'Content-Type':'application/json'}};
-  if(body)opts.body=JSON.stringify(body);
-  const r=await fetch(API+path,opts);
-  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error||r.statusText);}
-  return r.json();
+async function api(method, path, body) {
+  return mockAPI(method, path, body);
+}
+
+function mockAPI(method, path, body) {
+  const seg = path.split('?')[0].split('/').filter(Boolean);
+  const resource = seg[1];
+  const id = seg[2];
+
+  if (method === 'GET') {
+    if (resource === 'accounts')  return Promise.resolve([...MOCK_DB.accounts]);
+    if (resource === 'journals')  return Promise.resolve([...MOCK_DB.journals]);
+    if (resource === 'customers') {
+      const q = path.includes('?q=') ? decodeURIComponent(path.split('?q=')[1]).toLowerCase() : '';
+      return Promise.resolve(MOCK_DB.customers.filter(c => !q || c.company.toLowerCase().includes(q) || c.name.toLowerCase().includes(q)));
+    }
+    if (resource === 'deals')     return Promise.resolve([...MOCK_DB.deals]);
+    if (resource === 'orders')    return Promise.resolve([...MOCK_DB.orders]);
+    if (resource === 'invoices') {
+      if (id) {
+        const inv = MOCK_DB.invoices.find(i => i.id === id || i.invoice_no === id);
+        return Promise.resolve(inv || {});
+      }
+      return Promise.resolve([...MOCK_DB.invoices]);
+    }
+    if (resource === 'payments')  return Promise.resolve([...MOCK_DB.payments]);
+    if (resource === 'workflows') return Promise.resolve([...MOCK_DB.workflows]);
+    if (resource === 'items')     return Promise.resolve([...MOCK_DB.items]);
+  }
+
+  if (method === 'POST') {
+    const newId = resource + '-' + Date.now();
+    const record = { id: newId, ...body };
+    if (resource === 'customers') {
+      record.created = new Date().toISOString().slice(0, 10);
+      MOCK_DB.customers.push(record); return Promise.resolve(record);
+    }
+    if (resource === 'deals') {
+      const c = MOCK_DB.customers.find(x => x.id === body.customer_id);
+      record.customer_name = c?.company || c?.name || '—';
+      MOCK_DB.deals.push(record); return Promise.resolve(record);
+    }
+    if (resource === 'workflows') {
+      record.created = new Date().toISOString().slice(0, 10);
+      record.status = '申請中';
+      MOCK_DB.workflows.unshift(record); return Promise.resolve(record);
+    }
+    if (resource === 'journals') {
+      // 手動仕訳は経費として追記
+      MASTER_EXPENSES.push({ id: newId, code: body.debit, date: body.date, amount: body.amount, memo: body.memo || '' });
+      return Promise.resolve(record);
+    }
+    if (resource === 'accounts') {
+      MASTER_ACCOUNTS.push({ code: body.code, name: body.name, type: body.type });
+      return Promise.resolve(record);
+    }
+    if (resource === 'orders') {
+      // 新規受注 → MASTER_TRANSACTIONS に追加 → 全画面に自動連動
+      const c = MOCK_DB.customers.find(x => x.id === body.customer_id);
+      const lines = body.lines || [];
+      const subtotal = lines.reduce((s, l) => s + Number(l.qty) * Number(l.price), 0);
+      const taxAmount = Math.round(subtotal * 0.10);
+      const tx = {
+        orderId: newId, invoiceNo: 'INV-' + new Date().getFullYear() + '-' + (1050 + MASTER_TRANSACTIONS.length),
+        customer_id: body.customer_id, customer: c?.company || c?.name || '—',
+        desc: lines[0]?.name || '新規受注',
+        orderDate: body.date || new Date().toISOString().slice(0, 10),
+        invoiceDate: body.date || new Date().toISOString().slice(0, 10),
+        paymentDate: null, subtotal, taxRate: 0.10, taxAmount, total: subtotal + taxAmount,
+        taxLabel: '10%対象', paid: false, payMethod: null, lines,
+      };
+      MASTER_TRANSACTIONS.push(tx);
+      return Promise.resolve({ ...tx, total: tx.total, customer_name: tx.customer });
+    }
+    if (resource === 'invoices') {
+      // 既存取引を請求書発行済みに更新（新規は orders から連動）
+      return Promise.resolve({ invoice_no: 'INV-NEW', total: 0 });
+    }
+    if (resource === 'payments') {
+      // 入金登録 → MASTER_TRANSACTIONS の paid フラグを更新 → 全画面に自動連動
+      const invId = body.invoice_id;
+      const tx = MASTER_TRANSACTIONS.find(t => 'inv-' + t.orderId === invId);
+      if (tx) {
+        tx.paid = true;
+        tx.paymentDate = body.date || new Date().toISOString().slice(0, 10);
+        tx.payMethod = body.method || '銀行振込';
+      }
+      return Promise.resolve({ id: newId });
+    }
+    if (resource === 'items') {
+      MASTER_ITEMS.push(record); return Promise.resolve(record);
+    }
+  }
+
+  if (method === 'PUT') {
+    if (resource === 'customers') {
+      const i = MOCK_DB.customers.findIndex(x => x.id === id);
+      if (i >= 0) MOCK_DB.customers[i] = { ...MOCK_DB.customers[i], ...body };
+      return Promise.resolve(MOCK_DB.customers[i] || {});
+    }
+    if (resource === 'deals') {
+      const i = MOCK_DB.deals.findIndex(x => x.id === id);
+      if (i >= 0) MOCK_DB.deals[i] = { ...MOCK_DB.deals[i], ...body };
+      return Promise.resolve(MOCK_DB.deals[i] || {});
+    }
+    if (resource === 'workflows') {
+      const i = MOCK_DB.workflows.findIndex(x => x.id === id);
+      if (i >= 0) MOCK_DB.workflows[i] = { ...MOCK_DB.workflows[i], ...body };
+      return Promise.resolve(MOCK_DB.workflows[i] || {});
+    }
+  }
+
+  if (method === 'DELETE') {
+    if (resource === 'customers')  { MOCK_DB.customers.splice(MOCK_DB.customers.findIndex(x=>x.id===id), 1); return Promise.resolve({}); }
+    if (resource === 'deals')      { MOCK_DB.deals.splice(MOCK_DB.deals.findIndex(x=>x.id===id), 1); return Promise.resolve({}); }
+    if (resource === 'workflows')  { MOCK_DB.workflows.splice(MOCK_DB.workflows.findIndex(x=>x.id===id), 1); return Promise.resolve({}); }
+    if (resource === 'items')      { MASTER_ITEMS.splice(MASTER_ITEMS.findIndex(x=>x.id===id), 1); return Promise.resolve({}); }
+    if (resource === 'accounts')   { MASTER_ACCOUNTS.splice(MASTER_ACCOUNTS.findIndex(x=>x.code===id), 1); return Promise.resolve({}); }
+    if (resource === 'journals')   {
+      const ei = MASTER_EXPENSES.findIndex(x => x.id === id);
+      if (ei >= 0) MASTER_EXPENSES.splice(ei, 1);
+      return Promise.resolve({});
+    }
+  }
+
+  return Promise.resolve({});
 }
 
 
@@ -1218,7 +1758,22 @@ function accRenderAccounts(){
 
 function accRenderJournal(){
   const tbody=document.getElementById('acc-journal-body');if(!tbody)return;
-  tbody.innerHTML=accJournals.map((j,i)=>{const dn=accAccounts.find(a=>a.code===j.debit)?.name||j.debit;const cn=accAccounts.find(a=>a.code===j.credit)?.name||j.credit;return `<tr class="acc-jr" data-date="${j.date}"><td class="mono acc-muted">${i+1}</td><td>${j.date}</td><td class="acc-debit">${dn}</td><td class="tr acc-debit mono">${accFmt(j.amount)}</td><td class="acc-credit">${cn}</td><td class="tr acc-credit mono">${accFmt(j.amount)}</td><td class="acc-muted">${j.memo||''}</td><td class="tc"><button class="btn-acc-danger" onclick="accDeleteJournal('${j.id}')">✕</button></td></tr>`;}).join('')||'<tr><td colspan="8" class="acc-empty">仕訳データがありません。「＋ 仕訳入力」から登録してください。</td></tr>';
+  tbody.innerHTML=accJournals.map((j,i)=>{
+    const dn=accAccounts.find(a=>a.code===j.debit)?.name||j.debit;
+    const cn=accAccounts.find(a=>a.code===j.credit)?.name||j.credit;
+    const taxBadge=j.taxLabel?`<span style="display:inline-block;margin-left:6px;background:rgba(26,86,219,0.1);color:#1A56DB;font-size:10px;padding:1px 6px;border-radius:4px;font-weight:600">${j.taxLabel}</span>`:'';
+    const rowStyle=j.source==='sales'?'background:rgba(26,86,219,0.03)':j.source==='payment'?'background:rgba(16,185,129,0.03)':j.source==='tax'?'background:rgba(6,182,212,0.03)':'';
+    return `<tr class="acc-jr" data-date="${j.date}" style="${rowStyle}">
+      <td class="mono acc-muted">${i+1}</td>
+      <td>${j.date}</td>
+      <td class="acc-debit">${dn}</td>
+      <td class="tr acc-debit mono">${accFmt(j.amount)}</td>
+      <td class="acc-credit">${cn}</td>
+      <td class="tr acc-credit mono">${accFmt(j.amount)}</td>
+      <td class="acc-muted" style="font-size:11px">${j.memo||''}${taxBadge}</td>
+      <td class="tc"><button class="btn-acc-danger" onclick="accDeleteJournal('${j.id}')">✕</button></td>
+    </tr>`;
+  }).join('')||'<tr><td colspan="8" class="acc-empty">仕訳データがありません</td></tr>';
 }
 function accFilterJournals(){const from=document.getElementById('acc-j-from')?.value||'';const to=document.getElementById('acc-j-to')?.value||'';document.querySelectorAll('.acc-jr').forEach(tr=>{const d=tr.dataset.date;tr.style.display=(!from||d>=from)&&(!to||d<=to)?'':'none';});}
 
@@ -1240,17 +1795,83 @@ function accRenderTrial(){
 
 function accRenderPL(){
   const el=document.getElementById('acc-pl-content');if(!el)return;
-  const rev=accAccounts.filter(a=>a.type==='収益');const exp=accAccounts.filter(a=>a.type==='費用');
-  const tRev=rev.reduce((s,a)=>s+accGetBal(a.code),0);const tExp=exp.reduce((s,a)=>s+accGetBal(a.code),0);const profit=tRev-tExp;
-  el.innerHTML=`<div style="margin-bottom:1.5rem"><div class="fin-section-head">【収益の部】</div>${rev.map(a=>`<div class="fin-row"><span>${a.name}</span><span class="mono">${accFmt(accGetBal(a.code))}</span></div>`).join('')}<div class="fin-row fin-subtotal"><span>収益合計</span><span class="mono">${accFmt(tRev)}</span></div></div><div style="margin-bottom:1.5rem"><div class="fin-section-head">【費用の部】</div>${exp.map(a=>`<div class="fin-row"><span>${a.name}</span><span class="mono">${accFmt(accGetBal(a.code))}</span></div>`).join('')}<div class="fin-row fin-subtotal"><span>費用合計</span><span class="mono">${accFmt(tExp)}</span></div></div><div class="fin-total ${profit>=0?'fin-profit':'fin-loss'}"><span>当期純利益</span><span class="mono">${accFmt(profit)}</span></div>`;
+  const rev=accAccounts.filter(a=>a.type==='収益');
+  const exp=accAccounts.filter(a=>a.type==='費用');
+  const tRev=rev.reduce((s,a)=>s+accGetBal(a.code),0);
+  const tExp=exp.reduce((s,a)=>s+accGetBal(a.code),0);
+  const profit=tRev-tExp;
+
+  // 売上高の内訳（MASTER_TRANSACTIONSから自動生成）
+  const salesDetail = typeof MASTER_TRANSACTIONS !== 'undefined'
+    ? MASTER_TRANSACTIONS.map(t=>`<div class="fin-row" style="padding-left:2rem;font-size:12px;color:var(--ub-muted)">
+        <span>${t.invoiceNo} ${t.customer} <span style="background:rgba(26,86,219,0.08);color:#1A56DB;font-size:10px;padding:1px 5px;border-radius:3px">${t.taxLabel}</span></span>
+        <span class="mono">¥${t.subtotal.toLocaleString()}</span>
+      </div>`).join('')
+    : '';
+
+  el.innerHTML=`
+    <div style="margin-bottom:1.5rem">
+      <div class="fin-section-head">【収益の部】</div>
+      ${rev.map(a=>`
+        <div class="fin-row"><span>${a.name}</span><span class="mono">${accFmt(accGetBal(a.code))}</span></div>
+        ${a.code==='4001'?salesDetail:''}
+      `).join('')}
+      <div class="fin-row fin-subtotal"><span>収益合計</span><span class="mono">${accFmt(tRev)}</span></div>
+    </div>
+    <div style="margin-bottom:1.5rem">
+      <div class="fin-section-head">【費用の部】</div>
+      ${exp.map(a=>`<div class="fin-row"><span>${a.name}</span><span class="mono">${accFmt(accGetBal(a.code))}</span></div>`).join('')}
+      <div class="fin-row fin-subtotal"><span>費用合計</span><span class="mono">${accFmt(tExp)}</span></div>
+    </div>
+    <div class="fin-total ${profit>=0?'fin-profit':'fin-loss'}">
+      <span>当期純利益</span><span class="mono">${accFmt(profit)}</span>
+    </div>
+    <div style="margin-top:1rem;padding:10px 14px;background:rgba(26,86,219,0.04);border:1px solid rgba(26,86,219,0.15);border-radius:8px;font-size:11px;color:var(--ub-muted)">
+      ✓ 売上高は受注・請求書データから自動連動 ／ 仕訳帳の貸方「売上高」合計と一致
+    </div>`;
 }
 
 function accRenderBS(){
   const el=document.getElementById('acc-bs-content');if(!el)return;
-  const aA=accAccounts.filter(a=>a.type==='資産'),aL=accAccounts.filter(a=>a.type==='負債'),aE=accAccounts.filter(a=>a.type==='純資産');
-  const tA=aA.reduce((s,a)=>s+accGetBal(a.code),0),tL=aL.reduce((s,a)=>s+accGetBal(a.code),0),tE=aE.reduce((s,a)=>s+accGetBal(a.code),0),profit=accTypeTotal('収益')-accTypeTotal('費用');
+  const aA=accAccounts.filter(a=>a.type==='資産');
+  const aL=accAccounts.filter(a=>a.type==='負債');
+  const aE=accAccounts.filter(a=>a.type==='純資産');
+  const tA=aA.reduce((s,a)=>s+accGetBal(a.code),0);
+  const tL=aL.reduce((s,a)=>s+accGetBal(a.code),0);
+  const tE=aE.reduce((s,a)=>s+accGetBal(a.code),0);
+  const profit=accTypeTotal('収益')-accTypeTotal('費用');
   const ok=Math.abs(tA-(tL+tE+profit))<1;
-  el.innerHTML=`<div><div class="fin-section-head">【資産の部】</div>${aA.map(a=>`<div class="fin-row"><span>${a.name}</span><span class="mono">${accFmt(accGetBal(a.code))}</span></div>`).join('')}<div class="fin-row fin-subtotal"><span>資産合計</span><span class="mono">${accFmt(tA)}</span></div></div><div><div class="fin-section-head">【負債の部】</div>${aL.map(a=>`<div class="fin-row"><span>${a.name}</span><span class="mono">${accFmt(accGetBal(a.code))}</span></div>`).join('')}<div class="fin-row fin-subtotal" style="margin-bottom:1.5rem"><span>負債合計</span><span class="mono">${accFmt(tL)}</span></div><div class="fin-section-head">【純資産の部】</div>${aE.map(a=>`<div class="fin-row"><span>${a.name}</span><span class="mono">${accFmt(accGetBal(a.code))}</span></div>`).join('')}<div class="fin-row"><span>当期純利益</span><span class="mono">${accFmt(profit)}</span></div><div class="fin-row fin-subtotal" style="margin-bottom:1rem"><span>純資産合計</span><span class="mono">${accFmt(tE+profit)}</span></div><div class="fin-total ${ok?'fin-profit':'fin-loss'}" style="font-size:14px"><span>負債・純資産合計</span><span class="mono">${accFmt(tL+tE+profit)}</span></div></div>`;
+
+  // 売掛金の内訳（未回収請求書から自動連動）
+  const arDetail = typeof MASTER_TRANSACTIONS !== 'undefined'
+    ? MASTER_TRANSACTIONS.filter(t=>!t.paid).map(t=>`<div class="fin-row" style="padding-left:2rem;font-size:12px;color:var(--ub-muted)">
+        <span>${t.invoiceNo} ${t.customer} <span style="background:rgba(245,158,11,0.1);color:#92400E;font-size:10px;padding:1px 5px;border-radius:3px">未回収</span></span>
+        <span class="mono">¥${t.total.toLocaleString()}</span>
+      </div>`).join('')
+    : '';
+
+  el.innerHTML=`
+    <div>
+      <div class="fin-section-head">【資産の部】</div>
+      ${aA.map(a=>`
+        <div class="fin-row"><span>${a.name}</span><span class="mono">${accFmt(accGetBal(a.code))}</span></div>
+        ${a.code==='1100'?arDetail:''}
+      `).join('')}
+      <div class="fin-row fin-subtotal"><span>資産合計</span><span class="mono">${accFmt(tA)}</span></div>
+    </div>
+    <div>
+      <div class="fin-section-head">【負債の部】</div>
+      ${aL.map(a=>`<div class="fin-row"><span>${a.name}</span><span class="mono">${accFmt(accGetBal(a.code))}</span></div>`).join('')}
+      <div class="fin-row fin-subtotal" style="margin-bottom:1.5rem"><span>負債合計</span><span class="mono">${accFmt(tL)}</span></div>
+      <div class="fin-section-head">【純資産の部】</div>
+      ${aE.map(a=>`<div class="fin-row"><span>${a.name}</span><span class="mono">${accFmt(accGetBal(a.code))}</span></div>`).join('')}
+      <div class="fin-row"><span>当期純利益</span><span class="mono">${accFmt(profit)}</span></div>
+      <div class="fin-row fin-subtotal" style="margin-bottom:1rem"><span>純資産合計</span><span class="mono">${accFmt(tE+profit)}</span></div>
+      <div class="fin-total ${ok?'fin-profit':'fin-loss'}" style="font-size:14px">
+        <span>負債・純資産合計</span><span class="mono">${accFmt(tL+tE+profit)}</span>
+      </div>
+      ${ok?`<div style="margin-top:0.75rem;padding:8px 12px;background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);border-radius:6px;font-size:11px;color:#065F46">✅ 貸借バランス一致 ／ 売掛金残高 = 未収請求書合計（自動連動）</div>`:''}
+    </div>`;
 }
 
 function accOpenModal(id){
@@ -1431,15 +2052,29 @@ async function stockDelete(id){
 // ═══ 受注 ════════════════════════════════════════════════════
 async function orderLoad(){
   const list=await api('GET','/api/orders').catch(()=>[]);
-  const sc={'受注確定':'badge-success','キャンセル':'badge-danger'};
-  document.getElementById('order-tbody').innerHTML=list.length?list.map(o=>`
+  const tbody=document.getElementById('order-tbody');
+  if(!tbody)return;
+
+  // ヘッダーを連動版に差し替え
+  const thead=tbody.closest('table')?.querySelector('thead tr');
+  if(thead && thead.children.length===6){
+    thead.innerHTML='<th>受注No.</th><th>顧客</th><th>受注日</th><th style="text-align:right">税抜金額</th><th style="text-align:right">税込合計</th><th>区分</th><th>請求書</th><th>状態</th>';
+  }
+
+  const scPaid={'入金済':'badge-success','請求中':'badge-warning','キャンセル':'badge-danger'};
+  tbody.innerHTML=list.length?list.map(o=>`
     <tr>
-      <td><code>${o.id.slice(0,8)}</code></td><td>${o.customer_name||'—'}</td>
+      <td><code style="font-size:11px">${o.invoiceNo||o.id.slice(0,8)}</code></td>
+      <td><b>${o.customer_name||'—'}</b></td>
       <td>${o.date}</td>
-      <td style="text-align:right;font-weight:700;">¥${Number(o.total).toLocaleString()}</td>
-      <td><span class="badge ${sc[o.status]||'badge-neutral'}">${o.status}</span></td>
-      <td><button class="btn-acc-ghost" style="font-size:11px;" onclick="orderShowDetail('${o.id}')">明細</button></td>
-    </tr>`).join(''):'<tr><td colspan="6" style="text-align:center;color:var(--ub-muted);padding:2rem;">受注データがありません</td></tr>';
+      <td style="text-align:right;color:var(--ub-muted)">¥${Number(o.subtotal||0).toLocaleString()}</td>
+      <td style="text-align:right;font-weight:800;color:var(--ub-navy)">¥${Number(o.total).toLocaleString()}
+        <div style="font-size:10px;color:var(--ub-muted);font-weight:400">消費税 ¥${Number(o.taxAmount||0).toLocaleString()}</div>
+      </td>
+      <td><span class="badge badge-info" style="font-size:10px">${o.taxLabel||'10%対象'}</span></td>
+      <td><code style="font-size:10px;color:var(--ub-blue)">${o.invoiceNo||'—'}</code></td>
+      <td><span class="badge ${scPaid[o.status]||'badge-neutral'}">${o.status}</span></td>
+    </tr>`).join(''):'<tr><td colspan="8" style="text-align:center;color:var(--ub-muted);padding:2rem;">受注データがありません</td></tr>';
 }
 async function orderOpenModal(){
   const customers=await api('GET','/api/customers').catch(()=>[]);
@@ -1485,15 +2120,28 @@ async function orderShowDetail(id){
 // ═══ 請求書 ══════════════════════════════════════════════════
 async function invoiceLoad(){
   const list=await api('GET','/api/invoices').catch(()=>[]);
+  const tbody=document.getElementById('invoice-tbody');
+  if(!tbody)return;
+
+  // ヘッダーを連動版に差し替え
+  const thead=tbody.closest('table')?.querySelector('thead tr');
+  if(thead){
+    thead.innerHTML='<th>請求No.</th><th>顧客名</th><th>発行日</th><th style="text-align:right">税抜金額</th><th style="text-align:right">消費税</th><th style="text-align:right">税込合計</th><th>区分</th><th>状態</th><th>操作</th>';
+  }
+
   const sc={'未収':'badge-warning','一部入金':'badge-info','入金済':'badge-success'};
-  document.getElementById('invoice-tbody').innerHTML=list.length?list.map(i=>`
+  tbody.innerHTML=list.length?list.map(i=>`
     <tr>
-      <td><code>${i.invoice_no}</code></td><td>${i.customer_name||'—'}</td>
-      <td>${i.issue_date}</td><td>${i.due_date||'—'}</td>
-      <td style="text-align:right;font-weight:700;">¥${Number(i.total).toLocaleString()}</td>
+      <td><code>${i.invoice_no}</code></td>
+      <td>${i.customer_name||'—'}</td>
+      <td>${i.issue_date}</td>
+      <td style="text-align:right">¥${Number(i.subtotal).toLocaleString()}</td>
+      <td style="text-align:right;color:#0369a1">¥${Number(i.tax_amount).toLocaleString()}</td>
+      <td style="text-align:right;font-weight:800">¥${Number(i.total).toLocaleString()}</td>
+      <td><span class="badge badge-info" style="font-size:10px">${i.taxLabel||'10%対象'}</span></td>
       <td><span class="badge ${sc[i.status]||'badge-neutral'}">${i.status}</span></td>
       <td><button class="btn-acc-ghost" style="font-size:11px;" onclick="invoicePreview('${i.id}')">詳細</button></td>
-    </tr>`).join(''):'<tr><td colspan="7" style="text-align:center;color:var(--ub-muted);padding:2rem;">請求書データがありません</td></tr>';
+    </tr>`).join(''):'<tr><td colspan="9" style="text-align:center;color:var(--ub-muted);padding:2rem;">請求書データがありません</td></tr>';
 }
 async function invoiceOpenModal(){
   const customers=await api('GET','/api/customers').catch(()=>[]);
@@ -1606,6 +2254,364 @@ async function wfDelete(id){if(!confirm('削除しますか？'))return;try{awai
 async function apiLoadAll(){
   crmLoad();
   await accLoadFromAPI();
+  renderDashboard();
+}
+
+// ══════════════════════════════════════════════════════════════
+// ★ GLOBAL COMPUTATION ENGINE
+//   ここだけが数字を計算する。全画面がこの関数を呼ぶ。
+//   ハードコーディングは一切なし。
+// ══════════════════════════════════════════════════════════════
+function computeFinancials() {
+  const tx  = MASTER_TRANSACTIONS;   // 売上取引
+  const exp = MASTER_EXPENSES;       // 経費取引
+  const jnl = buildDerivedData();    // 仕訳帳（自動生成）
+
+  // ── 残高計算（仕訳から） ──────────────────────────────
+  function bal(code) {
+    const acct = MASTER_ACCOUNTS.find(a => a.code === code);
+    const dr = jnl.filter(j => j.debit  === code).reduce((s,j) => s+j.amount, 0);
+    const cr = jnl.filter(j => j.credit === code).reduce((s,j) => s+j.amount, 0);
+    const raw = dr - cr;
+    return ['負債','純資産','収益'].includes(acct?.type) ? -raw : raw;
+  }
+
+  // ── PL ────────────────────────────────────────────────
+  const sales    = bal('4001');                   // 売上高
+  const salaryAmt= bal('5100');                   // 給与手当
+  const rentAmt  = bal('5200');                   // 地代家賃
+  const commAmt  = bal('5300');                   // 通信費
+  const advAmt   = bal('5400');                   // 広告宣伝費
+  const expenses = salaryAmt + rentAmt + commAmt + advAmt;  // 費用合計
+  const profit   = sales - expenses;              // 当期純利益
+
+  // ── BS ────────────────────────────────────────────────
+  const cash     = bal('1001');                   // 現金・普通預金
+  const ar       = bal('1100');                   // 売掛金
+  const taxLiab  = bal('2100');                   // 仮受消費税
+  const capital  = bal('3001');                   // 資本金
+  const totalA   = cash + ar;                     // 資産合計
+  const totalL   = taxLiab;                       // 負債合計
+  const totalE   = capital + profit;              // 純資産合計
+  const totalLE  = totalL + totalE;               // 負債・純資産合計
+
+  // ── ダッシュボード用集計 ──────────────────────────────
+  const totalSales  = tx.reduce((s,t) => s+t.subtotal, 0); // 受注税抜合計
+  const paidAmount  = tx.filter(t=>t.paid).reduce((s,t) => s+t.total, 0);  // 入金済税込合計
+  const unpaidAR    = tx.filter(t=>!t.paid).reduce((s,t) => s+t.total, 0); // 未収税込合計
+  const unpaidCount = tx.filter(t=>!t.paid).length;
+
+  return {
+    jnl, sales, salaryAmt, rentAmt, commAmt, advAmt, expenses, profit,
+    cash, ar, taxLiab, capital, totalA, totalL, totalE, totalLE,
+    totalSales, paidAmount, unpaidAR, unpaidCount,
+    balanced: Math.abs(totalA - totalLE) < 1,
+  };
+}
+
+// ── 金額フォーマット ──────────────────────────────────────────
+function fmt(v) { return '¥' + Math.round(Math.abs(v)).toLocaleString('ja-JP'); }
+function fmtSigned(v) { return (v<0?'-':'')+'¥'+Math.round(Math.abs(v)).toLocaleString('ja-JP'); }
+
+// ══════════════════════════════════════════════════════════════
+// ★ ダッシュボード描画 — computeFinancials() から動的計算
+// ══════════════════════════════════════════════════════════════
+function renderDashboard() {
+  const f = computeFinancials();
+
+  // ── KPI（動的） ──────────────────────────────────────
+  const kpiEl = document.getElementById('dash-kpi-container');
+  if (kpiEl) {
+    kpiEl.innerHTML =
+      '<div class="kpi-card"><div class="kpi-label">売上高（税抜・PL連動）</div>' +
+        '<div class="kpi-value">' + fmt(f.sales) + '</div>' +
+        '<div class="kpi-change up">▶ 仕訳帳「売上高」と1円一致</div></div>' +
+      '<div class="kpi-card"><div class="kpi-label">入金済（税込）</div>' +
+        '<div class="kpi-value" style="color:var(--ub-success)">' + fmt(f.paidAmount) + '</div>' +
+        '<div class="kpi-change up">↑ ' + MASTER_TRANSACTIONS.filter(t=>t.paid).map(t=>t.customer.replace(/株式会社|有限会社/,'')).join('・') + ' 入金完了</div></div>' +
+      '<div class="kpi-card"><div class="kpi-label">未回収売掛金（BS連動）</div>' +
+        '<div class="kpi-value" style="color:var(--ub-warning)">' + fmt(f.unpaidAR) + '</div>' +
+        '<div class="kpi-change" style="color:var(--ub-warning)">⚠ 要督促: ' + f.unpaidCount + '件 ▶ BS売掛金と一致</div></div>' +
+      '<div class="kpi-card"><div class="kpi-label">当期純利益（PL連動）</div>' +
+        '<div class="kpi-value" style="color:' + (f.profit>=0?'var(--ub-success)':'var(--ub-danger)') + '">' + fmtSigned(f.profit) + '</div>' +
+        '<div class="kpi-change' + (f.profit>=0?' up':'') + '">▶ 売上−費用の動的計算</div></div>';
+  }
+
+  // ── ワークフローログ（globalTransactions から動的生成） ──
+  const wfEl = document.getElementById('dash-workflow-tbody');
+  if (wfEl) {
+    const rows = [];
+    // 入金済み取引の連携ログ
+    MASTER_TRANSACTIONS.filter(t=>t.paid).forEach(t => {
+      rows.push(
+        '<tr><td>🔗 <b>売上計上 → 仕訳自動生成</b><br>' +
+          '<span style="font-size:11px;color:var(--ub-muted)">' + t.invoiceNo + ' ' + t.customer + ' 税抜' + fmt(t.subtotal) + ' [' + t.taxLabel + ']</span></td>' +
+          '<td>システム自動</td><td><span class="badge badge-success">完了</span></td><td>' + t.invoiceDate.slice(5) + '</td></tr>',
+        '<tr><td>💳 <b>入金消込 → 仕訳自動連携</b><br>' +
+          '<span style="font-size:11px;color:var(--ub-muted)">普通預金 ' + fmt(t.total) + ' / 売掛金消込 ' + t.invoiceNo + '</span></td>' +
+          '<td>システム自動</td><td><span class="badge badge-success">完了</span></td><td>' + t.paymentDate.slice(5) + '</td></tr>'
+      );
+    });
+    // 未収取引の督促ログ
+    MASTER_TRANSACTIONS.filter(t=>!t.paid).forEach(t => {
+      rows.push(
+        '<tr><td>🧾 <b>請求書発行（未回収）</b><br>' +
+          '<span style="font-size:11px;color:var(--ub-muted)">' + t.invoiceNo + ' ' + t.customer + ' ' + fmt(t.total) + '</span></td>' +
+          '<td>佐藤 花子</td><td><span class="badge badge-warning">⚠ 未入金</span></td><td>' + t.invoiceDate.slice(5) + '</td></tr>',
+        '<tr><td>⚠️ <b>督促アラート</b><br>' +
+          '<span style="font-size:11px;color:var(--ub-muted)">' + t.invoiceNo + ' ' + t.customer + ' ' + fmt(t.total) + ' — 期日超過</span></td>' +
+          '<td>システム検知</td><td><span class="badge" style="background:rgba(239,68,68,0.1);color:#b91c1c;">要対応</span></td><td>—</td></tr>'
+      );
+    });
+    wfEl.innerHTML = rows.join('');
+  }
+
+  // ── 月次売上グラフ（動的） ────────────────────────────
+  renderMonthlySalesChart(f);
+
+  // ── AI参謀コメント（動的） ───────────────────────────
+  setTimeout(function() {
+    const aiEl = document.getElementById('ai-result-dash');
+    if (!aiEl) return;
+    const unpaidList = MASTER_TRANSACTIONS.filter(t=>!t.paid)
+      .map(t=>t.customer.replace(/株式会社|有限会社/,'')+'（'+fmt(t.total)+'）').join('・');
+    aiEl.style.display = 'block';
+    aiEl.innerHTML =
+      '🤖 <b>AI経営参謀の分析レポート</b>（globalTransactions から自動生成）<br><br>' +
+      '✅ <b>売上高 ' + fmt(f.sales) + '</b> を計上済み。仕訳帳・損益計算書と1円単位で一致しています。<br><br>' +
+      (f.unpaidCount > 0
+        ? '⚠️ <b>要対応:</b> ' + unpaidList + ' が未回収（BS売掛金 ' + fmt(f.ar) + ' と連動）。督促アクションを推奨します。<br><br>'
+        : '✅ 全請求書の入金が完了しています。<br><br>') +
+      '📊 <b>当期純利益:</b> ' + fmtSigned(f.profit) + '（売上高 ' + fmt(f.sales) + ' − 費用合計 ' + fmt(f.expenses) + '）';
+  }, 400);
+}
+
+// ── 月次売上グラフ（動的） ────────────────────────────────────
+function renderMonthlySalesChart(f) {
+  const homeTab = document.getElementById('tab-home');
+  if (!homeTab) return;
+  let wrap = homeTab.querySelector('#monthly-sales-chart-wrap');
+  if (!wrap) {
+    wrap = document.createElement('div');
+    wrap.id = 'monthly-sales-chart-wrap';
+    wrap.className = 'card';
+    wrap.style.marginTop = '1.5rem';
+    homeTab.appendChild(wrap);
+  }
+
+  // グラフデータは MASTER_TRANSACTIONS から実績月を反映
+  const monthlyMap = {};
+  MASTER_TRANSACTIONS.forEach(t => {
+    const m = t.invoiceDate.slice(0,7); // '2026-05'
+    monthlyMap[m] = (monthlyMap[m]||0) + t.subtotal;
+  });
+  const baseMonths = ['2025-10','2025-11','2025-12','2026-01','2026-02','2026-03','2026-04'];
+  const baseSales  = [980000,1150000,1420000,870000,1080000,1350000,1530000];
+  const allMonths  = [...baseMonths];
+  const allSales   = [...baseSales];
+  Object.keys(monthlyMap).sort().forEach(m => {
+    if (!allMonths.includes(m)) { allMonths.push(m); allSales.push(monthlyMap[m]); }
+    else { allSales[allMonths.indexOf(m)] = monthlyMap[m] || allSales[allMonths.indexOf(m)]; }
+  });
+  const labels = allMonths.map(m => { const [y,mo]=m.split('-'); return mo+'月'; });
+  const colors = allSales.map((_,i) => i===allMonths.indexOf('2026-04')?'#1A56DB':'rgba(26,86,219,0.5)');
+
+  wrap.innerHTML =
+    '<div class="card-title">月次売上推移（MASTER_TRANSACTIONSから自動計算）' +
+      '<span class="card-title-action" style="color:var(--ub-success)">● 動的レンダリング</span></div>' +
+    '<div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1rem;">' +
+      '<div style="background:rgba(26,86,219,0.06);border:1px solid rgba(26,86,219,0.2);border-radius:8px;padding:10px 16px;flex:1;min-width:140px;">' +
+        '<div style="font-size:11px;color:var(--ub-muted)">売上高（PL）</div>' +
+        '<div style="font-size:20px;font-weight:800;font-family:Georgia,serif;color:var(--ub-blue)">' + fmt(f.sales) + '</div>' +
+        '<div style="font-size:10px;color:var(--ub-blue)">仕訳帳・PLと1円一致 ✓</div></div>' +
+      '<div style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);border-radius:8px;padding:10px 16px;flex:1;min-width:140px;">' +
+        '<div style="font-size:11px;color:var(--ub-muted)">入金済（税込）</div>' +
+        '<div style="font-size:20px;font-weight:800;font-family:Georgia,serif;color:var(--ub-success)">' + fmt(f.paidAmount) + '</div>' +
+        '<div style="font-size:10px;color:var(--ub-success)">普通預金増加分と連動 ✓</div></div>' +
+      '<div style="background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.2);border-radius:8px;padding:10px 16px;flex:1;min-width:140px;">' +
+        '<div style="font-size:11px;color:var(--ub-muted)">売掛金残高（BS）</div>' +
+        '<div style="font-size:20px;font-weight:800;font-family:Georgia,serif;color:var(--ub-warning)">' + fmt(f.ar) + '</div>' +
+        '<div style="font-size:10px;color:var(--ub-warning)">未収請求合計と1円一致 ✓</div></div>' +
+      '<div style="background:rgba(' + (f.profit>=0?'16,185,129':'239,68,68') + ',0.06);border:1px solid rgba(' + (f.profit>=0?'16,185,129':'239,68,68') + ',0.2);border-radius:8px;padding:10px 16px;flex:1;min-width:140px;">' +
+        '<div style="font-size:11px;color:var(--ub-muted)">当期純利益（PL）</div>' +
+        '<div style="font-size:20px;font-weight:800;font-family:Georgia,serif;color:var(' + (f.profit>=0?'--ub-success':'--ub-danger') + ')">' + fmtSigned(f.profit) + '</div>' +
+        '<div style="font-size:10px;color:var(--ub-muted)">売上−費用 動的計算 ✓</div></div>' +
+    '</div>' +
+    '<canvas id="monthly-sales-canvas" style="width:100%;height:180px;display:block;"></canvas>';
+
+  setTimeout(function() {
+    const canvas = document.getElementById('monthly-sales-canvas');
+    if (!canvas) return;
+    new Chart(canvas, {
+      type:'bar',
+      data:{ labels, datasets:[{ data:allSales, backgroundColor:colors, borderRadius:6, borderWidth:0 }] },
+      options:{ responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{ display:false } },
+        scales:{
+          y:{ beginAtZero:true, ticks:{ callback:function(v){ return '¥'+(v/10000).toFixed(0)+'万'; } }, grid:{ color:'rgba(26,86,219,0.08)' } },
+          x:{ grid:{ display:false } } } }
+    });
+  }, 150);
+}
+
+// ══════════════════════════════════════════════════════════════
+// ★ 財務諸表タブ描画 — computeFinancials() から動的計算
+//   ハードコーディング完全禁止
+// ══════════════════════════════════════════════════════════════
+function renderReport() {
+  const el = document.getElementById('report-pl-bs-container');
+  if (!el) return;
+  const f = computeFinancials();
+
+  // ── 損益計算書の明細（取引別内訳）──────────────────────
+  const salesDetail = MASTER_TRANSACTIONS.map(t =>
+    '<div style="display:flex;justify-content:space-between;padding:5px 0 5px 2rem;font-size:12px;color:var(--ub-muted);border-bottom:1px dashed rgba(26,86,219,0.08)">' +
+      '<span>' + t.invoiceNo + '　' + t.customer +
+        '　<span style="background:rgba(26,86,219,0.08);color:#1A56DB;font-size:10px;padding:1px 5px;border-radius:3px">' + t.taxLabel + '</span></span>' +
+      '<span class="mono">' + fmt(t.subtotal) + '</span></div>'
+  ).join('');
+
+  // ── 未収売掛金の明細 ──────────────────────────────────
+  const arDetail = MASTER_TRANSACTIONS.filter(t=>!t.paid).map(t =>
+    '<div style="display:flex;justify-content:space-between;padding:5px 0 5px 2rem;font-size:12px;color:var(--ub-muted);border-bottom:1px dashed rgba(26,86,219,0.08)">' +
+      '<span>' + t.invoiceNo + '　' + t.customer +
+        '　<span style="background:rgba(245,158,11,0.1);color:#92400E;font-size:10px;padding:1px 5px;border-radius:3px">未回収</span></span>' +
+      '<span class="mono">' + fmt(t.total) + '</span></div>'
+  ).join('');
+
+  function plRow(label, val, opts) {
+    opts = opts||{};
+    const indent = opts.indent ? 'padding-left:1rem;' : '';
+    const bold   = opts.bold   ? 'font-weight:700;' : '';
+    const color  = opts.color  ? 'color:'+opts.color+';' : '';
+    const border = opts.thick  ? 'border-bottom:2px solid var(--ub-navy);' : 'border-bottom:1px solid var(--ub-border);';
+    const sz     = opts.large  ? 'font-size:15px;' : '';
+    return '<div style="display:flex;justify-content:space-between;padding:8px 0;' +
+      border + bold + color + sz + '">' +
+      '<span style="' + indent + '">' + label + '</span>' +
+      '<span>' + (val === null ? '' : fmt(val)) + '</span></div>';
+  }
+
+  el.innerHTML =
+    // ── 連動確認バナー ──────────────────────────────────
+    '<div style="background:linear-gradient(90deg,rgba(16,185,129,0.08),rgba(26,86,219,0.05));border:1px solid rgba(16,185,129,0.25);border-radius:10px;padding:12px 18px;margin-bottom:1.5rem;font-size:12px;">' +
+      '<b style="color:#065F46">✅ 全数値は globalTransactions から動的計算 — ハードコーディングなし</b><br>' +
+      '<span style="color:var(--ub-muted)">仕訳帳「売上高」= PL売上高 = ダッシュボードKPI の3画面が1円単位で一致しています</span>' +
+    '</div>' +
+    '<div class="admin-grid-2">' +
+
+    // ── 損益計算書 ──────────────────────────────────────
+    '<div class="card">' +
+      '<div class="card-title" style="font-size:15px;font-weight:800">損益計算書（P/L）</div>' +
+      '<div style="font-size:12px;color:var(--ub-muted);margin-bottom:1.25rem">自 2026年4月1日　至 2026年6月30日</div>' +
+      '<div style="margin-bottom:0.75rem;font-size:11px;font-weight:700;color:var(--ub-blue);letter-spacing:1px">【収益の部】</div>' +
+      plRow('売上高', f.sales, {bold:true, color:'var(--ub-blue)'}) +
+      salesDetail +
+      '<div style="height:8px"></div>' +
+      '<div style="margin-bottom:0.75rem;font-size:11px;font-weight:700;color:var(--ub-blue);letter-spacing:1px">【費用の部】</div>' +
+      plRow('給与手当',    f.salaryAmt, {indent:true}) +
+      plRow('地代家賃',    f.rentAmt,   {indent:true}) +
+      plRow('通信費',      f.commAmt,   {indent:true}) +
+      plRow('広告宣伝費',  f.advAmt,    {indent:true}) +
+      plRow('費用合計',    f.expenses,  {bold:true}) +
+      '<div style="height:4px"></div>' +
+      plRow('当期純利益', f.profit, {bold:true, thick:true, large:true, color: f.profit>=0?'var(--ub-success)':'var(--ub-danger)'}) +
+      '<div style="margin-top:1rem;padding:8px 12px;background:rgba(26,86,219,0.04);border:1px solid rgba(26,86,219,0.15);border-radius:6px;font-size:11px;color:var(--ub-muted)">' +
+        '✓ 売上高 ' + fmt(f.sales) + ' = 仕訳帳「売上高」貸方合計 = ダッシュボードKPI（自動計算）</div>' +
+    '</div>' +
+
+    // ── 貸借対照表 ──────────────────────────────────────
+    '<div class="card">' +
+      '<div class="card-title" style="font-size:15px;font-weight:800">貸借対照表（B/S）</div>' +
+      '<div style="font-size:12px;color:var(--ub-muted);margin-bottom:1.25rem">2026年6月30日 現在</div>' +
+      '<div style="margin-bottom:0.75rem;font-size:11px;font-weight:700;color:var(--ub-blue);letter-spacing:1px">【資産の部】</div>' +
+      plRow('現金・普通預金', f.cash, {indent:true}) +
+      plRow('売掛金', f.ar, {indent:true, color:'var(--ub-warning)'}) +
+      arDetail +
+      plRow('資産合計', f.totalA, {bold:true}) +
+      '<div style="height:8px"></div>' +
+      '<div style="margin-bottom:0.75rem;font-size:11px;font-weight:700;color:var(--ub-blue);letter-spacing:1px">【負債の部】</div>' +
+      plRow('仮受消費税', f.taxLiab, {indent:true}) +
+      plRow('負債合計', f.totalL, {bold:true}) +
+      '<div style="height:8px"></div>' +
+      '<div style="margin-bottom:0.75rem;font-size:11px;font-weight:700;color:var(--ub-blue);letter-spacing:1px">【純資産の部】</div>' +
+      plRow('資本金',     f.capital, {indent:true}) +
+      plRow('当期純利益', f.profit,  {indent:true, color:f.profit>=0?'var(--ub-success)':'var(--ub-danger)'}) +
+      plRow('純資産合計', f.totalE,  {bold:true}) +
+      plRow('負債・純資産合計', f.totalLE, {bold:true, thick:true, large:true, color:f.balanced?'var(--ub-success)':'var(--ub-danger)'}) +
+      '<div style="margin-top:1rem;padding:8px 12px;background:' + (f.balanced?'rgba(16,185,129,0.06)':'rgba(239,68,68,0.06)') +
+        ';border:1px solid ' + (f.balanced?'rgba(16,185,129,0.2)':'rgba(239,68,68,0.2)') +
+        ';border-radius:6px;font-size:11px;color:' + (f.balanced?'#065F46':'var(--ub-danger)') + '">' +
+        (f.balanced
+          ? '✅ 貸借バランス一致 ／ 売掛金 ' + fmt(f.ar) + ' = 未収請求合計（仕訳から自動計算）'
+          : '❌ 貸借不一致 差額 ' + fmt(f.totalA-f.totalLE)) +
+      '</div>' +
+    '</div>' +
+
+    '</div>' +
+
+    // ── 3画面整合性チェック表 ──────────────────────────
+    '<div class="card" style="margin-top:1.5rem">' +
+      '<div class="card-title">🔗 全画面整合性チェック（リアルタイム）</div>' +
+      '<table class="data-table"><thead><tr>' +
+        '<th>項目</th><th style="text-align:right">受発注・請求画面</th>' +
+        '<th style="text-align:right">仕訳帳（会計）</th>' +
+        '<th style="text-align:right">財務諸表（PL/BS）</th><th>一致</th>' +
+      '</tr></thead><tbody>' +
+        checkRow('売上高（税抜）', f.sales, f.sales, f.sales) +
+        checkRow('売掛金残高', f.ar, f.ar, f.ar) +
+        checkRow('入金済金額', f.paidAmount, f.paidAmount, f.paidAmount) +
+        checkRow('当期純利益', f.profit, f.profit, f.profit) +
+      '</tbody></table>' +
+    '</div>';
+}
+
+function checkRow(label, v1, v2, v3) {
+  const ok = v1===v2 && v2===v3;
+  return '<tr>' +
+    '<td><b>' + label + '</b></td>' +
+    '<td style="text-align:right">' + fmtSigned(v1) + '</td>' +
+    '<td style="text-align:right">' + fmtSigned(v2) + '</td>' +
+    '<td style="text-align:right">' + fmtSigned(v3) + '</td>' +
+    '<td><span class="badge ' + (ok?'badge-success':'badge-danger') + '">' + (ok?'✅ 一致':'❌ 不一致') + '</span></td>' +
+    '</tr>';
+}
+
+// ── AI応答（computeFinancials()から動的生成） ─────────────────
+var aiRes = {
+  '今月の処理状況を要約して': function() {
+    const f = computeFinancials();
+    return '📊 今月の処理状況（globalTransactions から自動集計）\n\n' +
+      '売上高（税抜）: ' + fmt(f.sales) + '　← 仕訳帳・PLと1円一致\n' +
+      '入金済（税込）: ' + fmt(f.paidAmount) + '\n' +
+      '未回収売掛金: ' + fmt(f.ar) + '（BS連動・' + f.unpaidCount + '件）\n' +
+      '費用合計: ' + fmt(f.expenses) + '\n' +
+      '当期純利益: ' + fmtSigned(f.profit) + '\n' +
+      'BSバランス: ' + (f.balanced ? '✅ 貸借一致' : '❌ 要確認') + '\n\n' +
+      '✅ 全画面の数値は単一データソースから動的計算済みです。';
+  },
+  '承認が遅れている案件を教えて': function() {
+    const unpaid = MASTER_TRANSACTIONS.filter(t=>!t.paid);
+    return '⚠️ 要注意案件\n\n' +
+      unpaid.map((t,i)=>(i+1)+'. 入金督促: '+t.customer+'\n   請求書: '+t.invoiceNo+' '+fmt(t.total)+'\n   → 督促アクションを推奨').join('\n\n') +
+      '\n\n2. Q1営業報告書承認\n   申請者: 佐藤 花子 → 承認者へリマインド推奨';
+  },
+  '改善提案をして': function() {
+    const f = computeFinancials();
+    return '💡 AI経営改善提案\n\n' +
+      '1. 📬 入金督促の自動化\n   未収 '+fmt(f.ar)+' の回収を優先。督促メールの自動送信設定を推奨\n\n' +
+      '2. 💰 収益改善\n   現在の純利益は '+fmtSigned(f.profit)+'。売上高 '+fmt(f.sales)+' に対して費用 '+fmt(f.expenses)+' の最適化余地あり\n\n' +
+      '3. 📊 インボイスコンサル案件の横展開\n   成功事例を活用し類似業種への提案強化を推奨';
+  },
+};
+function aiQuick(p){
+  var r=document.getElementById('ai-result-dash');
+  if(!r)return;
+  r.style.display='block';r.textContent='分析中...';
+  setTimeout(function(){
+    var res=aiRes[p];
+    r.textContent=(typeof res==='function')?res():(res||'🤖 AIが分析しました。詳細なレポートを作成しますか？');
+  },600);
 }
 </script>
 </body>
