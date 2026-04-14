@@ -855,12 +855,12 @@ code { font-family:'JetBrains Mono','Fira Code',monospace; font-size:11px; backg
       <div class="rs">補助金額の上限</div>
     </div>
     <div class="rate-pill">
-      <div class="rl">補助率① 〜50万円部分</div>
+      <div class="rl">補助率①（基準額×3/4＝50万円）</div>
       <div class="rv">3/4</div>
       <div class="rs">税抜対象経費ベース</div>
     </div>
     <div class="rate-pill">
-      <div class="rl">補助率② 50万円超部分</div>
+      <div class="rl">補助率②（第1段超過分）</div>
       <div class="rv">2/3</div>
       <div class="rs">税抜対象経費ベース</div>
     </div>
@@ -945,10 +945,10 @@ code { font-family:'JetBrains Mono','Fira Code',monospace; font-size:11px; backg
         <div class="sb orange">
           <div class="sb-ttl">💡 補助金計算（インボイス枠・1機能・中小企業）</div>
           <div class="sb-row"><span>補助対象（税抜）</span><span>2,458,000円</span></div>
-          <div class="sb-row"><span>〜500,000円部分 × 3/4</span><span class="vg">375,000円</span></div>
-          <div class="sb-row"><span>500,000円超分（1機能は上限50万円）</span><span style="color:var(--ub-muted)">対象外</span></div>
-          <div class="sb-row sep"><span>補助金額</span><span class="vg">▲375,000円</span></div>
-          <div class="sb-note">※ 1機能のみの場合、補助上限50万円。500,000×3/4＝375,000円が上限です。</div>
+          <div class="sb-row"><span>第1段（666,667円まで）× 3/4</span><span class="vg">500,000円</span></div>
+          <div class="sb-row"><span>第2段（超過分）× 2/3</span><span style="color:var(--ub-muted)">計算値あり（1機能上限50万円でキャップ）</span></div>
+          <div class="sb-row sep"><span>補助金額</span><span class="vg">▲500,000円</span></div>
+          <div class="sb-note">※ 1機能のみの場合、補助上限50万円。第1段は「基準額×3/4＝500,000円」となる基準額（約666,667円）までが対象です。</div>
         </div>
         <div class="net-box blue">
           <div class="net-top">
@@ -958,13 +958,13 @@ code { font-family:'JetBrains Mono','Fira Code',monospace; font-size:11px; backg
             </div>
             <div class="net-item">
               <label>補助金（税抜ベース算出）</label>
-              <div class="nv-sub blue">▲375,000円</div>
+              <div class="nv-sub blue">▲500,000円</div>
             </div>
           </div>
           <div class="net-result">
             <label>実質自己負担（税込支払合計 ー 補助金）</label>
-            <div class="net-big blue">2,328,800円</div>
-            <div class="net-sub">月換算 約97,033円 ／ 2年間</div>
+            <div class="net-big blue">2,203,800円</div>
+            <div class="net-sub">月換算 約91,825円 ／ 2年間</div>
           </div>
         </div>
       </div>
@@ -1015,12 +1015,12 @@ code { font-family:'JetBrains Mono','Fira Code',monospace; font-size:11px; backg
         <div class="sb green">
           <div class="sb-ttl">💡 補助金計算（インボイス枠・2機能・中小企業）</div>
           <div class="sb-row"><span>補助対象（税抜）</span><span>5,180,000円</span></div>
-          <div class="sb-row"><span>〜500,000円部分 × 3/4</span><span class="vg">375,000円</span></div>
-          <div class="sb-row"><span>500,000円超〜3,500,000円部分 × 2/3</span><span class="vg">3,120,000円</span></div>
-          <div class="sb-row"><span>計算合計</span><span>3,495,000円</span></div>
+          <div class="sb-row"><span>第1段（666,667円まで）× 3/4</span><span class="vg">500,000円</span></div>
+          <div class="sb-row"><span>第2段（666,667円超）× 2/3</span><span class="vg">3,008,889円</span></div>
+          <div class="sb-row"><span>計算合計</span><span>3,508,889円</span></div>
           <div class="sb-row sep"><span>補助金額（上限350万円でキャップ）</span><span class="vg">▲3,500,000円</span></div>
           <div class="sb-note">
-            ※ 計算値3,495,000円 ＜ 上限3,500,000円 のため3,495,000円が実際の補助金額です。<br>
+            ※ 計算値3,508,889円 ＞ 上限3,500,000円 のため実際の補助金額は3,500,000円です。<br>
             ※ 役務合計（Cat.6＋Cat.7）1,100,000円は大分類Ⅲ上限200万円の範囲内。
           </div>
         </div>
@@ -1089,7 +1089,7 @@ code { font-family:'JetBrains Mono','Fira Code',monospace; font-size:11px; backg
         <div class="sb gold">
           <div class="sb-ttl">💡 補助金計算（インボイス枠・2機能・中小企業）</div>
           <div class="sb-row"><span>補助対象（税抜・目安）</span><span>9,180,000円〜</span></div>
-          <div class="sb-row"><span>〜500,000円 × 3/4 ＋ 超過分 × 2/3</span><span class="vg">計算上は大幅超過</span></div>
+          <div class="sb-row"><span>第1段（基準額×3/4＝50万円）＋ 第2段（超過分×2/3）</span><span class="vg">計算上は大幅超過</span></div>
           <div class="sb-row sep"><span>補助金額（上限350万円でキャップ）</span><span class="vg">▲3,500,000円</span></div>
           <div class="sb-note">
             ※ 規模にかかわらず補助金は上限350万円。<br>
@@ -1153,13 +1153,13 @@ code { font-family:'JetBrains Mono','Fira Code',monospace; font-size:11px; backg
         <div class="dc-row"><span>消費税 10%</span><span>245,800円</span></div>
         <div class="dc-row"><span>税込支払合計</span><span>2,703,800円</span></div>
         <hr class="dc-hr">
-        <div class="dc-row orange"><span>補助率① 〜50万円 × 3/4</span><span>375,000円</span></div>
-        <div class="dc-row muted"><span>1機能のため上限50万円</span><span></span></div>
-        <div class="dc-row green"><span>補助金額</span><span>▲375,000円</span></div>
+        <div class="dc-row orange"><span>補助率① 第1段（666,667円まで）× 3/4</span><span>500,000円</span></div>
+        <div class="dc-row muted"><span>1機能のため上限50万円でキャップ</span><span></span></div>
+        <div class="dc-row green"><span>補助金額</span><span>▲500,000円</span></div>
         <div class="dc-box bblue">
           <label>実質自己負担（税込 ー 補助金）</label>
-          <div class="dc-net blue">2,328,800円</div>
-          <small>月換算 約97,033円</small>
+          <div class="dc-net blue">2,203,800円</div>
+          <small>月換算 約91,825円</small>
         </div>
       </div>
 
@@ -1172,9 +1172,9 @@ code { font-family:'JetBrains Mono','Fira Code',monospace; font-size:11px; backg
         <div class="dc-row red"><span>消費税 10%（補助対象外）</span><span>518,000円</span></div>
         <div class="dc-row"><span>税込支払合計</span><span>5,698,000円</span></div>
         <hr class="dc-hr">
-        <div class="dc-row orange"><span>補助率① 〜50万円 × 3/4</span><span>375,000円</span></div>
-        <div class="dc-row orange"><span>補助率② 50万超〜 × 2/3</span><span>3,120,000円</span></div>
-        <div class="dc-row muted"><span>計算値3,495,000円 → 上限適用</span><span></span></div>
+        <div class="dc-row orange"><span>補助率① 第1段（666,667円まで）× 3/4</span><span>500,000円</span></div>
+        <div class="dc-row orange"><span>補助率② 第2段（666,667円超）× 2/3</span><span>3,008,889円</span></div>
+        <div class="dc-row muted"><span>計算値3,508,889円 → 上限適用</span><span></span></div>
         <div class="dc-row green"><span>補助金額（上限350万円）</span><span>▲3,500,000円</span></div>
         <div class="dc-box bgreen">
           <label>実質自己負担（税込 ー 補助金）</label>
@@ -1244,13 +1244,13 @@ code { font-family:'JetBrains Mono','Fira Code',monospace; font-size:11px; backg
         </tr>
         <tr>
           <td>補助金額</td>
-          <td>▲375,000円</td>
+          <td>▲500,000円</td>
           <td class="hl"><strong style="color:var(--ub-success)">▲3,500,000円</strong></td>
           <td><strong style="color:var(--ub-success)">▲3,500,000円</strong></td>
         </tr>
         <tr>
           <td><strong>実質自己負担（2年間）</strong></td>
-          <td>2,328,800円</td>
+          <td>2,203,800円</td>
           <td class="hl"><strong style="color:var(--ub-success);font-size:15px">2,198,000円</strong></td>
           <td>6,598,000円〜</td>
         </tr>
@@ -1350,6 +1350,96 @@ code { font-family:'JetBrains Mono','Fira Code',monospace; font-size:11px; backg
 .modal-thanks .ty-icon { font-size:48px; margin-bottom:1rem; }
 .modal-thanks h3 { font-family:Georgia,serif; font-size:20px; font-weight:800; color:var(--ub-navy); margin-bottom:.5rem; }
 .modal-thanks p { font-size:13px; color:var(--ub-muted); line-height:1.7; }
+
+/* ===== v6 mobile hard-fix (final override) ===== */
+@media (max-width: 768px) {
+  /* LP TOPの補助率カード列を最後まで横スクロール可能にする */
+  #lp-content .hero {
+    overflow: visible !important;
+  }
+  #lp-content .rate-row {
+    width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch !important;
+    justify-content: flex-start !important;
+    flex-wrap: nowrap !important;
+    gap: 10px !important;
+    padding: 0 12px 10px 0 !important;
+    margin: 0 -12px 2rem 0 !important;
+    scroll-snap-type: x proximity !important;
+    scroll-padding-left: 0 !important;
+    scroll-padding-right: 12px !important;
+  }
+  #lp-content .rate-row::after {
+    content: '';
+    flex: 0 0 12px;
+  }
+  #lp-content .rate-pill {
+    flex: 0 0 auto !important;
+    min-width: 148px !important;
+    scroll-snap-align: start !important;
+  }
+
+  /* ハンバーガーを最前面で強制表示（青背景 + 白3本線） */
+  #global-hamburger,
+  .global-hamburger {
+    display: flex !important;
+    position: fixed !important;
+    top: 8px !important;
+    left: 8px !important;
+    z-index: 2147483647 !important;
+    width: 46px !important;
+    height: 46px !important;
+    padding: 0 !important;
+    border: 2px solid #ffffff !important;
+    border-radius: 10px !important;
+    background: #1A56DB !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35) !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+  #global-hamburger span,
+  .global-hamburger span {
+    display: block !important;
+    width: 20px !important;
+    height: 3px !important;
+    background: #ffffff !important;
+    border-radius: 2px !important;
+  }
+
+  /* KPI/財務カードを強制的に縦1列へリセット */
+  .kpi-grid,
+  .admin-grid-2,
+  .admin-grid-3,
+  .acc-kpi-grid,
+  .acc-stats-grid,
+  .acc-charts-row,
+  .bs-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: none !important;
+    gap: 10px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .kpi-grid > *,
+  .admin-grid-2 > *,
+  .admin-grid-3 > *,
+  .acc-kpi-grid > *,
+  .acc-stats-grid > *,
+  .acc-charts-row > *,
+  .bs-grid > * {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+}
 </style>
 
 <!-- ── モーダル：デモ申し込み ── -->
