@@ -2583,7 +2583,7 @@ function runAI(suffix){
     var saving5=Math.round(f.expenses*0.05);
     var saving10=Math.round(f.expenses*0.10);
     var openWf=MASTER_WORKFLOWS.filter(function(w){return w.status==='申請中';}).length;
-    var openInv=MASTER_INVOICES.filter(function(i){return i.status!=='入金済';}).length;
+    var openInv=MASTER_TRANSACTIONS.filter(function(t){return !t.paid;}).length;
 
     // キーワードで回答を分岐
     var res='';
