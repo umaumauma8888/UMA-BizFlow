@@ -352,11 +352,11 @@
           <div class="form-grid">
             <div>
               <label for="issuerName">発行者名</label>
-              <input id="issuerName" value="合同会社UMA" />
+              <input id="issuerName" value="株式会社トーキョー・フューチャーワークス" placeholder="例：株式会社〇〇" />
             </div>
             <div>
               <label for="invoiceNumber">請求番号</label>
-              <input id="invoiceNumber" value="INV-2026-001" />
+              <input id="invoiceNumber" value="INV-2026-001" placeholder="例：INV-2026-001" />
             </div>
 
             <div>
@@ -370,23 +370,23 @@
 
             <div class="full">
               <label for="issuerRegNo">適格請求書登録番号</label>
-              <input id="issuerRegNo" value="T4290003011375" />
+              <input id="issuerRegNo" value="T9999999999999" placeholder="例：T9999999999999" />
             </div>
 
             <div class="full">
               <label for="issuerAddress">発行者住所・連絡先</label>
-              <textarea id="issuerAddress" rows="2">福岡県福岡市中央区〇〇1-2-3
-info@uma.example</textarea>
+              <textarea id="issuerAddress" rows="2" placeholder="例：東京都〇〇区〇〇1-1-1">東京都港区海岸2-7-99
+support@futureworks.example</textarea>
             </div>
 
             <div class="full">
               <label for="recipientName">請求先</label>
-              <input id="recipientName" value="株式会社ei-life" />
+              <input id="recipientName" value="ネオリンク・デザイン合同会社" placeholder="例：株式会社〇〇" />
             </div>
 
             <div class="full">
               <label for="subject">件名</label>
-              <input id="subject" value="CLAUDE SUITE 導入費用" />
+              <input id="subject" value="クラウド運用支援サービス費（デモ案件）" placeholder="例：クラウド運用支援サービス費（デモ案件）" />
             </div>
 
             <div>
@@ -485,9 +485,9 @@ info@uma.example</textarea>
     const { jsPDF } = window.jspdf;
 
     const initialItems = [
-      { description: "CLAUDE SUITE ソフトウェア", quantity: 2, unit: "年", unitPrice: 1800000 },
-      { description: "CLAUDE SUITE 導入設定", quantity: 1, unit: "件", unitPrice: 600000 },
-      { description: "CLAUDE SUITE 保守サポート", quantity: 2, unit: "年", unitPrice: 300000 }
+      { description: "システム導入コンサルティング", quantity: 1, unit: "式", unitPrice: 480000 },
+      { description: "AI構築サポート費用", quantity: 1, unit: "式", unitPrice: 320000 },
+      { description: "運用定着支援サービス", quantity: 1, unit: "式", unitPrice: 180000 }
     ];
 
     const dom = {
@@ -549,7 +549,7 @@ info@uma.example</textarea>
         <div class="mini-grid">
           <div>
             <label>内容</label>
-            <input class="item-description" value="${item.description}" />
+            <input class="item-description" value="${item.description}" placeholder="例：システム導入コンサルティング" />
           </div>
           <div>
             <label>数量</label>
@@ -557,13 +557,13 @@ info@uma.example</textarea>
           </div>
           <div>
             <label>単位</label>
-            <input class="item-unit" value="${item.unit}" />
+            <input class="item-unit" value="${item.unit}" placeholder="例：式" />
           </div>
         </div>
         <div class="mini-grid">
           <div>
             <label>単価（円）</label>
-            <input class="item-unitprice" type="number" min="0" step="1" value="${item.unitPrice}" />
+            <input class="item-unitprice" type="number" min="0" step="1" value="${item.unitPrice}" placeholder="例：300000" />
           </div>
         </div>
       `;
