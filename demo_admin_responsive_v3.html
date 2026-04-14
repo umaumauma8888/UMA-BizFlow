@@ -235,8 +235,19 @@ body.annual .ann-view { display:block; }
 .sidebar-overlay {
   display: none; position: fixed; inset: 0;
   background: rgba(0,0,0,0.6); z-index: 1000;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 .sidebar-overlay.show { display: block; }
+
+/* Avoid accidental blur artifacts on mobile GPU compositing layers */
+.admin-sidebar,
+.admin-sidebar *,
+.sidebar-overlay {
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
 
 /* ═══════════════════════════════════════
    完全レスポンシブ対応
@@ -531,7 +542,7 @@ body.annual .ann-view { display:block; }
 
 /* ADMIN */
 .admin-layout { display: flex; min-height: 100vh; overflow: hidden; }
-.admin-sidebar { width: 240px; background: var(--ub-navy); display: flex; flex-direction: column; position: fixed; top:0; left:0; bottom:0; z-index: 50; overflow-y: auto; }
+.admin-sidebar { width: 240px; background: var(--ub-navy); display: flex; flex-direction: column; position: fixed; top:0; left:0; bottom:0; z-index: 1100; overflow-y: auto; }
 .sidebar-logo { padding: 1.5rem 1.5rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
 .sidebar-nav { flex: 1; padding: 1rem 0; overflow-y: auto; }
 .sidebar-section { padding: 1rem 1.5rem 0.25rem; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; color: rgba(255,255,255,0.3); text-transform: uppercase; }
@@ -2113,6 +2124,7 @@ function doLogin(){hideLogin();document.getElementById('lp-content').classList.a
 
 /* ── サイドバー開閉（スマホ用） ── */
 function toggleSidebar() {
+  if (window.innerWidth > 768) return;
   var sidebar = document.getElementById('admin-sidebar');
   var overlay = document.getElementById('sidebar-overlay');
   var btn = document.getElementById('hamburger-btn');
