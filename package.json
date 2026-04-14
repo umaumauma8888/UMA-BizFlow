@@ -8,10 +8,9 @@
     "dev": "node --watch server.js"
   },
   "engines": {
-    "node": ">=20.x"
+    "node": "20.x"
   },
   "dependencies": {
-    "better-sqlite3": "^9.6.0",
     "cors": "^2.8.5",
     "express": "^4.18.3",
     "resend": "^4.8.0",

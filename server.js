@@ -24,9 +24,12 @@ const now = () => new Date().toISOString().slice(0, 10);
 const uid = () => uuidv4();
 
 // ── DB 初期化 & サーバー起動 ──────────────────────────────────
+// Vercel のサーバーレス環境はプロジェクトルートが読み取り専用のため /tmp を使用
+const DB_PATH = process.env.VERCEL ? '/tmp/uma_bizflow.db' : 'uma_bizflow.db';
+
 async function main() {
   const db = await open({
-    filename: 'uma_bizflow.db',
+    filename: DB_PATH,
     driver: sqlite3.Database,
   });
 
