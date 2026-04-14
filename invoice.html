@@ -1,0 +1,722 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>請求書発行ツール</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNa5tFRvQ6vNf9eKJeNEqXWiwxupCSvJzpuG1HsRvN7kYMFKfNwCuWHa3gwxM/H2ymlk/wEYBLETymFcpnSUsA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-qZvrmS3gYDz6Q4Bf5T+yQUwpsOSJyYwcmBHQYaWV7k/akdUSHh3DquynjUTduVdJN9WewtG/XAIN5e8w1sM+dA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <style>
+    :root {
+      --bg: #f3f5f7;
+      --panel: #ffffff;
+      --ink: #1f2a37;
+      --muted: #6b7280;
+      --accent: #0f766e;
+      --accent-soft: #e6f4f2;
+      --line: #d1d5db;
+      --warn: #b45309;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 10% 10%, #e2f5f1 0%, transparent 45%),
+        radial-gradient(circle at 90% 90%, #dbeafe 0%, transparent 42%),
+        var(--bg);
+    }
+
+    .container {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    h1 {
+      margin: 0 0 14px;
+      font-size: 1.7rem;
+      letter-spacing: 0.02em;
+    }
+
+    .subtitle {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      background: linear-gradient(110deg, var(--accent-soft), #f7fafc);
+      padding: 12px 16px;
+      font-weight: 700;
+      border-bottom: 1px solid #edf2f7;
+    }
+
+    .panel-body {
+      padding: 14px 16px 18px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: block;
+      font-size: 0.82rem;
+      color: #374151;
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+
+    input,
+    select,
+    textarea,
+    button {
+      width: 100%;
+      font: inherit;
+    }
+
+    input,
+    select,
+    textarea {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 10px;
+      background: #fff;
+      color: var(--ink);
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: 2px solid #99f6e4;
+      border-color: #2dd4bf;
+    }
+
+    .item-row {
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 10px;
+      background: #fcfcfd;
+    }
+
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 0.86rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: 1fr 90px 90px;
+      gap: 8px;
+    }
+
+    .mini-grid + .mini-grid {
+      margin-top: 8px;
+      grid-template-columns: 1fr;
+    }
+
+    .controls {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 9px;
+      padding: 10px 12px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    .btn-main {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 6px 14px rgba(15, 118, 110, 0.25);
+    }
+
+    .btn-sub {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+    }
+
+    .btn-danger {
+      background: #fff7ed;
+      color: var(--warn);
+      border: 1px solid #fed7aa;
+      width: auto;
+      padding: 6px 10px;
+      font-size: 0.8rem;
+    }
+
+    .preview-wrap {
+      padding: 14px;
+      overflow: auto;
+      background: #eef2f7;
+      min-height: 720px;
+    }
+
+    #invoicePreview {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto;
+      background: #fff;
+      color: #111827;
+      padding: 16mm;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.13);
+    }
+
+    .inv-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+    }
+
+    .inv-title {
+      font-size: 1.8rem;
+      margin: 0;
+      letter-spacing: 0.12em;
+    }
+
+    .inv-meta {
+      text-align: right;
+      font-size: 0.92rem;
+      line-height: 1.7;
+    }
+
+    .block {
+      margin-bottom: 12px;
+      line-height: 1.7;
+    }
+
+    .label-small {
+      color: #6b7280;
+      font-size: 0.8rem;
+      margin-bottom: 2px;
+      display: block;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 0.9rem;
+    }
+
+    th,
+    td {
+      border: 1px solid #d1d5db;
+      padding: 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f8fafc;
+      font-weight: 700;
+    }
+
+    td.right,
+    th.right {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .totals {
+      margin-top: 12px;
+      margin-left: auto;
+      width: 48%;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .totals-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .totals-row:last-child {
+      border-bottom: 0;
+      background: #ecfeff;
+      font-weight: 800;
+    }
+
+    .totals-row span {
+      padding: 8px 10px;
+    }
+
+    .totals-row span:last-child {
+      text-align: right;
+    }
+
+    .foot-note {
+      margin-top: 18px;
+      font-size: 0.8rem;
+      color: #4b5563;
+      border-top: 1px dashed #cbd5e1;
+      padding-top: 8px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 1100px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .preview-wrap {
+        min-height: auto;
+      }
+
+      #invoicePreview {
+        width: min(100%, 210mm);
+      }
+    }
+
+    @media (max-width: 660px) {
+      .container {
+        padding: 12px;
+      }
+
+      .form-grid,
+      .mini-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .controls {
+        flex-direction: column;
+      }
+
+      .totals {
+        width: 100%;
+      }
+
+      #invoicePreview {
+        padding: 10mm;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>請求書発行ツール</h1>
+    <p class="subtitle">フォーム入力に応じて請求書プレビューを即時更新し、PDFを保存できます。</p>
+
+    <div class="layout">
+      <section class="panel">
+        <div class="panel-header">入力フォーム</div>
+        <div class="panel-body">
+          <div class="form-grid">
+            <div>
+              <label for="issuerName">発行者名</label>
+              <input id="issuerName" value="合同会社UMA" />
+            </div>
+            <div>
+              <label for="invoiceNumber">請求番号</label>
+              <input id="invoiceNumber" value="INV-2026-001" />
+            </div>
+
+            <div>
+              <label for="issueDate">発行日</label>
+              <input id="issueDate" type="date" />
+            </div>
+            <div>
+              <label for="dueDate">支払期限</label>
+              <input id="dueDate" type="date" />
+            </div>
+
+            <div class="full">
+              <label for="issuerRegNo">適格請求書登録番号</label>
+              <input id="issuerRegNo" value="T4290003011375" />
+            </div>
+
+            <div class="full">
+              <label for="issuerAddress">発行者住所・連絡先</label>
+              <textarea id="issuerAddress" rows="2">福岡県福岡市中央区〇〇1-2-3
+info@uma.example</textarea>
+            </div>
+
+            <div class="full">
+              <label for="recipientName">請求先</label>
+              <input id="recipientName" value="株式会社ei-life" />
+            </div>
+
+            <div class="full">
+              <label for="subject">件名</label>
+              <input id="subject" value="CLAUDE SUITE 導入費用" />
+            </div>
+
+            <div>
+              <label for="taxRate">消費税率</label>
+              <select id="taxRate">
+                <option value="0.10" selected>10%</option>
+                <option value="0.08">8%</option>
+                <option value="0">非課税</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="margin-top: 14px;">
+            <label>明細</label>
+            <div id="items"></div>
+            <button id="addItemBtn" class="btn-sub" type="button">+ 明細を追加</button>
+          </div>
+
+          <div class="controls">
+            <button id="downloadPdfBtn" class="btn-main" type="button">PDFをダウンロード</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">リアルタイムプレビュー</div>
+        <div class="preview-wrap">
+          <article id="invoicePreview">
+            <header class="inv-top">
+              <div>
+                <h2 class="inv-title">請 求 書</h2>
+                <div class="block">
+                  <span class="label-small">件名</span>
+                  <div id="pvSubject"></div>
+                </div>
+              </div>
+              <div class="inv-meta">
+                <div>請求番号: <span id="pvInvoiceNumber"></span></div>
+                <div>発行日: <span id="pvIssueDate"></span></div>
+                <div>支払期限: <span id="pvDueDate"></span></div>
+              </div>
+            </header>
+
+            <section class="block">
+              <span class="label-small">請求先</span>
+              <div style="font-size:1.08rem;font-weight:700;" id="pvRecipientName"></div>
+            </section>
+
+            <section class="block">
+              <span class="label-small">発行者</span>
+              <div style="font-weight:700;" id="pvIssuerName"></div>
+              <div id="pvIssuerAddress" style="white-space: pre-line;"></div>
+              <div>登録番号: <span id="pvIssuerRegNo"></span></div>
+            </section>
+
+            <section>
+              <table>
+                <thead>
+                  <tr>
+                    <th>内容</th>
+                    <th class="right">数量</th>
+                    <th class="right">単価</th>
+                    <th class="right">金額</th>
+                  </tr>
+                </thead>
+                <tbody id="pvItems"></tbody>
+              </table>
+            </section>
+
+            <section class="totals">
+              <div class="totals-row">
+                <span>小計</span>
+                <span id="pvSubtotal"></span>
+              </div>
+              <div class="totals-row">
+                <span>消費税 (<span id="pvTaxLabel"></span>)</span>
+                <span id="pvTaxAmount"></span>
+              </div>
+              <div class="totals-row">
+                <span>合計（税込）</span>
+                <span id="pvTotal"></span>
+              </div>
+            </section>
+
+            <section class="foot-note">
+              お振込手数料は貴社にてご負担をお願いします。<br />
+              本請求書は電子発行です。
+            </section>
+          </article>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const { jsPDF } = window.jspdf;
+
+    const initialItems = [
+      { description: "CLAUDE SUITE ソフトウェア", quantity: 2, unit: "年", unitPrice: 1800000 },
+      { description: "CLAUDE SUITE 導入設定", quantity: 1, unit: "件", unitPrice: 600000 },
+      { description: "CLAUDE SUITE 保守サポート", quantity: 2, unit: "年", unitPrice: 300000 }
+    ];
+
+    const dom = {
+      issuerName: document.getElementById("issuerName"),
+      invoiceNumber: document.getElementById("invoiceNumber"),
+      issueDate: document.getElementById("issueDate"),
+      dueDate: document.getElementById("dueDate"),
+      issuerRegNo: document.getElementById("issuerRegNo"),
+      issuerAddress: document.getElementById("issuerAddress"),
+      recipientName: document.getElementById("recipientName"),
+      subject: document.getElementById("subject"),
+      taxRate: document.getElementById("taxRate"),
+      items: document.getElementById("items"),
+      addItemBtn: document.getElementById("addItemBtn"),
+      downloadPdfBtn: document.getElementById("downloadPdfBtn"),
+      preview: {
+        subject: document.getElementById("pvSubject"),
+        invoiceNumber: document.getElementById("pvInvoiceNumber"),
+        issueDate: document.getElementById("pvIssueDate"),
+        dueDate: document.getElementById("pvDueDate"),
+        recipientName: document.getElementById("pvRecipientName"),
+        issuerName: document.getElementById("pvIssuerName"),
+        issuerAddress: document.getElementById("pvIssuerAddress"),
+        issuerRegNo: document.getElementById("pvIssuerRegNo"),
+        items: document.getElementById("pvItems"),
+        subtotal: document.getElementById("pvSubtotal"),
+        taxLabel: document.getElementById("pvTaxLabel"),
+        taxAmount: document.getElementById("pvTaxAmount"),
+        total: document.getElementById("pvTotal")
+      }
+    };
+
+    function formatYen(value) {
+      return Number(value || 0).toLocaleString("ja-JP") + "円";
+    }
+
+    function formatDate(dateText) {
+      if (!dateText) return "-";
+      const d = new Date(dateText + "T00:00:00");
+      if (Number.isNaN(d.getTime())) return dateText;
+      return d.toLocaleDateString("ja-JP");
+    }
+
+    function safeFilenamePart(text) {
+      return (text || "未設定")
+        .replace(/[\\/:*?"<>|]/g, "_")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function createItemRow(item = { description: "", quantity: 1, unit: "件", unitPrice: 0 }) {
+      const row = document.createElement("div");
+      row.className = "item-row";
+      row.innerHTML = `
+        <div class="item-header">
+          <span>明細行</span>
+          <button class="btn-danger remove-item" type="button">削除</button>
+        </div>
+        <div class="mini-grid">
+          <div>
+            <label>内容</label>
+            <input class="item-description" value="${item.description}" />
+          </div>
+          <div>
+            <label>数量</label>
+            <input class="item-quantity" type="number" min="0" step="1" value="${item.quantity}" />
+          </div>
+          <div>
+            <label>単位</label>
+            <input class="item-unit" value="${item.unit}" />
+          </div>
+        </div>
+        <div class="mini-grid">
+          <div>
+            <label>単価（円）</label>
+            <input class="item-unitprice" type="number" min="0" step="1" value="${item.unitPrice}" />
+          </div>
+        </div>
+      `;
+
+      row.querySelector(".remove-item").addEventListener("click", () => {
+        row.remove();
+        if (dom.items.children.length === 0) {
+          dom.items.appendChild(createItemRow());
+        }
+        updatePreview();
+      });
+
+      row.querySelectorAll("input").forEach((input) => {
+        input.addEventListener("input", updatePreview);
+      });
+
+      return row;
+    }
+
+    function collectItems() {
+      return Array.from(dom.items.querySelectorAll(".item-row")).map((row) => {
+        const description = row.querySelector(".item-description").value.trim();
+        const quantity = Number(row.querySelector(".item-quantity").value || 0);
+        const unit = row.querySelector(".item-unit").value.trim() || "件";
+        const unitPrice = Number(row.querySelector(".item-unitprice").value || 0);
+        return { description, quantity, unit, unitPrice, amount: quantity * unitPrice };
+      });
+    }
+
+    function updatePreview() {
+      const items = collectItems();
+      const subtotal = items.reduce((sum, item) => sum + item.amount, 0);
+      const taxRate = Number(dom.taxRate.value);
+      const taxAmount = Math.round(subtotal * taxRate);
+      const total = subtotal + taxAmount;
+
+      dom.preview.subject.textContent = dom.subject.value || "-";
+      dom.preview.invoiceNumber.textContent = dom.invoiceNumber.value || "-";
+      dom.preview.issueDate.textContent = formatDate(dom.issueDate.value);
+      dom.preview.dueDate.textContent = formatDate(dom.dueDate.value);
+      dom.preview.recipientName.textContent = dom.recipientName.value || "-";
+      dom.preview.issuerName.textContent = dom.issuerName.value || "-";
+      dom.preview.issuerAddress.textContent = dom.issuerAddress.value || "-";
+      dom.preview.issuerRegNo.textContent = dom.issuerRegNo.value || "-";
+
+      dom.preview.items.innerHTML = "";
+      items.forEach((item) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${item.description || "-"}</td>
+          <td class="right">${item.quantity.toLocaleString("ja-JP")}${item.unit}</td>
+          <td class="right">${formatYen(item.unitPrice)}</td>
+          <td class="right">${formatYen(item.amount)}</td>
+        `;
+        dom.preview.items.appendChild(tr);
+      });
+
+      dom.preview.subtotal.textContent = formatYen(subtotal);
+      dom.preview.taxLabel.textContent = taxRate === 0 ? "非課税" : (taxRate * 100).toFixed(0) + "%";
+      dom.preview.taxAmount.textContent = formatYen(taxAmount);
+      dom.preview.total.textContent = formatYen(total);
+    }
+
+    async function downloadPdf() {
+      const invoiceElement = document.getElementById("invoicePreview");
+      dom.downloadPdfBtn.disabled = true;
+      dom.downloadPdfBtn.textContent = "PDF生成中...";
+
+      try {
+        const canvas = await html2canvas(invoiceElement, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: "#ffffff"
+        });
+
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jsPDF("p", "mm", "a4");
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+
+        const imgWidth = pageWidth;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let positionY = 0;
+        let remainHeight = imgHeight;
+
+        pdf.addImage(imgData, "PNG", 0, positionY, imgWidth, imgHeight);
+        remainHeight -= pageHeight;
+
+        while (remainHeight > 0) {
+          positionY = remainHeight - imgHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, "PNG", 0, positionY, imgWidth, imgHeight);
+          remainHeight -= pageHeight;
+        }
+
+        const recipient = safeFilenamePart(dom.recipientName.value);
+        const number = safeFilenamePart(dom.invoiceNumber.value);
+        const filename = `請求書_${recipient}_${number}.pdf`;
+        pdf.save(filename);
+      } catch (error) {
+        console.error(error);
+        window.alert("PDFの生成に失敗しました。入力内容を確認して再実行してください。");
+      } finally {
+        dom.downloadPdfBtn.disabled = false;
+        dom.downloadPdfBtn.textContent = "PDFをダウンロード";
+      }
+    }
+
+    function initDates() {
+      const today = new Date();
+      const due = new Date(today);
+      due.setDate(today.getDate() + 30);
+
+      const toDateInputValue = (d) => {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, "0");
+        const day = String(d.getDate()).padStart(2, "0");
+        return `${y}-${m}-${day}`;
+      };
+
+      dom.issueDate.value = toDateInputValue(today);
+      dom.dueDate.value = toDateInputValue(due);
+    }
+
+    function init() {
+      initDates();
+
+      initialItems.forEach((item) => {
+        dom.items.appendChild(createItemRow(item));
+      });
+
+      [
+        dom.issuerName,
+        dom.invoiceNumber,
+        dom.issueDate,
+        dom.dueDate,
+        dom.issuerRegNo,
+        dom.issuerAddress,
+        dom.recipientName,
+        dom.subject,
+        dom.taxRate
+      ].forEach((el) => el.addEventListener("input", updatePreview));
+
+      dom.addItemBtn.addEventListener("click", () => {
+        dom.items.appendChild(createItemRow());
+      });
+
+      dom.downloadPdfBtn.addEventListener("click", downloadPdf);
+
+      updatePreview();
+    }
+
+    init();
+  </script>
+</body>
+</html>
