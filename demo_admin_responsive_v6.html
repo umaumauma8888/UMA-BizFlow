@@ -354,12 +354,12 @@ body.annual .ann-view { display:block; }
   /* ② admin-header 内の旧ハンバーガー領域を詰める */
   .admin-header .hamburger-slot { display: none; }
 
-  /* ③ admin-header: stacking context を生成しない設定に */
+  /* ③ admin-header: stacking context を完全に生成させない
+        position/z-index を両方削除 → global-hamburger が必ず前面に出る */
   .admin-header {
     padding: 0.75rem 1rem 0.75rem 4rem !important;
-    /* position: sticky は維持するが z-index を下げる */
-    z-index: 10 !important;
-    /* backdrop-filter 禁止 */
+    /* position: sticky → 削除（stacking context 生成の元凶）*/
+    /* z-index → 削除（同上）*/
   }
   .admin-header h1 { font-size: 15px; }
   .admin-header-actions .header-btn:not(.header-btn-primary) { display: none; }
@@ -625,7 +625,9 @@ body.annual .ann-view { display:block; }
 .admin-main { margin-left: 240px; flex: 1; background: #F5F7FA; min-height: 100vh; overflow: visible; }
 /* ★ overflow-y は設定しない — auto/scroll/hidden はすべて stacking context を生成し
       サイドバーのz-indexを無効化する。スクロールはbodyに委ねる。 */
-.admin-header { background: var(--ub-surface); border-bottom: 1px solid var(--ub-border); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+.admin-header { background: var(--ub-surface); border-bottom: 1px solid var(--ub-border); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+/* ★ position:sticky + z-index は stacking context を生成し
+      global-hamburger(z-index:100000)を背後に押し込む原因になるため完全削除 */
 /* ★ z-index:100 = サイドバー(999999)より十分低い。header自体はスタッキングコンテキストを
       生成しないようにtransform/filter/backdropは使用しない */
 .admin-header h1 { font-family: Georgia,serif; font-size: 18px; font-weight: 700; color: var(--ub-navy); }
