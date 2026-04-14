@@ -193,7 +193,7 @@ body.annual .ann-view { display:block; }
    モード切替バナー
 ═══════════════════════════════════════ */
 .mode-switcher-bar {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 8500;
   background: linear-gradient(90deg, #0D1B2A, #1A56DB);
   border-bottom: 1px solid rgba(6,182,212,0.3);
   padding: 8px 1rem;
@@ -353,6 +353,7 @@ body.annual .ann-view { display:block; }
      サイドバーのエリア外（右側）のタップのみ受け取る */
   .sidebar-overlay {
     z-index: 9000 !important;
+    left: min(80vw, 300px);
   }
 
   /* ⑦ サイドバー内のナビアイテム: タッチ操作しやすいサイズに
