@@ -484,7 +484,13 @@ support@futureworks.example</textarea>
   </div>
 
   <script>
-    const { jsPDF } = window.jspdf;
+    const jsPDF = window.jspdf && window.jspdf.jsPDF ? window.jspdf.jsPDF : null;
+
+    const sampleHeader = {
+      issueDate: "2026-04-10",
+      dueDate: "2026-04-30",
+      taxRate: "0.1"
+    };
 
     const initialItems = [
       { transactionDate: "2026-04-01", description: "クラウド会計導入支援サービス", quantity: 1, unit: "式", unitPrice: 480000, taxCategory: "標準税率10%" },
@@ -593,6 +599,9 @@ support@futureworks.example</textarea>
       row.querySelectorAll("input").forEach((input) => {
         input.addEventListener("input", updatePreview);
       });
+      row.querySelectorAll("select").forEach((select) => {
+        select.addEventListener("change", updatePreview);
+      });
 
       return row;
     }
@@ -649,6 +658,11 @@ support@futureworks.example</textarea>
     }
 
     async function downloadPdf() {
+      if (!jsPDF || typeof html2canvas !== "function") {
+        window.alert("PDFライブラリの読み込みに失敗しました。ページを再読み込みして再実行してください。");
+        return;
+      }
+
       const invoiceElement = document.getElementById("invoicePreview");
       dom.downloadPdfBtn.disabled = true;
       dom.downloadPdfBtn.textContent = "PDF生成中...";
@@ -693,24 +707,14 @@ support@futureworks.example</textarea>
       }
     }
 
-    function initDates() {
-      const today = new Date();
-      const due = new Date(today);
-      due.setDate(today.getDate() + 30);
-
-      const toDateInputValue = (d) => {
-        const y = d.getFullYear();
-        const m = String(d.getMonth() + 1).padStart(2, "0");
-        const day = String(d.getDate()).padStart(2, "0");
-        return `${y}-${m}-${day}`;
-      };
-
-      dom.issueDate.value = toDateInputValue(today);
-      dom.dueDate.value = toDateInputValue(due);
+    function initSampleHeaderValues() {
+      dom.issueDate.value = sampleHeader.issueDate;
+      dom.dueDate.value = sampleHeader.dueDate;
+      dom.taxRate.value = sampleHeader.taxRate;
     }
 
     function init() {
-      initDates();
+      initSampleHeaderValues();
 
       initialItems.forEach((item) => {
         dom.items.appendChild(createItemRow(item));
@@ -726,7 +730,10 @@ support@futureworks.example</textarea>
         dom.recipientName,
         dom.subject,
         dom.taxRate
-      ].forEach((el) => el.addEventListener("input", updatePreview));
+      ].forEach((el) => {
+        el.addEventListener("input", updatePreview);
+        el.addEventListener("change", updatePreview);
+      });
 
       dom.addItemBtn.addEventListener("click", () => {
         dom.items.appendChild(createItemRow());
