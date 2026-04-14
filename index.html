@@ -631,6 +631,7 @@ body.annual .ann-view { display:block; }
 
 /* DEMO MODE NOTICES */
 .demo-global-banner {
+  display: none;
   position: fixed;
   top: 0;
   left: 0;
@@ -645,10 +646,11 @@ body.annual .ann-view { display:block; }
   letter-spacing: 0.2px;
   padding: 9px 12px;
 }
-body.has-demo-banner .nav { top: 36px; }
-body.has-demo-banner .admin-sidebar { top: 36px; }
-body.has-demo-banner .admin-main { margin-top: 36px; min-height: calc(100vh - 36px); }
-body.has-demo-banner #global-hamburger { top: 48px; }
+body.admin-mode .demo-global-banner { display: block; }
+body.admin-mode .nav { top: 36px; }
+body.admin-mode .admin-sidebar { top: 36px; }
+body.admin-mode .admin-main { margin-top: 36px; min-height: calc(100vh - 36px); }
+body.admin-mode #global-hamburger { top: 48px; }
 .sidebar-demo-badge {
   margin-top: 10px;
   display: inline-flex;
@@ -907,7 +909,7 @@ code { font-family:'JetBrains Mono','Fira Code',monospace; font-size:11px; backg
 
 </style>
 </head>
-<body class="has-demo-banner">
+<body>
 
 <div class="demo-global-banner">【デモ画面】入力・変更したデータは保存されません。自由にお試しください。</div>
 
