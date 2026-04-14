@@ -1384,7 +1384,7 @@ code { font-family:'JetBrains Mono','Fira Code',monospace; font-size:11px; backg
   /* ハンバーガーを最前面で強制表示（青背景 + 白3本線） */
   #global-hamburger,
   .global-hamburger {
-    display: flex !important;
+    display: none !important;
     position: fixed !important;
     top: 8px !important;
     left: 8px !important;
@@ -1402,6 +1402,10 @@ code { font-family:'JetBrains Mono','Fira Code',monospace; font-size:11px; backg
     gap: 6px !important;
     opacity: 1 !important;
     visibility: visible !important;
+  }
+  body.admin-mode #global-hamburger,
+  body.admin-mode .global-hamburger {
+    display: flex !important;
   }
   #global-hamburger span,
   .global-hamburger span {
@@ -2328,6 +2332,7 @@ function showLogin(){document.getElementById('login-modal').classList.add('open'
 function hideLogin(){document.getElementById('login-modal').classList.remove('open');}
 function doLogin(){
   hideLogin();
+  document.body.classList.add('admin-mode');
   document.getElementById('lp-content').classList.add('hide');
   document.getElementById('admin-panel').classList.add('show');
   document.getElementById('admin-title').textContent='ダッシュボード';
@@ -2384,7 +2389,8 @@ document.addEventListener('DOMContentLoaded', function() {
   if (globalHamburger) {
     /* スマホ時のみ表示（CSS側でも制御、JSでも念押し） */
     function checkHamburgerVisibility() {
-      if (window.innerWidth <= 768) {
+      var isAdminMode = document.body.classList.contains('admin-mode');
+      if (window.innerWidth <= 768 && isAdminMode) {
         globalHamburger.style.display = 'flex';
       } else {
         globalHamburger.style.display = 'none';
@@ -2438,6 +2444,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 function backToLP(){
   closeSidebar();
+  document.body.classList.remove('admin-mode');
   document.getElementById('admin-panel').classList.remove('show');
   var lp = document.getElementById('lp-content');
   lp.classList.remove('hide');
