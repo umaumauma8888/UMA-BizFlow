@@ -406,6 +406,7 @@ support@futureworks.example</textarea>
           </div>
 
           <div class="controls">
+            <button id="registerInvoiceBtn" class="btn-sub" type="button">請求書を登録して一覧へ</button>
             <button id="downloadPdfBtn" class="btn-main" type="button">PDFをダウンロード</button>
           </div>
         </div>
@@ -495,6 +496,7 @@ support@futureworks.example</textarea>
       dueDate: "2026-04-30",
       taxRate: "0.10"
     };
+    const STORAGE_KEY = "umaBizFlowDraftInvoices";
 
     const initialItems = [
       { transactionDate: "2026-04-01", description: "クラウド会計導入支援サービス", quantity: 1, unit: "式", unitPrice: 480000, taxCategory: "標準税率10%" },
@@ -514,6 +516,7 @@ support@futureworks.example</textarea>
       taxRate: document.getElementById("taxRate"),
       items: document.getElementById("items"),
       addItemBtn: document.getElementById("addItemBtn"),
+      registerInvoiceBtn: document.getElementById("registerInvoiceBtn"),
       downloadPdfBtn: document.getElementById("downloadPdfBtn"),
       preview: {
         subject: document.getElementById("pvSubject"),
@@ -555,6 +558,75 @@ support@futureworks.example</textarea>
       if (selected === 0.08) return "軽減税率8%対象";
       if (selected === 0) return "非課税";
       return "標準税率10%";
+    }
+
+    function getReturnPage() {
+      const params = new URLSearchParams(window.location.search);
+      const returnTo = params.get("returnTo") || "demo_admin_responsive_v6.html";
+      return /^[A-Za-z0-9._-]+\.html$/.test(returnTo) ? returnTo : "demo_admin_responsive_v6.html";
+    }
+
+    function loadRegisteredInvoices() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (_) {
+        return [];
+      }
+    }
+
+    function saveRegisteredInvoices(list) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(list.slice(0, 200)));
+    }
+
+    function buildInvoiceRecord() {
+      const items = collectItems();
+      const subtotal = items.reduce((sum, item) => sum + item.amount, 0);
+      const taxAmount10 = Math.round(items
+        .filter((item) => item.taxCategory === "標準税率10%")
+        .reduce((sum, item) => sum + item.amount, 0) * 0.10);
+      const taxAmount8 = Math.round(items
+        .filter((item) => item.taxCategory === "軽減税率8%対象")
+        .reduce((sum, item) => sum + item.amount, 0) * 0.08);
+      const taxAmount = taxAmount10 + taxAmount8;
+      const total = subtotal + taxAmount;
+      const labels = [];
+      if (taxAmount10 > 0) labels.push("10%対象");
+      if (taxAmount8 > 0) labels.push("8%対象");
+      if (labels.length === 0) labels.push("非課税");
+
+      return {
+        id: "editor-" + Date.now(),
+        invoice_no: dom.invoiceNumber.value.trim() || ("INV-" + new Date().getFullYear() + "-" + Date.now().toString().slice(-4)),
+        customer_name: dom.recipientName.value.trim() || "-",
+        issue_date: dom.issueDate.value || new Date().toISOString().slice(0, 10),
+        due_date: dom.dueDate.value || "",
+        subtotal,
+        tax_amount: taxAmount,
+        tax_amount_10: taxAmount10,
+        tax_amount_8: taxAmount8,
+        total,
+        taxLabel: labels.join(" / "),
+        status: "未収",
+        issuer_name: dom.issuerName.value.trim() || "",
+        issuer_regno: dom.issuerRegNo.value.trim() || "",
+        lines: items.map((item) => ({
+          name: item.description || "-",
+          qty: item.quantity,
+          amount: item.amount,
+          taxCategory: item.taxCategory
+        }))
+      };
+    }
+
+    function registerInvoiceAndBack() {
+      const record = buildInvoiceRecord();
+      const list = loadRegisteredInvoices();
+      list.unshift(record);
+      saveRegisteredInvoices(list);
+      const returnPage = getReturnPage();
+      window.location.href = `./${returnPage}?tab=invoice&invoiceSaved=1`;
     }
 
     function createItemRow(item = { transactionDate: "", description: "", quantity: 1, unit: "件", unitPrice: 0, taxCategory: "標準税率10%" }) {
@@ -765,6 +837,7 @@ support@futureworks.example</textarea>
         updatePreview();
       });
 
+      dom.registerInvoiceBtn.addEventListener("click", registerInvoiceAndBack);
       dom.downloadPdfBtn.addEventListener("click", downloadPdf);
 
       updatePreview();

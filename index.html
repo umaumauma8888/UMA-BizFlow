@@ -644,6 +644,10 @@ body.annual .ann-view { display:block; }
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.2px;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   padding: 9px 12px;
 }
 body.admin-mode .demo-global-banner { display: block; }
@@ -1914,19 +1918,20 @@ document.addEventListener('DOMContentLoaded', function() {
               <textarea id="ai-input-main" class="ai-input-area" placeholder="例：今月の承認遅延の原因を分析して、改善策を提案してください"></textarea>
               <div class="ai-actions">
                 <button class="ai-btn" onclick="runAI('main')">送信</button>
-                <button class="ai-btn" onclick="document.getElementById('ai-input-main').value='今月のワークフロー処理状況を分析して'">処理分析</button>
-                <button class="ai-btn" onclick="document.getElementById('ai-input-main').value='稟議書の文面を添削して'">文書添削</button>
-                <button class="ai-btn" onclick="document.getElementById('ai-input-main').value='経費削減の改善提案をして'">改善提案</button>
+                <button class="ai-btn" onclick="runAIFeature('doc','main')">文書自動生成</button>
+                <button class="ai-btn" onclick="runAIFeature('analytics','main')">データ分析・レポート</button>
+                <button class="ai-btn" onclick="runAIFeature('contract','main')">契約書レビュー</button>
+                <button class="ai-btn" onclick="runAIFeature('support','main')">チャットサポート</button>
               </div>
               <div class="ai-result" id="ai-result-main"></div>
             </div>
             <div class="card">
               <div class="card-title">AI機能一覧</div>
               <div style="display:flex;flex-direction:column;gap:0.75rem;">
-                <div style="padding:0.75rem;background:rgba(26,86,219,0.05);border-radius:8px;border-left:3px solid var(--ub-blue);"><div style="font-size:13px;font-weight:700;color:var(--ub-navy);">📝 文書自動生成</div><div style="font-size:12px;color:var(--ub-muted);margin-top:4px;">稟議書・議事録・報告書を自動生成</div></div>
-                <div style="padding:0.75rem;background:rgba(6,182,212,0.05);border-radius:8px;border-left:3px solid var(--ub-cyan);"><div style="font-size:13px;font-weight:700;color:var(--ub-navy);">📊 データ分析・レポート</div><div style="font-size:12px;color:var(--ub-muted);margin-top:4px;">業務データをAIが自動分析・可視化</div></div>
-                <div style="padding:0.75rem;background:rgba(16,185,129,0.05);border-radius:8px;border-left:3px solid var(--ub-success);"><div style="font-size:13px;font-weight:700;color:var(--ub-navy);">🔍 契約書レビュー</div><div style="font-size:12px;color:var(--ub-muted);margin-top:4px;">AIがリスク箇所を自動検知・指摘</div></div>
-                <div style="padding:0.75rem;background:rgba(245,158,11,0.05);border-radius:8px;border-left:3px solid var(--ub-gold);"><div style="font-size:13px;font-weight:700;color:var(--ub-navy);">💬 チャットサポート</div><div style="font-size:12px;color:var(--ub-muted);margin-top:4px;">24時間AIがシステム操作・業務をサポート</div></div>
+                <button type="button" onclick="runAIFeature('doc','main')" style="text-align:left;padding:0.75rem;background:rgba(26,86,219,0.05);border-radius:8px;border:0;border-left:3px solid var(--ub-blue);cursor:pointer;"><div style="font-size:13px;font-weight:700;color:var(--ub-navy);">📝 文書自動生成</div><div style="font-size:12px;color:var(--ub-muted);margin-top:4px;">稟議書・議事録・報告書を自動生成</div></button>
+                <button type="button" onclick="runAIFeature('analytics','main')" style="text-align:left;padding:0.75rem;background:rgba(6,182,212,0.05);border-radius:8px;border:0;border-left:3px solid var(--ub-cyan);cursor:pointer;"><div style="font-size:13px;font-weight:700;color:var(--ub-navy);">📊 データ分析・レポート</div><div style="font-size:12px;color:var(--ub-muted);margin-top:4px;">業務データをAIが自動分析・可視化</div></button>
+                <button type="button" onclick="runAIFeature('contract','main')" style="text-align:left;padding:0.75rem;background:rgba(16,185,129,0.05);border-radius:8px;border:0;border-left:3px solid var(--ub-success);cursor:pointer;"><div style="font-size:13px;font-weight:700;color:var(--ub-navy);">🔍 契約書レビュー</div><div style="font-size:12px;color:var(--ub-muted);margin-top:4px;">AIがリスク箇所を自動検知・指摘</div></button>
+                <button type="button" onclick="runAIFeature('support','main')" style="text-align:left;padding:0.75rem;background:rgba(245,158,11,0.05);border-radius:8px;border:0;border-left:3px solid var(--ub-gold);cursor:pointer;"><div style="font-size:13px;font-weight:700;color:var(--ub-navy);">💬 チャットサポート</div><div style="font-size:12px;color:var(--ub-muted);margin-top:4px;">24時間AIがシステム操作・業務をサポート</div></button>
               </div>
             </div>
           </div>
@@ -2577,10 +2582,78 @@ function runAI(suffix){
     var arTurnover=f.sales>0?(f.ar/f.sales*30).toFixed(1):0;
     var saving5=Math.round(f.expenses*0.05);
     var saving10=Math.round(f.expenses*0.10);
+    var openWf=MASTER_WORKFLOWS.filter(function(w){return w.status==='申請中';}).length;
+    var openInv=MASTER_INVOICES.filter(function(i){return i.status!=='入金済';}).length;
 
     // キーワードで回答を分岐
     var res='';
-    if(/処理|ワークフロー|状況|まとめ|サマリ/.test(query)){
+    if(/文書自動生成|文書作成|稟議書作成|議事録作成|報告書作成/.test(query)){
+      var today = new Date();
+      var yyyy = today.getFullYear();
+      var mm = String(today.getMonth()+1).padStart(2,'0');
+      var dd = String(today.getDate()).padStart(2,'0');
+      res='📝 文書自動生成（デモ）\n\n'+
+        '【稟議書】クラウド会計システム更新\n'+
+        '申請日: '+yyyy+'-'+mm+'-'+dd+' / 申請者: 佐藤 花子\n'+
+        '目的: 月次締め作業の短縮とインボイス関連業務の標準化\n'+
+        '費用: 初期 480,000円 / 月額 38,000円\n'+
+        '期待効果: 月40時間削減、入力ミス率 30% 改善\n\n'+
+        '【議事録】週次オペレーション会議\n'+
+        '決定事項: 4/20までに請求テンプレート統一、担当: 経理チーム\n'+
+        'ToDo: 1) 既存請求書の棚卸し 2) 運用ルール配布 3) 検収フロー確定\n\n'+
+        '【報告書】業務改善サマリ\n'+
+        '・未回収売掛金: '+fmt(f.ar)+'\n'+
+        '・申請中ワークフロー: '+openWf+'件\n'+
+        '・未入金請求書: '+openInv+'件\n'+
+        '→ 次アクション: 督促優先順位の自動化と承認リードタイム短縮';
+
+    } else if(/データ分析|レポート|可視化|ダッシュボード/.test(query)){
+      var doneWf=MASTER_WORKFLOWS.filter(function(w){return w.status==='承認済';}).length;
+      var wfTotal=Math.max(1, MASTER_WORKFLOWS.length);
+      var approveRate=Math.round((doneWf/wfTotal)*100);
+      res='📊 データ分析・レポート（デモ）\n\n'+
+        '【KPI要約】\n'+
+        '売上: '+fmt(f.sales)+' / 純利益: '+fmtSigned(f.profit)+' / 利益率: '+marginRate+'%\n'+
+        '費用率: '+expenseRate+'% / 売掛回転目安: '+arTurnover+'日\n\n'+
+        '【ワークフロー健全性】\n'+
+        '承認率: '+approveRate+'%（承認済 '+doneWf+' / 全体 '+MASTER_WORKFLOWS.length+'）\n'+
+        '滞留: 申請中 '+openWf+'件\n\n'+
+        '【AI判定】\n'+
+        (approveRate>=70?'🟢 承認プロセスは概ね健全。':'🟡 承認ボトルネックあり。')+'\n'+
+        (parseFloat(arTurnover)>30?'🔴 売掛回収が遅延傾向。督促ルールを強化。':'🟢 売掛回転は許容範囲。')+'\n\n'+
+        '【提案】\n'+
+        '1. 申請カテゴリ別に承認SLAを設定\n'+
+        '2. 10日超の未収請求を自動アラート\n'+
+        '3. 月次レポートを自動生成して経営会議へ連携';
+
+    } else if(/契約書|レビュー|条項|NDA|リスク/.test(query)){
+      res='🔍 契約書レビュー（デモ）\n\n'+
+        '対象: 業務委託基本契約書 v1.2\n\n'+
+        '【検出リスク】\n'+
+        '1. 契約解除条項が片務的（高）\n'+
+        '   - 相手方のみ即時解除可能\n'+
+        '   - 推奨: 双方同条件へ修正\n\n'+
+        '2. 瑕疵担保責任の期間が無期限（中）\n'+
+        '   - 推奨: 検収後6か月など上限設定\n\n'+
+        '3. 秘密保持の例外規定が不足（中）\n'+
+        '   - 推奨: 公知情報・法令開示を例外に追加\n\n'+
+        '【総合判定】\n'+
+        'リスクスコア: 72/100（要修正）\n'+
+        '法務レビュー前に上記3点の条文修正を推奨';
+
+    } else if(/チャット|サポート|ヘルプ|使い方|操作/.test(query)){
+      res='💬 チャットサポート（デモ）\n\n'+
+        'お問い合わせありがとうございます。操作候補を提示します。\n\n'+
+        '【よく使う操作】\n'+
+        '1. 請求書作成: サイドバー「請求管理」→「+ 請求書発行」\n'+
+        '2. 入金登録: サイドバー「入金管理」→「+ 入金登録」\n'+
+        '3. 承認状況確認: サイドバー「ワークフロー」\n\n'+
+        '【現在の状態】\n'+
+        '・未入金請求書: '+openInv+'件\n'+
+        '・申請中ワークフロー: '+openWf+'件\n\n'+
+        '必要なら「請求書の登録手順を詳しく」や「承認遅延の原因を分析して」のように入力してください。';
+
+    } else if(/処理|ワークフロー|状況|まとめ|サマリ/.test(query)){
       var collRate=f.sales>0?(((f.sales-f.ar)/f.sales)*100).toFixed(1):0;
       var arRisk=f.ar>f.sales*0.3?'⚠️ 高リスク':f.ar>f.sales*0.15?'△ 要注意':'✅ 良好';
       res='📊 ワークフロー処理状況 — 経営診断レポート\n\n'+
@@ -2670,6 +2743,24 @@ function runAI(suffix){
     }
     r.textContent=res;
   },1400);
+}
+
+function runAIFeature(feature, suffix){
+  var inp=document.getElementById('ai-input-'+suffix);
+  var r=document.getElementById('ai-result-'+suffix);
+  if(!inp) return;
+  var presets={
+    doc:'文書自動生成：稟議書・議事録・報告書のたたき台を作って',
+    analytics:'データ分析・レポート：今月の業務データを可視化して',
+    contract:'契約書レビュー：NDAのリスクをチェックして',
+    support:'チャットサポート：請求書登録までの手順を教えて'
+  };
+  inp.value=presets[feature] || 'AI機能のデモを実行して';
+  inp.focus();
+  if(r){
+    r.style.display='block';
+    r.textContent='テンプレートを入力しました。内容を追記して「送信」を押してください。';
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════
