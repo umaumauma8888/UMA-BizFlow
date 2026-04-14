@@ -489,7 +489,7 @@ support@futureworks.example</textarea>
     const sampleHeader = {
       issueDate: "2026-04-10",
       dueDate: "2026-04-30",
-      taxRate: "0.1"
+      taxRate: "0.10"
     };
 
     const initialItems = [
@@ -544,6 +544,13 @@ support@futureworks.example</textarea>
         .replace(/[\\/:*?"<>|]/g, "_")
         .replace(/\s+/g, " ")
         .trim();
+    }
+
+    function defaultTaxCategoryFromSelector() {
+      const selected = Number(dom.taxRate.value);
+      if (selected === 0.08) return "軽減税率8%対象";
+      if (selected === 0) return "非課税";
+      return "標準税率10%";
     }
 
     function createItemRow(item = { transactionDate: "", description: "", quantity: 1, unit: "件", unitPrice: 0, taxCategory: "標準税率10%" }) {
@@ -621,8 +628,15 @@ support@futureworks.example</textarea>
     function updatePreview() {
       const items = collectItems();
       const subtotal = items.reduce((sum, item) => sum + item.amount, 0);
-      const taxRate = Number(dom.taxRate.value);
-      const taxAmount = Math.round(subtotal * taxRate);
+      const taxable10 = items
+        .filter((item) => item.taxCategory === "標準税率10%")
+        .reduce((sum, item) => sum + item.amount, 0);
+      const taxable8 = items
+        .filter((item) => item.taxCategory === "軽減税率8%対象")
+        .reduce((sum, item) => sum + item.amount, 0);
+      const taxAmount10 = Math.round(taxable10 * 0.10);
+      const taxAmount8 = Math.round(taxable8 * 0.08);
+      const taxAmount = taxAmount10 + taxAmount8;
       const total = subtotal + taxAmount;
 
       dom.preview.subject.textContent = dom.subject.value || "-";
@@ -652,7 +666,11 @@ support@futureworks.example</textarea>
       });
 
       dom.preview.subtotal.textContent = formatYen(subtotal);
-      dom.preview.taxLabel.textContent = taxRate === 0 ? "非課税" : (taxRate * 100).toFixed(0) + "%";
+      const taxLabels = [];
+      if (taxable10 > 0) taxLabels.push("10%対象");
+      if (taxable8 > 0) taxLabels.push("8%対象");
+      if (taxLabels.length === 0) taxLabels.push("非課税");
+      dom.preview.taxLabel.textContent = taxLabels.join(" / ");
       dom.preview.taxAmount.textContent = formatYen(taxAmount);
       dom.preview.total.textContent = formatYen(total);
     }
@@ -736,7 +754,15 @@ support@futureworks.example</textarea>
       });
 
       dom.addItemBtn.addEventListener("click", () => {
-        dom.items.appendChild(createItemRow());
+        dom.items.appendChild(createItemRow({
+          transactionDate: dom.issueDate.value,
+          description: "",
+          quantity: 1,
+          unit: "件",
+          unitPrice: 0,
+          taxCategory: defaultTaxCategoryFromSelector()
+        }));
+        updatePreview();
       });
 
       dom.downloadPdfBtn.addEventListener("click", downloadPdf);
