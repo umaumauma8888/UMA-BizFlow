@@ -343,7 +343,7 @@
 <body>
   <div class="container">
     <h1>請求書発行ツール</h1>
-    <p class="subtitle">フォーム入力に応じて請求書プレビューを即時更新し、PDFを保存できます。</p>
+    <p class="subtitle">フォーム入力に応じて請求書プレビューを即時更新し、PDFを保存できます。下記はインボイス対応の適格請求書見本（ダミーデータ）です。</p>
 
     <div class="layout">
       <section class="panel">
@@ -446,10 +446,12 @@ support@futureworks.example</textarea>
               <table>
                 <thead>
                   <tr>
+                    <th>取引年月日</th>
                     <th>内容</th>
                     <th class="right">数量</th>
                     <th class="right">単価</th>
-                    <th class="right">金額</th>
+                    <th class="right">対価の額</th>
+                    <th>税率区分</th>
                   </tr>
                 </thead>
                 <tbody id="pvItems"></tbody>
@@ -485,9 +487,9 @@ support@futureworks.example</textarea>
     const { jsPDF } = window.jspdf;
 
     const initialItems = [
-      { description: "システム導入コンサルティング", quantity: 1, unit: "式", unitPrice: 480000 },
-      { description: "AI構築サポート費用", quantity: 1, unit: "式", unitPrice: 320000 },
-      { description: "運用定着支援サービス", quantity: 1, unit: "式", unitPrice: 180000 }
+      { transactionDate: "2026-04-01", description: "クラウド会計導入支援サービス", quantity: 1, unit: "式", unitPrice: 480000, taxCategory: "標準税率10%" },
+      { transactionDate: "2026-04-03", description: "保守サポート契約（4月分）", quantity: 1, unit: "式", unitPrice: 180000, taxCategory: "標準税率10%" },
+      { transactionDate: "2026-04-05", description: "軽減税率対象データ検証パック", quantity: 1, unit: "式", unitPrice: 80000, taxCategory: "軽減税率8%対象" }
     ];
 
     const dom = {
@@ -538,7 +540,7 @@ support@futureworks.example</textarea>
         .trim();
     }
 
-    function createItemRow(item = { description: "", quantity: 1, unit: "件", unitPrice: 0 }) {
+    function createItemRow(item = { transactionDate: "", description: "", quantity: 1, unit: "件", unitPrice: 0, taxCategory: "標準税率10%" }) {
       const row = document.createElement("div");
       row.className = "item-row";
       row.innerHTML = `
@@ -547,6 +549,10 @@ support@futureworks.example</textarea>
           <button class="btn-danger remove-item" type="button">削除</button>
         </div>
         <div class="mini-grid">
+          <div>
+            <label>取引年月日</label>
+            <input class="item-date" type="date" value="${item.transactionDate || ""}" />
+          </div>
           <div>
             <label>内容</label>
             <input class="item-description" value="${item.description}" placeholder="例：システム導入コンサルティング" />
@@ -564,6 +570,14 @@ support@futureworks.example</textarea>
           <div>
             <label>単価（円）</label>
             <input class="item-unitprice" type="number" min="0" step="1" value="${item.unitPrice}" placeholder="例：300000" />
+          </div>
+          <div>
+            <label>税率区分</label>
+            <select class="item-tax-category">
+              <option value="標準税率10%" ${item.taxCategory === "標準税率10%" ? "selected" : ""}>標準税率10%</option>
+              <option value="軽減税率8%対象" ${item.taxCategory === "軽減税率8%対象" ? "selected" : ""}>軽減税率8%対象</option>
+              <option value="非課税" ${item.taxCategory === "非課税" ? "selected" : ""}>非課税</option>
+            </select>
           </div>
         </div>
       `;
@@ -585,11 +599,13 @@ support@futureworks.example</textarea>
 
     function collectItems() {
       return Array.from(dom.items.querySelectorAll(".item-row")).map((row) => {
+        const transactionDate = row.querySelector(".item-date").value;
         const description = row.querySelector(".item-description").value.trim();
         const quantity = Number(row.querySelector(".item-quantity").value || 0);
         const unit = row.querySelector(".item-unit").value.trim() || "件";
         const unitPrice = Number(row.querySelector(".item-unitprice").value || 0);
-        return { description, quantity, unit, unitPrice, amount: quantity * unitPrice };
+        const taxCategory = row.querySelector(".item-tax-category").value;
+        return { transactionDate, description, quantity, unit, unitPrice, taxCategory, amount: quantity * unitPrice };
       });
     }
 
@@ -612,11 +628,16 @@ support@futureworks.example</textarea>
       dom.preview.items.innerHTML = "";
       items.forEach((item) => {
         const tr = document.createElement("tr");
+        const descriptionText = item.taxCategory === "軽減税率8%対象"
+          ? `${item.description || "-"} ※軽減税率対象`
+          : (item.description || "-");
         tr.innerHTML = `
-          <td>${item.description || "-"}</td>
+          <td>${formatDate(item.transactionDate)}</td>
+          <td>${descriptionText}</td>
           <td class="right">${item.quantity.toLocaleString("ja-JP")}${item.unit}</td>
           <td class="right">${formatYen(item.unitPrice)}</td>
           <td class="right">${formatYen(item.amount)}</td>
+          <td>${item.taxCategory}</td>
         `;
         dom.preview.items.appendChild(tr);
       });
