@@ -1506,29 +1506,11 @@ document.addEventListener('keydown', function(e) {
 });
 
 /* ── フォーム送信（デモ申し込み） ── */
-function submitDemo() {
-  var name  = document.getElementById('demo-name')  ? document.getElementById('demo-name').value.trim()  : '';
-  var email = document.getElementById('demo-email') ? document.getElementById('demo-email').value.trim() : '';
+async function submitDemo() {
   var company = document.getElementById('demo-company') ? document.getElementById('demo-company').value.trim() : '';
-  if (!email) {
-    alert('メールアドレスは必須です。');
-    return;
-  }
-  if (!validateEmail(email)) {
-    alert('メールアドレスの形式が正しくありません。');
-    return;
-  }
-  var ff = document.getElementById('modal-demo-form');
-  var tf = document.getElementById('modal-demo-thanks');
-  if (ff) ff.style.display = 'none';
-  if (tf) tf.style.display = 'block';
-}
-
-/* ── フォーム送信（お問い合わせ） ── */
-function submitContact() {
-  var company = document.getElementById('contact-company').value.trim();
-  var name    = document.getElementById('contact-name').value.trim();
-  var email   = document.getElementById('contact-email').value.trim();
+  var name    = document.getElementById('demo-name')    ? document.getElementById('demo-name').value.trim()    : '';
+  var email   = document.getElementById('demo-email')   ? document.getElementById('demo-email').value.trim()   : '';
+  var plan    = document.getElementById('demo-plan')    ? document.getElementById('demo-plan').value            : '';
   if (!company || !name || !email) {
     alert('会社名・お名前・メールアドレスは必須です。');
     return;
@@ -1537,8 +1519,60 @@ function submitContact() {
     alert('メールアドレスの形式が正しくありません。');
     return;
   }
-  document.getElementById('modal-contact-form').style.display = 'none';
-  document.getElementById('modal-contact-thanks').style.display = 'block';
+  var btn = document.querySelector('#modal-demo-form .btn-modal-submit');
+  if (btn) { btn.disabled = true; btn.textContent = '送信中…'; }
+  try {
+    var res = await fetch('/api/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'demo', company, name, email, plan })
+    });
+    if (!res.ok) {
+      var d = await res.json().catch(function(){ return {}; });
+      throw new Error(d.error || '送信に失敗しました');
+    }
+    var ff = document.getElementById('modal-demo-form');
+    var tf = document.getElementById('modal-demo-thanks');
+    if (ff) ff.style.display = 'none';
+    if (tf) tf.style.display = 'block';
+  } catch (err) {
+    alert('エラー: ' + err.message);
+    if (btn) { btn.disabled = false; btn.textContent = '無料デモを申し込む'; }
+  }
+}
+
+/* ── フォーム送信（お問い合わせ） ── */
+async function submitContact() {
+  var company = document.getElementById('contact-company').value.trim();
+  var name    = document.getElementById('contact-name').value.trim();
+  var email   = document.getElementById('contact-email').value.trim();
+  var plan    = document.getElementById('contact-type') ? document.getElementById('contact-type').value : '';
+  if (!company || !name || !email) {
+    alert('会社名・お名前・メールアドレスは必須です。');
+    return;
+  }
+  if (!validateEmail(email)) {
+    alert('メールアドレスの形式が正しくありません。');
+    return;
+  }
+  var btn = document.querySelector('#modal-contact-form .btn-modal-submit');
+  if (btn) { btn.disabled = true; btn.textContent = '送信中…'; }
+  try {
+    var res = await fetch('/api/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'contact', company, name, email, plan })
+    });
+    if (!res.ok) {
+      var d = await res.json().catch(function(){ return {}; });
+      throw new Error(d.error || '送信に失敗しました');
+    }
+    document.getElementById('modal-contact-form').style.display = 'none';
+    document.getElementById('modal-contact-thanks').style.display = 'block';
+  } catch (err) {
+    alert('エラー: ' + err.message);
+    if (btn) { btn.disabled = false; btn.textContent = '送信する'; }
+  }
 }
 
 /* メール形式チェック */
