@@ -464,8 +464,12 @@ support@futureworks.example</textarea>
                 <span id="pvSubtotal"></span>
               </div>
               <div class="totals-row">
-                <span>消費税 (<span id="pvTaxLabel"></span>)</span>
-                <span id="pvTaxAmount"></span>
+                <span>消費税（10%）</span>
+                <span id="pvTaxAmount10"></span>
+              </div>
+              <div class="totals-row">
+                <span>消費税（8%）</span>
+                <span id="pvTaxAmount8"></span>
               </div>
               <div class="totals-row">
                 <span>合計（税込）</span>
@@ -522,8 +526,8 @@ support@futureworks.example</textarea>
         issuerRegNo: document.getElementById("pvIssuerRegNo"),
         items: document.getElementById("pvItems"),
         subtotal: document.getElementById("pvSubtotal"),
-        taxLabel: document.getElementById("pvTaxLabel"),
-        taxAmount: document.getElementById("pvTaxAmount"),
+        taxAmount10: document.getElementById("pvTaxAmount10"),
+        taxAmount8: document.getElementById("pvTaxAmount8"),
         total: document.getElementById("pvTotal")
       }
     };
@@ -666,12 +670,8 @@ support@futureworks.example</textarea>
       });
 
       dom.preview.subtotal.textContent = formatYen(subtotal);
-      const taxLabels = [];
-      if (taxable10 > 0) taxLabels.push("10%対象");
-      if (taxable8 > 0) taxLabels.push("8%対象");
-      if (taxLabels.length === 0) taxLabels.push("非課税");
-      dom.preview.taxLabel.textContent = taxLabels.join(" / ");
-      dom.preview.taxAmount.textContent = formatYen(taxAmount);
+      dom.preview.taxAmount10.textContent = formatYen(taxAmount10);
+      dom.preview.taxAmount8.textContent = formatYen(taxAmount8);
       dom.preview.total.textContent = formatYen(total);
     }
 
