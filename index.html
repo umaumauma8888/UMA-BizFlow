@@ -629,6 +629,96 @@ body.annual .ann-view { display:block; }
 .admin-panel.show { display: block; }
 .lp-content.hide { display: none; }
 
+/* DEMO MODE NOTICES */
+.demo-global-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100001;
+  background: #FFE8C2;
+  color: #7A2E0A;
+  border-bottom: 1px solid #E8B06A;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  padding: 9px 12px;
+}
+body.has-demo-banner .nav { top: 36px; }
+body.has-demo-banner .admin-sidebar { top: 36px; }
+body.has-demo-banner .admin-main { margin-top: 36px; min-height: calc(100vh - 36px); }
+body.has-demo-banner #global-hamburger { top: 48px; }
+.sidebar-demo-badge {
+  margin-top: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(255,255,255,0.24);
+  border-radius: 999px;
+  color: rgba(255,255,255,0.92);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  padding: 5px 10px;
+  background: rgba(255,255,255,0.08);
+}
+.footer-demo-badge {
+  margin-top: 0.7rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(255,255,255,0.28);
+  border-radius: 999px;
+  color: rgba(255,255,255,0.92);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  padding: 6px 12px;
+}
+.demo-toast-root {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 100002;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+.demo-toast {
+  min-width: 300px;
+  max-width: min(92vw, 460px);
+  border-radius: 10px;
+  border: 1px solid;
+  box-shadow: 0 8px 24px rgba(13,27,42,0.18);
+  padding: 11px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.45;
+  transform: translateY(8px);
+  opacity: 0;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.demo-toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+.demo-toast.hide {
+  transform: translateY(6px);
+  opacity: 0;
+}
+.demo-toast-add {
+  background: #E6F6EC;
+  border-color: #A8D8B9;
+  color: #134E2A;
+}
+.demo-toast-delete {
+  background: #FFF0EC;
+  border-color: #EDB7AA;
+  color: #7A2E0A;
+}
+
 /* ADMIN */
 /* overflow:hidden は stacking context を生成するため、
    スマホ用ドロワーの z-index が効かなくなる原因になる。
@@ -817,7 +907,9 @@ code { font-family:'JetBrains Mono','Fira Code',monospace; font-size:11px; backg
 
 </style>
 </head>
-<body>
+<body class="has-demo-banner">
+
+<div class="demo-global-banner">【デモ画面】入力・変更したデータは保存されません。自由にお試しください。</div>
 
 <!-- ★ v6: グローバルハンバーガーボタン
      body直下のfixed配置 → いかなるstacking contextにも属さない
@@ -1198,7 +1290,6 @@ code { font-family:'JetBrains Mono','Fira Code',monospace; font-size:11px; backg
       </tbody>
     </table>
   </div>
-
   <div id="cases" class="cta">
     <h2>IT導入補助金の申請、<br>まずは無料相談から</h2>
     <p>補助金申請サポートから導入後の運用支援まで。<br>IT導入支援事業者として、交付申請・実績報告まで伴走します。</p>
@@ -1225,12 +1316,15 @@ code { font-family:'JetBrains Mono','Fira Code',monospace; font-size:11px; backg
 <footer class="footer">
   <div>UMA BizFlow ／ デジタル化・AI導入補助金2026 インボイス枠 IT導入支援事業者登録済</div>
   <div style="margin-top:.4rem">© 2026 UMA BizFlow. All rights reserved.　表示価格はすべて税抜です。</div>
+  <div class="footer-demo-badge">UMA BizFlow Demo Mode Active</div>
   <div style="margin-top:.75rem;font-size:11px;opacity:.5">
     本ページの補助金シミュレーションはデジタル化・AI導入補助金2026 インボイス枠（インボイス対応類型）の制度概要に基づく参考試算です。<br>
     補助金の採否・金額は事務局（TOPPAN株式会社）の審査により決定されます。補助金の活用を確約するものではありません。
   </div>
 </footer>
 </div><!-- /#lp-content -->
+
+<div id="demo-toast-root" class="demo-toast-root" aria-live="polite" aria-atomic="true"></div>
 
 <style>
 /* ── モーダル共通 ── */
@@ -1634,6 +1728,7 @@ document.addEventListener('DOMContentLoaded', function() {
           <div class="user-avatar">山田</div>
           <div><div class="user-name">山田 太郎</div><div class="user-role">システム管理者</div></div>
         </div>
+        <div class="sidebar-demo-badge">UMA BizFlow Demo Mode Active</div>
         <button class="btn-back-lp" onclick="backToLP()">← LPに戻る</button>
       </div>
     </aside>
@@ -2297,6 +2392,24 @@ var Chart=(function(){
 // ═══ 既存 JS ════════════════════════════════════════════════
 function showLogin(){document.getElementById('login-modal').classList.add('open');}
 function hideLogin(){document.getElementById('login-modal').classList.remove('open');}
+function showDemoToast(type){
+  var root=document.getElementById('demo-toast-root');
+  if(!root)return;
+  var isDelete=type==='delete';
+  var msg=isDelete
+    ?'※デモのため、実際のデータベースからは削除されません'
+    :'※デモ用データとして追加されました（リロードでリセットされます）';
+  var toast=document.createElement('div');
+  toast.className='demo-toast '+(isDelete?'demo-toast-delete':'demo-toast-add');
+  toast.textContent=msg;
+  root.appendChild(toast);
+  requestAnimationFrame(function(){toast.classList.add('show');});
+  setTimeout(function(){
+    toast.classList.remove('show');
+    toast.classList.add('hide');
+    setTimeout(function(){if(toast.parentNode)toast.parentNode.removeChild(toast);},240);
+  },2600);
+}
 function doLogin(){
   hideLogin();
   document.body.classList.add('admin-mode');
@@ -3108,9 +3221,10 @@ async function accAddJournal(){
     accJournals.sort((a,b)=>a.date.localeCompare(b.date));
     accCloseModal('acc-modal-journal');document.getElementById('acc-j-amount').value='';document.getElementById('acc-j-memo').value='';
     accUpdateAll();
+    showDemoToast('add');
   }catch(e){alert('保存失敗: '+e.message);}
 }
-async function accDeleteJournal(id){if(!confirm('この仕訳を削除しますか？'))return;try{await api('DELETE','/api/journals/'+id);accJournals=await api('GET','/api/journals');accUpdateAll();}catch(e){alert('削除失敗: '+e.message);}}
+async function accDeleteJournal(id){if(!confirm('この仕訳を削除しますか？'))return;try{await api('DELETE','/api/journals/'+id);accJournals=await api('GET','/api/journals');accUpdateAll();showDemoToast('delete');}catch(e){alert('削除失敗: '+e.message);}}
 async function accAddAccount(){
   const code=document.getElementById('acc-new-code').value.trim(),name=document.getElementById('acc-new-name').value.trim(),type=document.getElementById('acc-new-type').value;
   if(!code||!name){alert('コードと科目名を入力してください');return;}
@@ -3119,9 +3233,10 @@ async function accAddAccount(){
     accAccounts=await api('GET','/api/accounts');
     accCloseModal('acc-modal-account');document.getElementById('acc-new-code').value='';document.getElementById('acc-new-name').value='';
     accUpdateAll();
+    showDemoToast('add');
   }catch(e){alert('保存失敗: '+e.message);}
 }
-async function accDeleteAccount(code){if(!confirm('削除しますか？'))return;try{await api('DELETE','/api/accounts/'+code);accAccounts=await api('GET','/api/accounts');accUpdateAll();}catch(e){alert(e.message);}}
+async function accDeleteAccount(code){if(!confirm('削除しますか？'))return;try{await api('DELETE','/api/accounts/'+code);accAccounts=await api('GET','/api/accounts');accUpdateAll();showDemoToast('delete');}catch(e){alert(e.message);}}
 function accExportCSV(){
   if(!accJournals.length){alert('仕訳データがありません');return;}
   const BOM='\uFEFF';
@@ -3180,6 +3295,7 @@ async function crmEdit(id){
 }
 async function crmSave(){
   const id=document.getElementById('crm-edit-id').value;
+  const isNew=!id;
   const body={
     name:document.getElementById('crm-name').value,
     company:document.getElementById('crm-company').value,
@@ -3193,11 +3309,12 @@ async function crmSave(){
     if(id)await api('PUT','/api/customers/'+id,body);
     else await api('POST','/api/customers',body);
     crmCloseModal();crmLoad();
+    if(isNew)showDemoToast('add');
   }catch(e){alert('保存失敗: '+e.message);}
 }
 async function crmDelete(id){
   if(!confirm('この顧客を削除しますか？'))return;
-  try{await api('DELETE','/api/customers/'+id);crmLoad();}catch(e){alert(e.message);}
+  try{await api('DELETE','/api/customers/'+id);crmLoad();showDemoToast('delete');}catch(e){alert(e.message);}
 }
 
 // ═══ 案件 ════════════════════════════════════════════════════
@@ -3231,7 +3348,7 @@ async function dealSave(){
     due_date:document.getElementById('deal-due').value,
   };
   if(!body.title){alert('案件名を入力してください');return;}
-  try{await api('POST','/api/deals',body);accCloseModal('deal-modal');dealLoad();}catch(e){alert(e.message);}
+  try{await api('POST','/api/deals',body);accCloseModal('deal-modal');dealLoad();showDemoToast('add');}catch(e){alert(e.message);}
 }
 async function dealUpdateStage(id,stage){
   try{await api('PUT','/api/deals/'+id,{stage});}catch(e){alert(e.message);}
@@ -3259,11 +3376,11 @@ async function stockSave(){
     stock:document.getElementById('stock-qty').value,
   };
   if(!body.code||!body.name){alert('品番と品名を入力してください');return;}
-  try{await api('POST','/api/items',body);accCloseModal('stock-modal');stockLoad();}catch(e){alert(e.message);}
+  try{await api('POST','/api/items',body);accCloseModal('stock-modal');stockLoad();showDemoToast('add');}catch(e){alert(e.message);}
 }
 async function stockDelete(id){
   if(!confirm('削除しますか？'))return;
-  try{await api('DELETE','/api/items/'+id);stockLoad();}catch(e){alert(e.message);}
+  try{await api('DELETE','/api/items/'+id);stockLoad();showDemoToast('delete');}catch(e){alert(e.message);}
 }
 
 // ═══ 受注 ════════════════════════════════════════════════════
@@ -3324,6 +3441,7 @@ async function orderSave(){
     const res=await api('POST','/api/orders',body);
     alert('受注登録完了！\n合計: ¥'+Number(res.total).toLocaleString()+'\n\n自動仕訳生成: 売掛金 / 売上高');
     accCloseModal('order-modal');orderLoad();
+    showDemoToast('add');
     if(accInited){accJournals=await api('GET','/api/journals');accUpdateAll();}
   }catch(e){alert(e.message);}
 }
@@ -3391,6 +3509,7 @@ async function invoiceSave(){
     const res=await api('POST','/api/invoices',body);
     alert('請求書発行完了！\n請求No.: '+res.invoice_no+'\n合計（税込）: ¥'+Number(res.total).toLocaleString());
     accCloseModal('invoice-modal');invoiceLoad();
+    showDemoToast('add');
   }catch(e){alert(e.message);}
 }
 async function invoicePreview(id){
@@ -3429,6 +3548,7 @@ async function paymentSave(){
     await api('POST','/api/payments',body);
     alert('入金登録完了！\n自動仕訳生成: 現金預金 / 売掛金（消し込み）');
     accCloseModal('payment-modal');paymentLoad();
+    showDemoToast('add');
     if(accInited){accJournals=await api('GET','/api/journals');accUpdateAll();}
   }catch(e){alert(e.message);}
 }
@@ -3458,11 +3578,11 @@ async function wfSave(){
     applicant:document.getElementById('wf-applicant').value,
   };
   if(!body.title){alert('件名を入力してください');return;}
-  try{await api('POST','/api/workflows',body);accCloseModal('wf-modal');wfLoad();}catch(e){alert(e.message);}
+  try{await api('POST','/api/workflows',body);accCloseModal('wf-modal');wfLoad();showDemoToast('add');}catch(e){alert(e.message);}
 }
 async function wfApprove(id){try{await api('PUT','/api/workflows/'+id,{status:'承認済'});wfLoad();}catch(e){alert(e.message);}}
 async function wfReject(id){try{await api('PUT','/api/workflows/'+id,{status:'却下'});wfLoad();}catch(e){alert(e.message);}}
-async function wfDelete(id){if(!confirm('削除しますか？'))return;try{await api('DELETE','/api/workflows/'+id);wfLoad();}catch(e){alert(e.message);}}
+async function wfDelete(id){if(!confirm('削除しますか？'))return;try{await api('DELETE','/api/workflows/'+id);wfLoad();showDemoToast('delete');}catch(e){alert(e.message);}}
 
 // ─── ログイン後の全データ初回ロード ─────────────────────────
 async function apiLoadAll(){
