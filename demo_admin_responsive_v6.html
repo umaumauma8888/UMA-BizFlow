@@ -227,37 +227,39 @@ body.annual .ann-view { display:block; }
 #global-hamburger {
   display: none; /* デスクトップでは非表示 */
   position: fixed;
-  top: 10px;
-  left: 10px;
-  z-index: 100000; /* サイドバー(99999)より上 */
+  top: 8px;
+  left: 8px;
+  z-index: 100000;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 5px;
-  width: 48px;
-  height: 48px;
-  border: none;
-  border-radius: 12px;
-  /* シアン背景で背景色に関わらず一目で分かるデザイン */
-  background: var(--ub-cyan);
+  gap: 6px;
+  width: 44px;
+  height: 44px;
+  /* 背景:#1A56DB（青）、どんな背景にも絶対に埋もれない */
+  background: #1A56DB;
+  border: 2px solid #ffffff;
+  border-radius: 10px;
   cursor: pointer;
-  padding: 7px;
+  padding: 0;
   touch-action: manipulation;
-  -webkit-tap-highlight-color: rgba(6,182,212,0.4);
-  /* 影を強めてどんな背景の上でも浮き出るように */
-  box-shadow: 0 3px 16px rgba(6,182,212,0.55), 0 1px 4px rgba(0,0,0,0.3);
-  transition: transform 0.15s, box-shadow 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+  transition: transform 0.15s;
 }
 #global-hamburger:active {
-  transform: scale(0.92);
-  box-shadow: 0 1px 6px rgba(6,182,212,0.4);
+  transform: scale(0.90);
 }
 #global-hamburger span {
-  display: block; width: 22px; height: 2.5px;
-  /* 濃紺ラインでシアン背景に対して高コントラスト */
-  background: var(--ub-navy);
-  border-radius: 2px; transition: all .25s;
+  display: block;
+  width: 20px;
+  height: 3px;
+  /* 白ライン：青背景に対して最高コントラスト */
+  background: #ffffff;
+  border-radius: 2px;
+  transition: all .25s;
   pointer-events: none;
+  flex-shrink: 0;
 }
 #global-hamburger.open span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
 #global-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
@@ -375,9 +377,11 @@ body.annual .ann-view { display:block; }
   .admin-main {
     margin-left: 0 !important;
     width: 100% !important;
+    max-width: 100vw !important;
     min-height: 100svh;
-    overflow: visible !important;
-    overflow-x: visible !important;
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+    box-sizing: border-box !important;
   }
 
   /* ⑥ サイドバー: position:fixed + transform でスライド制御
@@ -451,17 +455,41 @@ body.annual .ann-view { display:block; }
     touch-action: manipulation;
   }
 
-  /* ── KPIグリッド ── */
-  .kpi-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-  .kpi-card { padding: 1rem; }
+  /* ── KPIグリッド：スマホは縦1列に固定 ── */
+  .kpi-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px;
+  }
+  .kpi-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 1rem;
+  }
   .kpi-value { font-size: 22px; }
   .acc-kpi-grid { grid-template-columns: 1fr 1fr; }
   .acc-stats-grid { grid-template-columns: 1fr 1fr; }
   .acc-charts-row { grid-template-columns: 1fr; }
   .bs-grid { grid-template-columns: 1fr; }
 
+  /* ── admin-grid：スマホは縦1列・幅100%に強制 ── */
+  .admin-grid-3,
+  .admin-grid-2 {
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    gap: 0.75rem !important;
+  }
+
   /* ── テーブル: 横スクロール ── */
-  .admin-body { padding: 1rem; }
+  .admin-body {
+    padding: 0.75rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
   .card { overflow: visible; }
   .card > table, .card .data-table { overflow-x: auto; display: block; max-width: 100%; -webkit-overflow-scrolling: touch; }
   .card > table thead, .card > table tbody,
@@ -635,18 +663,20 @@ body.annual .ann-view { display:block; }
 .header-btn { background: transparent; border: 1px solid var(--ub-border); color: var(--ub-muted); padding: 8px 16px; border-radius: 8px; font-size: 13px; cursor: pointer; font-family: 'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif; display: flex; align-items: center; gap: 6px; }
 .header-btn-primary { background: var(--ub-blue); border-color: var(--ub-blue); color: #fff; }
 .admin-body { padding: 2rem; }
+/* ★ カードはみ出し対策：admin-bodyで横幅を完全に封じ込める */
+.admin-body { max-width: 100%; overflow-x: hidden; box-sizing: border-box; }
 
 /* KPI */
-.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 1rem; margin-bottom: 2rem; }
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(0,1fr)); gap: 1rem; margin-bottom: 2rem; }
 .kpi-card { background: var(--ub-surface); border: 1px solid var(--ub-border); border-radius: 10px; padding: 1.25rem 1.5rem; }
 .kpi-label { font-size: 12px; color: var(--ub-muted); margin-bottom: 0.25rem; }
 .kpi-value { font-family: Georgia,serif; font-size: 28px; font-weight: 800; color: var(--ub-navy); }
 .kpi-change { font-size: 12px; margin-top: 4px; }
 .kpi-change.up { color: var(--ub-success); }
 
-.admin-grid-3 { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
-.admin-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
-.card { background: var(--ub-surface); border: 1px solid var(--ub-border); border-radius: 10px; padding: 1.5rem; }
+.admin-grid-3 { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; width: 100%; box-sizing: border-box; }
+.admin-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; width: 100%; box-sizing: border-box; }
+.card { background: var(--ub-surface); border: 1px solid var(--ub-border); border-radius: 10px; padding: 1.5rem; width: 100%; box-sizing: border-box; }
 .card-title { font-size: 14px; font-weight: 700; color: var(--ub-navy); margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; }
 .card-title-action { font-size: 12px; font-weight: 400; color: var(--ub-blue); cursor: pointer; }
 
