@@ -14,6 +14,11 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname))); // HTMLを同階層に置く場合
 
+// Top page always serves the latest responsive admin demo.
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'demo_admin_responsive.html'));
+});
+
 // ── DB 初期化 ─────────────────────────────────────────────────
 const db = new Database('uma_bizflow.db');
 db.pragma('journal_mode = WAL');
