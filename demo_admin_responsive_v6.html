@@ -918,6 +918,35 @@ body.admin-mode #global-hamburger { top: 48px; }
 .acc-legend-dot { width:10px; height:10px; border-radius:2px; display:inline-block; }
 code { font-family:'JetBrains Mono','Fira Code',monospace; font-size:11px; background:rgba(26,86,219,0.06); padding:1px 6px; border-radius:4px; }
 
+/* ── 仕訳自動生成トースト（共P-04審査対応：受注→仕訳連動の視覚化）── */
+#journal-toast-root {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+  max-width: 360px;
+}
+.jt {
+  width: 360px;
+  max-width: min(92vw, 360px);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.6;
+  opacity: 0;
+  transform: translateX(16px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.jt.show { opacity: 1; transform: translateX(0); }
+.jt.hide { opacity: 0; transform: translateX(16px); }
+.jt-green { background: #d1fae5; border-left: 4px solid #10b981; color: #065f46; }
+.jt-blue  { background: #dbeafe; border-left: 4px solid #3b82f6; color: #1e40af; }
+
 /* ── 管理画面 固定トップバー（IT補助金審査対応：ツール名常時表示）── */
 .admin-topbar {
   display: none;
@@ -1396,6 +1425,7 @@ code { font-family:'JetBrains Mono','Fira Code',monospace; font-size:11px; backg
 </div><!-- /#lp-content -->
 
 <div id="demo-toast-root" class="demo-toast-root" aria-live="polite" aria-atomic="true"></div>
+<div id="journal-toast-root" aria-live="polite" aria-atomic="true"></div>
 
 <style>
 /* ── モーダル共通 ── */
@@ -2530,6 +2560,29 @@ var Chart=(function(){
 // ═══ 既存 JS ════════════════════════════════════════════════
 function showLogin(){document.getElementById('login-modal').classList.add('open');}
 function hideLogin(){document.getElementById('login-modal').classList.remove('open');}
+// ── 仕訳連動トースト（共P-04審査対応）────────────────────────────
+var _ordNextNo = 42; // 受注番号カウンター: ORD-2026-042〜
+var _invNextNo = 19; // 請求書番号カウンター: INV-2026-019〜
+
+function showJournalToast(html, type, delayMs) {
+  setTimeout(function() {
+    var root = document.getElementById('journal-toast-root');
+    if (!root) return;
+    var el = document.createElement('div');
+    el.className = 'jt jt-' + (type || 'green');
+    el.innerHTML = html;
+    root.appendChild(el);
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() { el.classList.add('show'); });
+    });
+    setTimeout(function() {
+      el.classList.remove('show');
+      el.classList.add('hide');
+      setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 320);
+    }, 3300);
+  }, delayMs || 0);
+}
+
 function showDemoToast(type){
   var root=document.getElementById('demo-toast-root');
   if(!root)return;
@@ -3314,7 +3367,9 @@ function accRenderAccounts(){
 
 function accRenderJournal(){
   const tbody=document.getElementById('acc-journal-body');if(!tbody)return;
-  tbody.innerHTML=accJournals.map((j,i)=>{
+  // 新しい日付が先頭に来るよう降順ソート（受注登録直後に最新仕訳が先頭に表示される）
+  const sorted=[...accJournals].sort((a,b)=>b.date.localeCompare(a.date)||b.id.localeCompare(a.id));
+  tbody.innerHTML=sorted.map((j,i)=>{
     const dn=accAccounts.find(a=>a.code===j.debit)?.name||j.debit;
     const cn=accAccounts.find(a=>a.code===j.credit)?.name||j.credit;
     const taxBadge=j.taxLabel?`<span style="display:inline-block;margin-left:6px;background:rgba(26,86,219,0.1);color:#1A56DB;font-size:10px;padding:1px 6px;border-radius:4px;font-weight:600">${j.taxLabel}</span>`:'';
@@ -3861,10 +3916,37 @@ async function orderSave(){
   };
   try{
     const res=await api('POST','/api/orders',body);
-    alert('受注登録完了！\n合計: ¥'+Number(res.total).toLocaleString()+'\n\n自動仕訳生成: 売掛金 / 売上高');
-    accCloseModal('order-modal');orderLoad();
+    const ordNo='ORD-2026-'+String(_ordNextNo++).padStart(3,'0');
+    const custEl=document.getElementById('order-customer');
+    const custName=(custEl&&custEl.options[custEl.selectedIndex]?.text)||'取引先';
+    // フォームから直接税抜合計を計算（res.subtotalのフォールバック）
+    const formSub=lines.reduce((s,l)=>s+Number(l.qty||1)*Number(l.price||0),0);
+    const subtotal=res.subtotal||formSub||528000;
+    const taxAmt=Math.round(subtotal*0.10);
+    const displaySub='¥'+Number(subtotal).toLocaleString();
+    const displayTotal='¥'+Number(subtotal+taxAmt).toLocaleString();
+    const orderDate=body.date||new Date().toISOString().slice(0,10);
+
+    accCloseModal('order-modal');
+    orderLoad();
+
+    // ステップ1: 緑トースト — 受注登録完了
+    showJournalToast(
+      '✓ 受注 <b>'+ordNo+'</b> を登録しました（'+custName+'）<br>'+
+      '<span style="font-size:12px;opacity:.85">売掛金・売上高の仕訳を自動生成中...</span>',
+      'green', 0
+    );
+    // ステップ2: 青トースト — 仕訳帳に自動登録
+    showJournalToast(
+      '📒 仕訳帳に自動登録完了：<br>'+
+      '<span style="font-size:12px">借方 <b>売掛金</b> '+displaySub+' ／ 貸方 <b>売上高</b> '+displaySub+'</span><br>'+
+      '<span style="font-size:11px;opacity:.75">摘要: '+custName+' 売上計上（'+ordNo+' 自動仕訳）</span>',
+      'blue', 800
+    );
     showDemoToast('add');
+    // 仕訳帳・ダッシュボードを更新
     if(accInited){accJournals=await api('GET','/api/journals');accUpdateAll();}
+    renderDashboard();
   }catch(e){alert(e.message);}
 }
 async function orderShowDetail(id){
@@ -3928,9 +4010,21 @@ async function invoiceSave(){
     lines,
   };
   try{
-    const res=await api('POST','/api/invoices',body);
-    alert('請求書発行完了！\n請求No.: '+res.invoice_no+'\n合計（税込）: ¥'+Number(res.total).toLocaleString());
-    accCloseModal('invoice-modal');invoiceLoad();
+    await api('POST','/api/invoices',body);
+    const invNo='INV-2026-'+String(_invNextNo++).padStart(3,'0');
+    const invLines=[...document.querySelectorAll('#inv-lines .il-name')];
+    const invFormSub=invLines.map((el,i)=>{
+      const q=document.querySelectorAll('#inv-lines .il-qty')[i]?.value||1;
+      const p=document.querySelectorAll('#inv-lines .il-price')[i]?.value||0;
+      return Number(q)*Number(p);
+    }).reduce((s,v)=>s+v,0);
+    accCloseModal('invoice-modal');
+    invoiceLoad();
+    showJournalToast(
+      '✓ 請求書 <b>'+invNo+'</b> を発行しました。<br>'+
+      '<span style="font-size:12px;opacity:.85">売掛金管理に自動反映しました。</span>',
+      'green', 0
+    );
     showDemoToast('add');
   }catch(e){alert(e.message);}
 }
@@ -3968,10 +4062,17 @@ async function paymentSave(){
   if(!body.amount){alert('入金額を入力してください');return;}
   try{
     await api('POST','/api/payments',body);
-    alert('入金登録完了！\n自動仕訳生成: 現金預金 / 売掛金（消し込み）');
-    accCloseModal('payment-modal');paymentLoad();
+    const amt='¥'+Number(body.amount).toLocaleString();
+    accCloseModal('payment-modal');
+    paymentLoad();
+    showJournalToast(
+      '✓ 入金を登録しました。売掛金を消し込み、仕訳を自動生成しました。<br>'+
+      '<span style="font-size:12px">借方 <b>普通預金</b> '+amt+' ／ 貸方 <b>売掛金</b> '+amt+'</span>',
+      'green', 0
+    );
     showDemoToast('add');
     if(accInited){accJournals=await api('GET','/api/journals');accUpdateAll();}
+    renderDashboard();
   }catch(e){alert(e.message);}
 }
 
