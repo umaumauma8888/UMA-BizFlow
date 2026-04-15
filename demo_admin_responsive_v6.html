@@ -799,6 +799,11 @@ body.admin-mode #global-hamburger { top: 48px; }
 .workflow-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--ub-blue), var(--ub-cyan)); }
 .workflow-count { font-size: 12px; font-weight: 700; color: var(--ub-navy); width: 32px; text-align: right; }
 
+/* 在庫サブタブ */
+.stock-sub-btn { padding: 8px 16px; border: none; background: transparent; color: var(--ub-muted); cursor: pointer; border-bottom: 3px solid transparent; font-family: 'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif; font-size: 12px; font-weight: 600; margin-bottom: -2px; transition: color .15s; white-space: nowrap; }
+.stock-sub-btn:hover { color: var(--ub-navy); }
+.stock-sub-btn.active { color: var(--ub-blue); border-bottom-color: var(--ub-blue); }
+
 /* AI */
 .ai-panel { background: linear-gradient(135deg, #0D1B2A, #0F2B4A); border-radius: 12px; padding: 1.5rem; color: #fff; }
 .ai-panel-title { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 1rem; }
@@ -1882,16 +1887,66 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
 
         <!-- INVOICE -->
-                <!-- ② 在庫・倉庫管理 -->
+                <!-- ② 在庫・倉庫管理（共P-03 供給・在庫・物流） -->
         <div id="tab-stock" style="display:none">
-          <div class="card">
-            <div class="card-title">在庫・商品マスタ
-              <button class="header-btn header-btn-primary" style="font-size:12px;padding:6px 14px;" onclick="stockOpenModal()">＋ 商品登録</button>
+          <!-- サブタブナビ -->
+          <div style="display:flex;gap:0;border-bottom:2px solid var(--ub-border);margin-bottom:1.25rem;overflow-x:auto;">
+            <button class="stock-sub-btn active" id="ssb-list"      onclick="stockSubTab('list')">📦 在庫一覧</button>
+            <button class="stock-sub-btn"        id="ssb-location"  onclick="stockSubTab('location')">🗺 ロケーション管理</button>
+            <button class="stock-sub-btn"        id="ssb-movement"  onclick="stockSubTab('movement')">📋 入出庫履歴</button>
+            <button class="stock-sub-btn"        id="ssb-stocktake" onclick="stockSubTab('stocktake')">✅ 実地棚卸</button>
+            <button class="stock-sub-btn"        id="ssb-analysis"  onclick="stockSubTab('analysis')">📊 在庫分析</button>
+          </div>
+
+          <!-- ① 在庫一覧 -->
+          <div id="stock-sub-list">
+            <div class="card">
+              <div class="card-title">在庫一覧（共P-03 — 供給・在庫・物流管理）
+                <button class="header-btn header-btn-primary" style="font-size:12px;padding:6px 14px;" onclick="stockOpenModal()">＋ 商品登録</button>
+              </div>
+              <table class="data-table">
+                <thead><tr><th>品番</th><th>品名</th><th>ロケーション</th><th style="text-align:right">在庫数</th><th style="text-align:right">安全在庫</th><th style="text-align:right">発注点</th><th style="text-align:right">上限</th><th style="text-align:right">単価</th><th>ステータス</th><th>操作</th></tr></thead>
+                <tbody id="stock-tbody"></tbody>
+              </table>
             </div>
-            <table class="data-table">
-              <thead><tr><th>品番</th><th>品名</th><th>単位</th><th>単価</th><th>在庫数</th><th>状態</th><th>操作</th></tr></thead>
-              <tbody id="stock-tbody"><tr><td colspan="7" style="text-align:center;color:var(--ub-muted);padding:2rem;">読み込み中...</td></tr></tbody>
-            </table>
+          </div>
+
+          <!-- ② ロケーション管理 -->
+          <div id="stock-sub-location" style="display:none">
+            <div class="card">
+              <div class="card-title">ロケーション管理</div>
+              <table class="data-table">
+                <thead><tr><th>ロケーションID</th><th>エリア</th><th>棚番号</th><th style="text-align:right">収容上限</th><th style="text-align:right">使用数</th><th style="min-width:160px">使用率</th><th>格納品番</th><th>状態</th></tr></thead>
+                <tbody id="location-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ③ 入出庫履歴 -->
+          <div id="stock-sub-movement" style="display:none">
+            <div class="card">
+              <div class="card-title">入出庫履歴</div>
+              <table class="data-table">
+                <thead><tr><th>日時</th><th>品番</th><th>品名</th><th>種別</th><th style="text-align:right">数量</th><th>ロケーション</th><th>担当者</th><th>備考</th></tr></thead>
+                <tbody id="movement-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ④ 実地棚卸 -->
+          <div id="stock-sub-stocktake" style="display:none">
+            <div class="card">
+              <div class="card-title">実地棚卸 — 2026年4月期</div>
+              <table class="data-table">
+                <thead><tr><th>品番</th><th>品名</th><th>ロケーション</th><th style="text-align:right">帳簿在庫</th><th style="text-align:right">実地数量</th><th style="text-align:right">差異</th><th>棚卸日</th><th>状態</th></tr></thead>
+                <tbody id="stocktake-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ⑤ 在庫分析 -->
+          <div id="stock-sub-analysis" style="display:none">
+            <div id="stock-analysis-content"></div>
           </div>
         </div>
         <div id="tab-invoice" style="display:none">
@@ -3459,17 +3514,213 @@ async function dealUpdateStage(id,stage){
   try{await api('PUT','/api/deals/'+id,{stage});}catch(e){alert(e.message);}
 }
 
-// ═══ 在庫 ════════════════════════════════════════════════════
-async function stockLoad(){
-  const list=await api('GET','/api/items').catch(()=>[]);
-  document.getElementById('stock-tbody').innerHTML=list.length?list.map(i=>`
-    <tr>
-      <td><code>${i.code}</code></td><td>${i.name}</td><td>${i.unit}</td>
-      <td style="text-align:right;">¥${Number(i.price).toLocaleString()}</td>
-      <td style="text-align:right;font-weight:700;${i.stock<=0?'color:var(--ub-danger)':''}">${i.stock}</td>
-      <td>${i.stock<=0?'<span class="badge" style="background:rgba(239,68,68,0.1);color:#b91c1c;">欠品注意</span>':'<span class="badge badge-success">正常</span>'}</td>
-      <td><button class="btn-acc-danger" style="font-size:11px;" onclick="stockDelete('${i.id}')">削除</button></td>
-    </tr>`).join(''):'<tr><td colspan="7" style="text-align:center;color:var(--ub-muted);padding:2rem;">商品データがありません</td></tr>';
+// ═══ 在庫・倉庫管理（共P-03 供給・在庫・物流）════════════════════
+const STOCK_MASTER = [
+  {code:'ITM-001',name:'ノートPC 15型',     unit:'台',location:'A棚-01',qty:24,safety:10,reorder:15,max:50, price:148000},
+  {code:'ITM-002',name:'有線LANケーブル 3m', unit:'本',location:'B棚-03',qty:8, safety:20,reorder:30,max:200,price:980},
+  {code:'ITM-003',name:'USBハブ 7ポート',   unit:'個',location:'B棚-01',qty:42,safety:15,reorder:20,max:60, price:4800},
+  {code:'ITM-004',name:'モニター 27型 4K',  unit:'台',location:'C棚-02',qty:18,safety:5, reorder:8, max:15, price:62000},
+  {code:'ITM-005',name:'キーボード 無線',   unit:'個',location:'A棚-03',qty:35,safety:10,reorder:15,max:80, price:8500},
+];
+const STOCK_LOCATIONS = [
+  {id:'LOC-A01',area:'A棟1F',shelf:'A棚-01',capacity:50, used:24,item:'ITM-001'},
+  {id:'LOC-A03',area:'A棟1F',shelf:'A棚-03',capacity:80, used:35,item:'ITM-005'},
+  {id:'LOC-B01',area:'B棟2F',shelf:'B棚-01',capacity:60, used:42,item:'ITM-003'},
+  {id:'LOC-B03',area:'B棟2F',shelf:'B棚-03',capacity:200,used:8, item:'ITM-002'},
+  {id:'LOC-C02',area:'C棟1F',shelf:'C棚-02',capacity:30, used:18,item:'ITM-004'},
+  {id:'LOC-A02',area:'A棟1F',shelf:'A棚-02',capacity:100,used:0, item:'—'},
+  {id:'LOC-B02',area:'B棟2F',shelf:'B棚-02',capacity:100,used:0, item:'—'},
+];
+const STOCK_MOVEMENTS = [
+  {date:'2026-04-14 10:23',code:'ITM-003',name:'USBハブ 7ポート',   type:'入庫',qty:+20,location:'B棚-01',staff:'田中 一郎',note:'定期発注受領 PO-2026-0031'},
+  {date:'2026-04-13 14:05',code:'ITM-004',name:'モニター 27型 4K',  type:'入庫',qty:+5, location:'C棚-02',staff:'山田 花子',note:'追加発注受領 PO-2026-0030'},
+  {date:'2026-04-12 09:45',code:'ITM-001',name:'ノートPC 15型',     type:'出庫',qty:-3, location:'A棚-01',staff:'佐藤 健太',note:'社内配布（新入社員）'},
+  {date:'2026-04-11 16:30',code:'ITM-002',name:'有線LANケーブル 3m',type:'出庫',qty:-12,location:'B棚-03',staff:'田中 一郎',note:'顧客納品 SO-2026-0088'},
+  {date:'2026-04-10 11:00',code:'ITM-005',name:'キーボード 無線',   type:'入庫',qty:+35,location:'A棚-03',staff:'山田 花子',note:'新規仕入れ PO-2026-0029'},
+  {date:'2026-04-10 09:15',code:'ITM-001',name:'ノートPC 15型',     type:'入庫',qty:+10,location:'A棚-01',staff:'佐藤 健太',note:'定期発注受領 PO-2026-0028'},
+  {date:'2026-04-09 15:20',code:'ITM-003',name:'USBハブ 7ポート',   type:'出庫',qty:-8, location:'B棚-01',staff:'田中 一郎',note:'顧客納品 SO-2026-0085'},
+  {date:'2026-04-08 10:50',code:'ITM-002',name:'有線LANケーブル 3m',type:'出庫',qty:-5, location:'B棚-03',staff:'山田 花子',note:'社内使用（ネットワーク工事）'},
+];
+const STOCK_STOCKTAKE = [
+  {code:'ITM-001',name:'ノートPC 15型',     location:'A棚-01',book:24,actual:24,date:'2026-04-14',status:'確認済'},
+  {code:'ITM-002',name:'有線LANケーブル 3m',location:'B棚-03',book:8, actual:7, date:'2026-04-14',status:'差異あり'},
+  {code:'ITM-003',name:'USBハブ 7ポート',   location:'B棚-01',book:42,actual:42,date:'2026-04-14',status:'確認済'},
+  {code:'ITM-004',name:'モニター 27型 4K',  location:'C棚-02',book:18,actual:18,date:'2026-04-14',status:'確認済'},
+  {code:'ITM-005',name:'キーボード 無線',   location:'A棚-03',book:35,actual:35,date:'未実施',    status:'未実施'},
+];
+
+function _stockStatus(item){
+  if(item.qty < item.safety) return {label:'安全在庫割れ',cls:'badge-danger'};
+  if(item.qty < item.reorder)return {label:'発注要',      cls:'badge-warning'};
+  if(item.qty > item.max)    return {label:'上限超過',    cls:'badge-info'};
+  return {label:'正常',cls:'badge-success'};
+}
+function stockLoad(){
+  // ① 在庫一覧
+  const tbody = document.getElementById('stock-tbody');
+  if(tbody) tbody.innerHTML = STOCK_MASTER.map(item=>{
+    const st = _stockStatus(item);
+    const qtyColor = item.qty<item.safety?'color:var(--ub-danger)':item.qty<item.reorder?'color:var(--ub-gold)':'';
+    return `<tr>
+      <td><code>${item.code}</code></td>
+      <td><b>${item.name}</b></td>
+      <td><span style="background:rgba(26,86,219,0.07);padding:2px 8px;border-radius:4px;font-size:11px;font-family:monospace">${item.location}</span></td>
+      <td style="text-align:right;font-weight:700;${qtyColor}">${item.qty}</td>
+      <td style="text-align:right;color:var(--ub-muted)">${item.safety}</td>
+      <td style="text-align:right;color:var(--ub-muted)">${item.reorder}</td>
+      <td style="text-align:right;color:var(--ub-muted)">${item.max}</td>
+      <td style="text-align:right">¥${item.price.toLocaleString()}</td>
+      <td><span class="badge ${st.cls}">${st.label}</span></td>
+      <td><button class="btn-acc-danger" style="font-size:11px;" onclick="stockDelete('${item.code}')">削除</button></td>
+    </tr>`;
+  }).join('');
+  // 残タブも初期化
+  _stockLoadLocation();
+  _stockLoadMovement();
+  _stockLoadStocktake();
+  _stockLoadAnalysis();
+}
+function _stockLoadLocation(){
+  const tbody = document.getElementById('location-tbody');
+  if(!tbody) return;
+  tbody.innerHTML = STOCK_LOCATIONS.map(loc=>{
+    const pct = Math.round(loc.used/loc.capacity*100);
+    const barC = pct>=90?'var(--ub-danger)':pct>=70?'var(--ub-gold)':'var(--ub-success)';
+    const stCls = pct>=90?'badge-danger':pct>=70?'badge-warning':'badge-success';
+    const stLbl = pct>=90?'要整理':pct>=70?'注意':'空きあり';
+    return `<tr>
+      <td><code style="font-size:11px">${loc.id}</code></td>
+      <td style="color:var(--ub-muted)">${loc.area}</td>
+      <td><b>${loc.shelf}</b></td>
+      <td style="text-align:right">${loc.capacity}</td>
+      <td style="text-align:right;font-weight:700">${loc.used}</td>
+      <td><div style="display:flex;align-items:center;gap:8px">
+        <div style="flex:1;height:8px;background:var(--ub-border);border-radius:4px;overflow:hidden;min-width:80px">
+          <div style="width:${pct}%;height:100%;background:${barC};border-radius:4px"></div>
+        </div>
+        <span style="font-size:11px;width:32px;text-align:right;color:var(--ub-muted)">${pct}%</span>
+      </div></td>
+      <td><code style="font-size:11px;color:var(--ub-blue)">${loc.item}</code></td>
+      <td><span class="badge ${stCls}">${stLbl}</span></td>
+    </tr>`;
+  }).join('');
+}
+function _stockLoadMovement(){
+  const tbody = document.getElementById('movement-tbody');
+  if(!tbody) return;
+  tbody.innerHTML = STOCK_MOVEMENTS.map(m=>{
+    const isIn = m.type==='入庫';
+    return `<tr>
+      <td style="font-size:11px;color:var(--ub-muted);white-space:nowrap">${m.date}</td>
+      <td><code style="font-size:11px">${m.code}</code></td>
+      <td style="font-size:13px">${m.name}</td>
+      <td><span class="badge ${isIn?'badge-success':'badge-warning'}">${m.type}</span></td>
+      <td style="text-align:right;font-weight:700;color:${isIn?'var(--ub-success)':'var(--ub-danger)'}">
+        ${isIn?'+':''}${m.qty}
+      </td>
+      <td><span style="font-size:11px;font-family:monospace">${m.location}</span></td>
+      <td style="font-size:12px">${m.staff}</td>
+      <td style="font-size:11px;color:var(--ub-muted)">${m.note}</td>
+    </tr>`;
+  }).join('');
+}
+function _stockLoadStocktake(){
+  const tbody = document.getElementById('stocktake-tbody');
+  if(!tbody) return;
+  const stMap={'確認済':{cls:'badge-success',lbl:'✓ 確認済'},'差異あり':{cls:'badge-danger',lbl:'⚠ 差異あり'},'未実施':{cls:'badge-neutral',lbl:'— 未実施'}};
+  tbody.innerHTML = STOCK_STOCKTAKE.map(s=>{
+    const diff = s.actual - s.book;
+    const st = stMap[s.status]||{cls:'badge-neutral',lbl:s.status};
+    const diffStr = diff===0?'<span style="color:var(--ub-muted)">—</span>':`<span style="font-weight:700;color:${diff<0?'var(--ub-danger)':'var(--ub-success)'}">${diff>0?'+':''}${diff}</span>`;
+    return `<tr>
+      <td><code style="font-size:11px">${s.code}</code></td>
+      <td>${s.name}</td>
+      <td><span style="font-size:11px;font-family:monospace">${s.location}</span></td>
+      <td style="text-align:right">${s.book}</td>
+      <td style="text-align:right;font-weight:700">${s.actual}</td>
+      <td style="text-align:right">${diffStr}</td>
+      <td style="font-size:11px;color:var(--ub-muted)">${s.date}</td>
+      <td><span class="badge ${st.cls}">${st.lbl}</span></td>
+    </tr>`;
+  }).join('');
+}
+function _stockLoadAnalysis(){
+  const el = document.getElementById('stock-analysis-content');
+  if(!el) return;
+  const totalVal = STOCK_MASTER.reduce((s,i)=>s+i.qty*i.price,0);
+  const needReorder = STOCK_MASTER.filter(i=>i.qty<i.reorder).length;
+  const overMax = STOCK_MASTER.filter(i=>i.qty>i.max).length;
+  // ABC分析
+  let cum=0;
+  const abcRows=[...STOCK_MASTER].map(i=>({...i,val:i.qty*i.price})).sort((a,b)=>b.val-a.val).map(i=>{
+    cum+=i.val; const pct=Math.round(i.val/totalVal*100);
+    const rank=cum/totalVal<0.7?'A':cum/totalVal<0.9?'B':'C';
+    return {item:i,val:i.val,rank,pct};
+  });
+  const reorderItems=STOCK_MASTER.filter(i=>i.qty<=i.reorder);
+  el.innerHTML=`
+    <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:1.25rem">
+      <div class="kpi-card">
+        <div class="kpi-label">総在庫金額</div>
+        <div class="kpi-value" style="font-size:20px">¥${totalVal.toLocaleString()}</div>
+        <div class="kpi-change">全${STOCK_MASTER.length}品目の評価額合計</div>
+      </div>
+      <div class="kpi-card" style="border-color:${needReorder>0?'var(--ub-danger)':'var(--ub-border)'}">
+        <div class="kpi-label">発注要件数</div>
+        <div class="kpi-value" style="color:${needReorder>0?'var(--ub-danger)':'inherit'}">${needReorder}件</div>
+        <div class="kpi-change" style="color:${needReorder>0?'var(--ub-danger)':'var(--ub-muted)'}">
+          ${needReorder>0?'⚠ 発注点を下回っています':'正常範囲内'}
+        </div>
+      </div>
+      <div class="kpi-card" style="border-color:${overMax>0?'var(--ub-gold)':'var(--ub-border)'}">
+        <div class="kpi-label">上限超過品目</div>
+        <div class="kpi-value" style="color:${overMax>0?'var(--ub-gold)':'inherit'}">${overMax}件</div>
+        <div class="kpi-change" style="color:${overMax>0?'var(--ub-gold)':'var(--ub-muted)'}">
+          ${overMax>0?'在庫過剰・スペース圧迫に注意':'正常'}
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">ABC分析（在庫金額ベース）</div>
+      <table class="data-table">
+        <thead><tr><th>ランク</th><th>品番</th><th>品名</th><th style="text-align:right">在庫金額</th><th style="text-align:right">構成比</th><th style="min-width:140px">金額バー</th></tr></thead>
+        <tbody>${abcRows.map(r=>`<tr>
+          <td><span class="badge ${r.rank==='A'?'badge-danger':r.rank==='B'?'badge-warning':'badge-info'}" style="font-size:13px;font-weight:800">${r.rank}</span></td>
+          <td><code>${r.item.code}</code></td><td><b>${r.item.name}</b></td>
+          <td style="text-align:right;font-weight:700">¥${r.val.toLocaleString()}</td>
+          <td style="text-align:right">${r.pct}%</td>
+          <td><div style="height:10px;background:var(--ub-border);border-radius:4px;overflow:hidden">
+            <div style="width:${r.pct}%;height:100%;background:${r.rank==='A'?'var(--ub-danger)':r.rank==='B'?'var(--ub-gold)':'var(--ub-blue)'};border-radius:4px;min-width:2px"></div>
+          </div></td>
+        </tr>`).join('')}</tbody>
+      </table>
+    </div>
+    <div class="card" style="margin-top:1rem">
+      <div class="card-title">発注推奨リスト</div>
+      <table class="data-table">
+        <thead><tr><th>品番</th><th>品名</th><th>ロケーション</th><th style="text-align:right">現在庫</th><th style="text-align:right">発注点</th><th style="text-align:right">推奨発注数</th><th>優先度</th></tr></thead>
+        <tbody>${reorderItems.length?reorderItems.map(i=>{
+          const urgent=i.qty<i.safety;
+          return `<tr>
+            <td><code>${i.code}</code></td><td>${i.name}</td>
+            <td><span style="font-size:11px;font-family:monospace">${i.location}</span></td>
+            <td style="text-align:right;font-weight:700;color:var(--ub-danger)">${i.qty}</td>
+            <td style="text-align:right;color:var(--ub-muted)">${i.reorder}</td>
+            <td style="text-align:right;font-weight:700;color:var(--ub-blue)">${i.max-i.qty}${i.unit}</td>
+            <td><span class="badge ${urgent?'badge-danger':'badge-warning'}">${urgent?'🔴 至急':'🟡 要発注'}</span></td>
+          </tr>`;
+        }).join(''):'<tr><td colspan="7" style="text-align:center;color:var(--ub-muted);padding:1.5rem">発注が必要な品目はありません</td></tr>'}
+        </tbody>
+      </table>
+    </div>`;
+}
+function stockSubTab(name){
+  ['list','location','movement','stocktake','analysis'].forEach(n=>{
+    const panel=document.getElementById('stock-sub-'+n);
+    const btn  =document.getElementById('ssb-'+n);
+    if(panel) panel.style.display=n===name?'':'none';
+    if(btn)   btn.classList.toggle('active',n===name);
+  });
 }
 function stockOpenModal(){document.getElementById('stock-modal').classList.add('open');}
 async function stockSave(){
@@ -3483,9 +3734,9 @@ async function stockSave(){
   if(!body.code||!body.name){alert('品番と品名を入力してください');return;}
   try{await api('POST','/api/items',body);accCloseModal('stock-modal');stockLoad();showDemoToast('add');}catch(e){alert(e.message);}
 }
-async function stockDelete(id){
-  if(!confirm('削除しますか？'))return;
-  try{await api('DELETE','/api/items/'+id);stockLoad();showDemoToast('delete');}catch(e){alert(e.message);}
+function stockDelete(code){
+  if(!confirm(code+' を削除しますか？'))return;
+  showDemoToast('delete');
 }
 
 // ═══ 受注 ════════════════════════════════════════════════════
