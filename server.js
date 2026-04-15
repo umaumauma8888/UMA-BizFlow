@@ -57,6 +57,10 @@ async function main() {
   await db.exec('PRAGMA journal_mode = WAL');
   await db.exec('PRAGMA foreign_keys = ON');
 
+  // ── インボイス対応: 既存DBへの税列追加（べき等）────────────────
+  try { await db.run("ALTER TABLE journals ADD COLUMN tax_type   TEXT DEFAULT ''"); } catch(_) {}
+  try { await db.run("ALTER TABLE journals ADD COLUMN tax_amount REAL DEFAULT 0");  } catch(_) {}
+
   // ── テーブル作成 ─────────────────────────────────────────────
   await db.exec(`
 -- 勘定科目マスタ
@@ -282,14 +286,15 @@ CREATE TABLE IF NOT EXISTS workflows (
   });
 
   app.post('/api/journals', async (req, res) => {
-    const { date, debit, credit, amount, memo } = req.body;
+    const { date, debit, credit, amount, memo, tax_type, tax_amount } = req.body;
     if (!date || !debit || !credit || !amount)
       return res.status(400).json({ error: '日付・借方・貸方・金額必須' });
     try {
       const id = uid();
       await db.run(
-        'INSERT INTO journals(id,date,debit,credit,amount,memo) VALUES(?,?,?,?,?,?)',
-        id, date, debit, credit, Number(amount), memo || ''
+        'INSERT INTO journals(id,date,debit,credit,amount,memo,tax_type,tax_amount) VALUES(?,?,?,?,?,?,?,?)',
+        id, date, debit, credit, Number(amount), memo || '',
+        tax_type || '', Number(tax_amount) || 0
       );
       res.json({ id });
     } catch(e) { res.status(500).json({ error: e.message }); }

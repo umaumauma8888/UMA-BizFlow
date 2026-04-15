@@ -2416,7 +2416,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
             <div class="card" style="padding:0;overflow:hidden">
               <table class="acc-table">
-                <thead><tr><th>No.</th><th>日付</th><th>借方科目</th><th class="tr">借方金額</th><th>貸方科目</th><th class="tr">貸方金額</th><th>摘要</th><th class="tc">削除</th></tr></thead>
+                <thead><tr><th>No.</th><th>日付</th><th>借方科目</th><th class="tr">借方金額</th><th>貸方科目</th><th class="tr">貸方金額</th><th>税区分</th><th class="tr">消費税額</th><th>摘要</th><th class="tc">削除</th></tr></thead>
                 <tbody id="acc-journal-body"></tbody>
               </table>
             </div>
@@ -2481,18 +2481,53 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 
 
-<!-- ══ 会計モーダル：仕訳入力 ════════════════════════ -->
+<!-- ══ 会計モーダル：仕訳入力（インボイス対応）══════════════ -->
 <div class="acc-modal-bg" id="acc-modal-journal">
   <div class="acc-modal">
-    <h3>仕訳入力</h3>
+    <h3>仕訳入力 <span style="font-size:11px;font-weight:500;color:#1a56db;background:rgba(26,86,219,0.08);padding:2px 8px;border-radius:4px;margin-left:8px;vertical-align:middle;">インボイス対応</span></h3>
     <div class="acc-form-row"><label>日付</label><input type="date" id="acc-j-date"></div>
+    <!-- 借方・貸方科目 -->
     <div class="acc-two-col">
       <div class="acc-form-row"><label>借方科目</label><select id="acc-j-debit"></select></div>
-      <div class="acc-form-row"><label>借方金額</label><input type="number" id="acc-j-amount" placeholder="0" min="1"></div>
-    </div>
-    <div class="acc-two-col">
       <div class="acc-form-row"><label>貸方科目</label><select id="acc-j-credit"></select></div>
+    </div>
+    <!-- 消費税区分 & 入力方式 -->
+    <div class="acc-two-col">
+      <div class="acc-form-row">
+        <label>消費税区分 <span style="color:#ef4444;font-size:10px;font-weight:700">必須</span></label>
+        <select id="acc-j-tax-type" onchange="accCalcTax()">
+          <option value="taxable10">課税（標準税率 10%）</option>
+          <option value="taxable8">課税（軽減税率 8%）</option>
+          <option value="exempt">非課税</option>
+          <option value="excluded">不課税・対象外</option>
+        </select>
+      </div>
+      <div class="acc-form-row">
+        <label>金額入力方式</label>
+        <div style="display:flex;gap:1.2rem;align-items:center;margin-top:6px;">
+          <label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:4px;"><input type="radio" name="acc-j-tax-mode" value="excl" checked onchange="accCalcTax()"> 税抜で入力</label>
+          <label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:4px;"><input type="radio" name="acc-j-tax-mode" value="incl" onchange="accCalcTax()"> 税込で入力</label>
+        </div>
+      </div>
+    </div>
+    <!-- 金額フィールド -->
+    <div class="acc-two-col">
+      <div class="acc-form-row">
+        <label id="acc-j-amount-label">借方金額（税抜）</label>
+        <input type="number" id="acc-j-amount" placeholder="0" min="1" oninput="accCalcTax()">
+      </div>
       <div class="acc-form-row"><label>貸方金額</label><input type="text" disabled placeholder="借方金額と同額"></div>
+    </div>
+    <!-- 消費税額・税込合計（自動計算） -->
+    <div class="acc-two-col">
+      <div class="acc-form-row">
+        <label>消費税額（自動計算）</label>
+        <input type="text" id="acc-j-tax-amount" disabled placeholder="—" style="background:#f0f9ff;color:#1a56db;font-weight:700;font-size:14px;">
+      </div>
+      <div class="acc-form-row">
+        <label>税込合計</label>
+        <input type="text" id="acc-j-total" disabled placeholder="—" style="background:#f0fdf4;font-weight:700;font-size:14px;">
+      </div>
     </div>
     <div class="acc-form-row"><label>摘要</label><textarea id="acc-j-memo" rows="2" placeholder="取引内容を入力..."></textarea></div>
     <div class="acc-modal-footer">
@@ -3514,13 +3549,23 @@ function accRenderAccounts(){
 
 function accRenderJournal(){
   const tbody=document.getElementById('acc-journal-body');if(!tbody)return;
-  // 新しい日付が先頭に来るよう降順ソート（受注登録直後に最新仕訳が先頭に表示される）
   const sorted=[...accJournals].sort((a,b)=>b.date.localeCompare(a.date)||b.id.localeCompare(a.id));
   tbody.innerHTML=sorted.map((j,i)=>{
     const dn=accAccounts.find(a=>a.code===j.debit)?.name||j.debit;
     const cn=accAccounts.find(a=>a.code===j.credit)?.name||j.credit;
-    const taxBadge=j.taxLabel?`<span style="display:inline-block;margin-left:6px;background:rgba(26,86,219,0.1);color:#1A56DB;font-size:10px;padding:1px 6px;border-radius:4px;font-weight:600">${j.taxLabel}</span>`:'';
     const rowStyle=j.source==='sales'?'background:rgba(26,86,219,0.03)':j.source==='payment'?'background:rgba(16,185,129,0.03)':j.source==='tax'?'background:rgba(6,182,212,0.03)':'';
+    // 税区分ラベルと消費税額を決定
+    const tt=j.tax_type||'';
+    const ta=Number(j.tax_amount)||0;
+    let taxLabel='',taxColor='',taxAmtStr='—';
+    if(tt==='taxable10'||j.taxLabel==='10%'){taxLabel='課税10%';taxColor='#1a56db';}
+    else if(tt==='taxable8'||j.taxLabel==='8%軽減'){taxLabel='軽減8%';taxColor='#059669';}
+    else if(tt==='exempt'){taxLabel='非課税';taxColor='#6b7280';}
+    else if(tt==='excluded'){taxLabel='不課税';taxColor='#9ca3af';}
+    else if(j.taxLabel){taxLabel=j.taxLabel;taxColor='#1a56db';}
+    if(ta>0)taxAmtStr='¥'+ta.toLocaleString('ja-JP');
+    else if(taxLabel==='課税10%'||taxLabel==='軽減8%')taxAmtStr='¥'+Math.floor(j.amount*(taxLabel==='課税10%'?0.1:0.08)).toLocaleString('ja-JP');
+    const taxBadge=taxLabel?`<span style="display:inline-block;background:rgba(26,86,219,0.08);color:${taxColor};font-size:10px;padding:1px 7px;border-radius:4px;font-weight:700;white-space:nowrap">${taxLabel}</span>`:'<span style="color:#d1d5db;font-size:11px">—</span>';
     return `<tr class="acc-jr" data-date="${j.date}" style="${rowStyle}">
       <td class="mono acc-muted">${i+1}</td>
       <td>${j.date}</td>
@@ -3528,10 +3573,12 @@ function accRenderJournal(){
       <td class="tr acc-debit mono">${accFmt(j.amount)}</td>
       <td class="acc-credit">${cn}</td>
       <td class="tr acc-credit mono">${accFmt(j.amount)}</td>
-      <td class="acc-muted" style="font-size:11px">${j.memo||''}${taxBadge}</td>
+      <td class="tc">${taxBadge}</td>
+      <td class="tr mono" style="font-size:12px;color:#1a56db">${taxAmtStr}</td>
+      <td class="acc-muted" style="font-size:11px">${j.memo||''}</td>
       <td class="tc"><button class="btn-acc-danger" onclick="accDeleteJournal('${j.id}')">✕</button></td>
     </tr>`;
-  }).join('')||'<tr><td colspan="8" class="acc-empty">仕訳データがありません</td></tr>';
+  }).join('')||'<tr><td colspan="10" class="acc-empty">仕訳データがありません</td></tr>';
 }
 function accFilterJournals(){const from=document.getElementById('acc-j-from')?.value||'';const to=document.getElementById('acc-j-to')?.value||'';document.querySelectorAll('.acc-jr').forEach(tr=>{const d=tr.dataset.date;tr.style.display=(!from||d>=from)&&(!to||d<=to)?'':'none';});}
 
@@ -3639,15 +3686,46 @@ function accOpenModal(id){
 function accCloseModal(id){document.getElementById(id).classList.remove('open');}
 document.querySelectorAll('.acc-modal-bg').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
 
+// ── 消費税自動計算（インボイス対応）──────────────────────────
+function accCalcTax(){
+  var amt=parseFloat(document.getElementById('acc-j-amount').value)||0;
+  var taxType=document.getElementById('acc-j-tax-type').value;
+  var mode=document.querySelector('input[name="acc-j-tax-mode"]:checked')?.value||'excl';
+  var rate=taxType==='taxable10'?0.1:taxType==='taxable8'?0.08:0;
+  var taxAmt=0,total=0;
+  if(rate>0){
+    if(mode==='excl'){taxAmt=Math.floor(amt*rate);total=amt+taxAmt;}
+    else{taxAmt=Math.floor(amt-amt/(1+rate));total=amt;}
+  }else{taxAmt=0;total=amt;}
+  var lbl=document.getElementById('acc-j-amount-label');
+  if(lbl)lbl.textContent=mode==='incl'?'借方金額（税込）':'借方金額（税抜）';
+  document.getElementById('acc-j-tax-amount').value=rate>0?(taxAmt?'¥'+taxAmt.toLocaleString('ja-JP'):'¥0'):'非課税/対象外';
+  document.getElementById('acc-j-total').value=total?'¥'+total.toLocaleString('ja-JP'):'—';
+}
+
 async function accAddJournal(){
-  const date=document.getElementById('acc-j-date').value,debit=document.getElementById('acc-j-debit').value,credit=document.getElementById('acc-j-credit').value,amount=parseFloat(document.getElementById('acc-j-amount').value)||0,memo=document.getElementById('acc-j-memo').value;
+  const date=document.getElementById('acc-j-date').value;
+  const debit=document.getElementById('acc-j-debit').value;
+  const credit=document.getElementById('acc-j-credit').value;
+  const rawAmt=parseFloat(document.getElementById('acc-j-amount').value)||0;
+  const memo=document.getElementById('acc-j-memo').value;
+  const taxType=document.getElementById('acc-j-tax-type').value;
+  const mode=document.querySelector('input[name="acc-j-tax-mode"]:checked')?.value||'excl';
+  const rate=taxType==='taxable10'?0.1:taxType==='taxable8'?0.08:0;
+  // 登録金額は常に税抜ベース
+  const amount=mode==='incl'&&rate>0?Math.floor(rawAmt/(1+rate)):rawAmt;
+  const tax_amount=mode==='incl'&&rate>0?(rawAmt-amount):Math.floor(rawAmt*rate);
   if(!date||!debit||!credit||!amount){alert('日付・借方科目・貸方科目・金額を入力してください');return;}
   if(debit===credit){alert('借方と貸方に同じ科目は使用できません');return;}
   try{
-    const res=await api('POST','/api/journals',{date,debit,credit,amount,memo});
+    await api('POST','/api/journals',{date,debit,credit,amount,memo,tax_type:taxType,tax_amount});
     accJournals=await api('GET','/api/journals');
     accJournals.sort((a,b)=>a.date.localeCompare(b.date));
-    accCloseModal('acc-modal-journal');document.getElementById('acc-j-amount').value='';document.getElementById('acc-j-memo').value='';
+    accCloseModal('acc-modal-journal');
+    document.getElementById('acc-j-amount').value='';
+    document.getElementById('acc-j-memo').value='';
+    document.getElementById('acc-j-tax-amount').value='';
+    document.getElementById('acc-j-total').value='';
     accUpdateAll();
     showDemoToast('add');
   }catch(e){alert('保存失敗: '+e.message);}
@@ -3668,12 +3746,19 @@ async function accDeleteAccount(code){if(!confirm('削除しますか？'))retur
 function accExportCSV(){
   if(!accJournals.length){alert('仕訳データがありません');return;}
   const BOM='\uFEFF';
-  const header='取引日,借方科目コード,借方科目名,貸方科目コード,貸方科目名,金額,摘要';
+  const header='取引日,借方科目コード,借方科目名,貸方科目コード,貸方科目名,税抜金額,消費税区分,適用税率,消費税額,税込合計,摘要';
+  const taxLabelMap={taxable10:'課税（標準10%）',taxable8:'課税（軽減8%）',exempt:'非課税',excluded:'不課税・対象外'};
+  const taxRateMap={taxable10:0.1,taxable8:0.08,exempt:0,excluded:0};
   const rows=accJournals.map(j=>{
     const dn=accAccounts.find(a=>a.code===j.debit)?.name||j.debit;
     const cn=accAccounts.find(a=>a.code===j.credit)?.name||j.credit;
     const memo=(j.memo||'').replace(/,/g,'、');
-    return [j.date,j.debit,dn,j.credit,cn,j.amount,memo].join(',');
+    const tt=j.tax_type||'';
+    const rate=taxRateMap[tt]||0;
+    const taxAmt=Number(j.tax_amount)||Math.floor(j.amount*rate);
+    const taxLbl=taxLabelMap[tt]||(j.taxLabel?'課税（標準10%）':'—');
+    const rateStr=rate>0?(rate*100).toFixed(0)+'%':'—';
+    return [j.date,j.debit,dn,j.credit,cn,j.amount,taxLbl,rateStr,taxAmt,j.amount+taxAmt,memo].join(',');
   });
   const csv=BOM+header+'\n'+rows.join('\n');
   const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
