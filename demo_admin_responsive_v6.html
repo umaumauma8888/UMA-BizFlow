@@ -1412,6 +1412,9 @@ code { font-family:'JetBrains Mono','Fira Code',monospace; font-size:11px; backg
     <div class="form-group"><label>メールアドレス</label><input class="form-input" type="email" value="admin@uma-biz.co.jp"></div>
     <div class="form-group"><label>パスワード</label><input class="form-input" type="password" value="demo1234"></div>
     <button class="btn-login" onclick="doLogin()">ログイン</button>
+    <div style="margin-top:.75rem;font-size:11px;color:#9ca3af;line-height:1.6;text-align:center;">
+      ログインすることで、<a href="/terms-of-service" target="_blank" style="color:#6b7280;text-decoration:underline">利用規約</a>および<a href="/privacy-policy" target="_blank" style="color:#6b7280;text-decoration:underline">プライバシーポリシー</a>に同意したものとみなします。
+    </div>
     <div class="login-hint">アカウントをお持ちでない方は <a onclick="hideLogin()">お問い合わせ</a></div>
   </div>
 </div>
@@ -1425,6 +1428,11 @@ code { font-family:'JetBrains Mono','Fira Code',monospace; font-size:11px; backg
   </div>
   <div style="margin-top:.75rem;border-top:1px solid rgba(255,255,255,.1);padding-top:.75rem">
     © 2026 合同会社UMA. All rights reserved.　表示価格はすべて税抜です。
+    <span style="margin-left:.75rem">
+      <a href="/privacy-policy" style="color:rgba(255,255,255,.55);text-decoration:none" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">プライバシーポリシー</a>
+      <span style="color:rgba(255,255,255,.3);margin:0 .4rem">｜</span>
+      <a href="/terms-of-service" style="color:rgba(255,255,255,.55);text-decoration:none" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">利用規約</a>
+    </span>
   </div>
   <div class="footer-demo-badge">UMA BizFlow Demo Mode Active</div>
   <div style="margin-top:.75rem;font-size:11px;opacity:.5">
@@ -2457,6 +2465,13 @@ document.addEventListener('DOMContentLoaded', function() {
           <div id="report-pl-bs-container"></div>
         </div>
       </div><!-- /admin-body -->
+      <footer style="padding:1rem 2rem;border-top:1px solid var(--ub-border);background:#F5F7FA;font-size:11px;color:var(--ub-muted);display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;">
+        <span>© 2026 合同会社UMA. All rights reserved.</span>
+        <span style="color:#d1d5db">｜</span>
+        <a href="/privacy-policy" style="color:var(--ub-muted);text-decoration:none" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">プライバシーポリシー</a>
+        <span style="color:#d1d5db">｜</span>
+        <a href="/terms-of-service" style="color:var(--ub-muted);text-decoration:none" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">利用規約</a>
+      </footer>
     </main>
   </div>
 </div>

@@ -19,6 +19,14 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'demo_admin_responsive_v6.html'));
 });
 
+app.get('/privacy-policy', (req, res) => {
+  res.sendFile(path.join(__dirname, 'privacy-policy.html'));
+});
+
+app.get('/terms-of-service', (req, res) => {
+  res.sendFile(path.join(__dirname, 'terms-of-service.html'));
+});
+
 // ── メール送信 API（api/send-email.js を Express にマウント）────
 // vercel.json の catch-all ルートが /api/send-email を server.js に
 // 転送するため、ここで明示的に処理する
