@@ -2960,11 +2960,12 @@ function escHtml(str){
 }
 
 // ── Anthropic API 共通呼び出し ────────────────────────────────
-function callAI(userMessage){
+// feature: 'doc' | 'analytics' | 'contract' | 'support' | 'quick_summary' | 'quick_delay' | 'quick_improve'
+function callAI(userMessage, feature){
   return fetch('/api/ai',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({messages:[{role:'user',content:userMessage}]})
+    body:JSON.stringify({messages:[{role:'user',content:userMessage}], feature: feature||undefined})
   }).then(function(res){
     return res.json().then(function(data){
       if(!res.ok) throw new Error(data.error||'APIエラーが発生しました');
@@ -2974,7 +2975,7 @@ function callAI(userMessage){
 }
 
 // ── AI チャット送信 ────────────────────────────────────────────
-function runAI(suffix){
+function runAI(suffix, feature){
   var inp=document.getElementById('ai-input-'+suffix);
   var r=document.getElementById('ai-result-'+suffix);
   var btn=document.querySelector('[onclick="runAI(\''+suffix+'\')"]');
@@ -3004,7 +3005,7 @@ function runAI(suffix){
 
   if(btn){btn.disabled=true;}
 
-  callAI(query)
+  callAI(query, feature)
     .then(function(text){
       lBub.classList.remove('ai-bubble-loading');
       lBub.innerHTML=escHtml(text);
@@ -3037,7 +3038,7 @@ function runAIFeature(feature, suffix){
       '未回収売掛金='+f.ar+'円（'+f.unpaidCount+'件）, 費用合計='+f.expenses+'円, '+
       '利益率='+marginRate+'%, 費用率='+expenseRate+'%。'+
       'これらのKPIを分析し、経営改善のための優先課題と具体的な施策を3〜5項目で報告してください。';
-    callAI(prompt)
+    callAI(prompt, 'analytics')
       .then(function(text){
         r.innerHTML='<div class="ai-bubble ai-bubble-bot">'+escHtml(text)+'</div>'+
           '<button class="ai-copy-btn" onclick="copyAIResult(this)">📋 コピー</button>';
@@ -3055,7 +3056,7 @@ function runAIFeature(feature, suffix){
   };
   if(inp){
     inp.value=prompts[feature]||'AI機能のデモをしてください';
-    runAI(suffix||'main');
+    runAI(suffix||'main', feature);
   }
 }
 
@@ -3079,7 +3080,7 @@ function submitAIDoc(){
     '月次報告書':'2026年4月の業務月次報告書を作成してください。売上・顧客数・ワークフロー処理件数・課題・来月の方針を含めた経営層向けの報告書として出力してください。',
     '議事録':'2026年4月のDX推進会議の議事録を作成してください。参加者・議題・決定事項・アクションアイテム・次回開催予定を含む標準的な議事録形式で出力してください。'
   };
-  callAI(docPrompts[docType]||docType+'の文書を生成してください。')
+  callAI(docPrompts[docType]||docType+'の文書を生成してください。', 'doc_'+docType)
     .then(function(text){
       r.innerHTML='<div class="ai-bubble ai-bubble-bot">'+escHtml(text)+'</div>'+
         '<button class="ai-copy-btn" onclick="copyAIResult(this)">📋 コピー</button>';
@@ -4764,7 +4765,12 @@ function aiQuick(p){
     '承認が遅れている案件を教えて':'承認が遅れているワークフロー案件と未回収の売掛金について、優先度順に教えてください。各案件の対処方法も含めて3〜5文で回答してください。',
     '改善提案をして':'現在の業務状況に基づいて、売上向上・コスト削減・業務効率化の観点から経営改善提案を3点挙げてください。各提案には具体的なアクションを含めてください。'
   };
-  callAI(prompts[p]||p)
+  var featureMap={
+    '今月の処理状況を要約して':'quick_summary',
+    '承認が遅れている案件を教えて':'quick_delay',
+    '改善提案をして':'quick_improve'
+  };
+  callAI(prompts[p]||p, featureMap[p])
     .then(function(text){
       r.innerHTML='<div class="ai-bubble ai-bubble-bot">'+escHtml(text)+'</div>';
     })
