@@ -23,6 +23,14 @@ app.get('/privacy-policy', (req, res) => {
   res.sendFile(path.join(__dirname, 'privacy-policy.html'));
 });
 
+app.get('/invoice-editor.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'invoice-editor.html'));
+});
+
+app.get('/invoice-editor', (req, res) => {
+  res.sendFile(path.join(__dirname, 'invoice-editor.html'));
+});
+
 app.get('/terms-of-service', (req, res) => {
   res.sendFile(path.join(__dirname, 'terms-of-service.html'));
 });
