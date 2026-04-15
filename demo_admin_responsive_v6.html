@@ -1836,7 +1836,10 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="sidebar-section">4. 財務会計（複式簿記）</div>
         <div class="sidebar-item" onclick="setTab(this,'accounting')"><span class="si-icon">📒</span> 仕訳帳・勘定科目</div>
         <div class="sidebar-item" onclick="setTab(this,'report')"><span class="si-icon">📊</span> 財務諸表</div>
-        <div class="sidebar-section">5. AIアシスト・分析</div>
+        <div class="sidebar-section">5. 勤怠・人事管理</div>
+        <div class="sidebar-item" onclick="setTab(this,'attendance')"><span class="si-icon">👤</span> 勤怠申請・管理</div>
+        <div class="sidebar-item" onclick="setTab(this,'leave')"><span class="si-icon">📅</span> 有給・休暇管理</div>
+        <div class="sidebar-section">6. AIアシスト・分析</div>
         <div class="sidebar-item" onclick="setTab(this,'ai')"><span class="si-icon">🤖</span> AI自動化・分析</div>
         <div class="sidebar-item" onclick="setTab(this,'analytics')"><span class="si-icon">📈</span> CRM分析ダッシュボード</div>
       </nav>
@@ -1940,6 +1943,149 @@ document.addEventListener('DOMContentLoaded', function() {
               <thead><tr><th>申請日</th><th>案件名</th><th>種別</th><th>申請者</th><th>状態</th><th>操作</th></tr></thead>
               <tbody id="wf-tbody"><tr><td colspan="6" style="text-align:center;color:var(--ub-muted);padding:2rem;">読み込み中...</td></tr></tbody>
             </table>
+          </div>
+        </div>
+
+        <!-- ★ ATTENDANCE 勤怠申請・管理（共P-05）-->
+        <div id="tab-attendance" style="display:none">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:1.5rem;">
+            <span style="background:rgba(26,86,219,0.1);color:var(--ub-blue);font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px;letter-spacing:.5px;">共P-05 総務・人事・労務管理</span>
+          </div>
+          <!-- KPIカード -->
+          <div class="kpi-grid" style="margin-bottom:1.5rem;">
+            <div class="kpi-card">
+              <div class="kpi-label">今月の出勤日数</div>
+              <div class="kpi-value">15<span style="font-size:16px;color:var(--ub-muted)">日</span></div>
+              <div class="kpi-change up">▶ 前月比 +0日</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">遅刻・早退</div>
+              <div class="kpi-value" style="color:var(--ub-warning)">2<span style="font-size:16px;color:var(--ub-muted)">件</span></div>
+              <div class="kpi-change" style="color:var(--ub-warning)">⚠ 要確認</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">残業時間</div>
+              <div class="kpi-value">12.5<span style="font-size:16px;color:var(--ub-muted)">時間</span></div>
+              <div class="kpi-change">▶ 今月累計</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">有給残日数</div>
+              <div class="kpi-value" style="color:var(--ub-success)">12<span style="font-size:16px;color:var(--ub-muted)">日</span></div>
+              <div class="kpi-change up">✓ 基準日数以上</div>
+            </div>
+          </div>
+          <!-- 勤怠申請一覧 -->
+          <div class="card">
+            <div class="card-title">勤怠申請一覧
+              <button class="header-btn header-btn-primary" style="font-size:12px;padding:6px 14px;" onclick="wfOpenModal()">＋ 新規申請</button>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>申請日</th><th>種別</th><th>対象日</th><th>申請者</th><th>内容</th><th>状態</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>2026/04/15</td>
+                  <td><span class="badge badge-info">出退勤申請</span></td>
+                  <td>2026/04/14</td>
+                  <td>佐藤 花子</td>
+                  <td>遅刻30分（電車遅延）</td>
+                  <td><span class="badge badge-success">承認済</span></td>
+                </tr>
+                <tr>
+                  <td>2026/04/13</td>
+                  <td><span class="badge badge-warning">有給申請</span></td>
+                  <td>2026/05/02〜05/03</td>
+                  <td>田中 一郎</td>
+                  <td>有給休暇2日</td>
+                  <td><span class="badge badge-warning">承認待ち</span></td>
+                </tr>
+                <tr>
+                  <td>2026/04/10</td>
+                  <td><span class="badge badge-info">残業申請</span></td>
+                  <td>2026/04/10</td>
+                  <td>山田 太郎</td>
+                  <td>残業2時間（月次締め対応）</td>
+                  <td><span class="badge badge-success">承認済</span></td>
+                </tr>
+                <tr>
+                  <td>2026/04/08</td>
+                  <td><span class="badge badge-info">出退勤申請</span></td>
+                  <td>2026/04/08</td>
+                  <td>佐藤 花子</td>
+                  <td>早退1時間（体調不良）</td>
+                  <td><span class="badge badge-success">承認済</span></td>
+                </tr>
+                <tr>
+                  <td>2026/04/05</td>
+                  <td><span class="badge badge-warning">有給申請</span></td>
+                  <td>2026/04/21〜04/22</td>
+                  <td>田中 一郎</td>
+                  <td>有給休暇2日（私用）</td>
+                  <td><span class="badge badge-success">承認済</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ★ LEAVE 有給・休暇管理（共P-05）-->
+        <div id="tab-leave" style="display:none">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:1.5rem;">
+            <span style="background:rgba(26,86,219,0.1);color:var(--ub-blue);font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px;letter-spacing:.5px;">共P-05 総務・人事・労務管理</span>
+          </div>
+          <div class="card">
+            <div class="card-title">有給残日数一覧</div>
+            <table class="data-table">
+              <thead>
+                <tr><th>氏名</th><th style="text-align:right">付与日数</th><th style="text-align:right">取得済</th><th style="text-align:right">残日数</th><th>有効期限</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><b>山田 太郎</b></td>
+                  <td style="text-align:right">20日</td>
+                  <td style="text-align:right">8日</td>
+                  <td style="text-align:right;font-weight:700;color:var(--ub-success)">12日</td>
+                  <td>2027/04/30</td>
+                </tr>
+                <tr>
+                  <td><b>佐藤 花子</b></td>
+                  <td style="text-align:right">15日</td>
+                  <td style="text-align:right">5日</td>
+                  <td style="text-align:right;font-weight:700;color:var(--ub-success)">10日</td>
+                  <td>2027/04/30</td>
+                </tr>
+                <tr>
+                  <td><b>田中 一郎</b></td>
+                  <td style="text-align:right">18日</td>
+                  <td style="text-align:right">10日</td>
+                  <td style="text-align:right;font-weight:700;color:var(--ub-success)">8日</td>
+                  <td>2027/04/30</td>
+                </tr>
+              </tbody>
+            </table>
+            <div style="margin-top:12px;font-size:12px;color:var(--ub-muted);padding:8px 12px;background:rgba(239,68,68,0.05);border-radius:6px;border-left:3px solid var(--ub-danger);">
+              ※ 残日数が5日以下の場合は <span style="color:var(--ub-danger);font-weight:700">赤色</span> で表示されます。年5日の時季指定義務対象に注意してください。
+            </div>
+          </div>
+          <div class="card" style="margin-top:1.5rem;">
+            <div class="card-title">今月の有給取得サマリー</div>
+            <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);">
+              <div class="kpi-card">
+                <div class="kpi-label">今月の有給取得日数</div>
+                <div class="kpi-value">4<span style="font-size:16px;color:var(--ub-muted)">日</span></div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">取得率（今年度）</div>
+                <div class="kpi-value" style="color:var(--ub-success)">56<span style="font-size:16px;color:var(--ub-muted)">%</span></div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">承認待ち申請</div>
+                <div class="kpi-value" style="color:var(--ub-warning)">1<span style="font-size:16px;color:var(--ub-muted)">件</span></div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -2496,7 +2642,15 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="acc-form-row"><label>件名</label><input type="text" id="wf-title" placeholder="備品購入稟議"></div>
     <div class="acc-two-col">
       <div class="acc-form-row"><label>種別</label>
-        <select id="wf-category"><option>稟議</option><option>契約</option><option>経費精算</option><option>その他</option></select>
+        <select id="wf-category">
+          <option>稟議</option>
+          <option>契約</option>
+          <option>経費精算</option>
+          <option>勤怠申請（出退勤・遅刻・早退）</option>
+          <option>有給休暇申請</option>
+          <option>残業申請</option>
+          <option>その他</option>
+        </select>
       </div>
       <div class="acc-form-row"><label>申請者</label><input type="text" id="wf-applicant" placeholder="山田 太郎"></div>
     </div>
@@ -2726,7 +2880,7 @@ function backToLP(){
   window.scrollTo(0,0);
 }
 
-var ALL_TABS=['home','crm','deal','order','stock','invoice','payment','accounting','report','ai','analytics','workflow','sign','users'];
+var ALL_TABS=['home','crm','deal','order','stock','invoice','payment','accounting','report','ai','analytics','workflow','sign','users','attendance','leave'];
 function goTab(tabId){
   var s=document.querySelector('.sidebar-item[onclick*="\''+tabId+'\'"]');
   if(s) setTab(s,tabId);
@@ -2735,7 +2889,7 @@ function setTab(el,tabId){
   document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('active'));
   if(el && el.classList) el.classList.add('active');
   ALL_TABS.forEach(t=>{var e=document.getElementById('tab-'+t);if(e)e.style.display=(t===tabId)?'block':'none';});
-  var titles={home:'ダッシュボード',crm:'顧客・案件管理 — CRM',deal:'案件進捗管理',order:'受発注管理',stock:'在庫・倉庫管理',invoice:'請求書発行',payment:'入金・決済管理',accounting:'財務会計 — 仕訳帳',report:'財務諸表',ai:'AIアシスト・自動化',analytics:'CRM分析ダッシュボード',workflow:'ワークフロー管理',sign:'電子署名',users:'ユーザー管理'};
+  var titles={home:'ダッシュボード',crm:'顧客・案件管理 — CRM',deal:'案件進捗管理',order:'受発注管理',stock:'在庫・倉庫管理',invoice:'請求書発行',payment:'入金・決済管理',accounting:'財務会計 — 仕訳帳',report:'財務諸表',ai:'AIアシスト・自動化',analytics:'CRM分析ダッシュボード',workflow:'ワークフロー管理',sign:'電子署名',users:'ユーザー管理',attendance:'勤怠申請・管理',leave:'有給・休暇管理'};
   document.getElementById('admin-title').textContent=titles[tabId]||'';
   var atbPage=document.getElementById('atb-page');
   if(atbPage)atbPage.textContent=titles[tabId]||'';
@@ -3025,11 +3179,13 @@ const MASTER_ITEMS = [
 
 // ── ワークフロー ──────────────────────────────────────────────
 const MASTER_WORKFLOWS = [
-  { id:'wf-001', title:'インボイス対応コンサル受注承認（サンプル商事 ¥550,000）', category:'稟議', applicant:'田中 一郎', status:'承認済', created:'2026-04-04' },
-  { id:'wf-002', title:'Q1営業報告書承認',                                        category:'稟議', applicant:'佐藤 花子', status:'申請中', created:'2026-04-10' },
-  { id:'wf-003', title:'外注委託契約書（テクノフロンティア）',                    category:'契約', applicant:'田中 一郎', status:'承認済', created:'2026-04-09' },
-  { id:'wf-004', title:'新規取引先与信審査（山田製作所）',                        category:'契約', applicant:'鈴木 次郎', status:'申請中', created:'2026-04-09' },
-  { id:'wf-005', title:'DX推進システム見積提出承認',                              category:'稟議', applicant:'高橋 明美', status:'承認済', created:'2026-04-08' },
+  { id:'wf-001', title:'インボイス対応コンサル受注承認（サンプル商事 ¥550,000）', category:'稟議',               applicant:'田中 一郎', status:'承認済',   created:'2026-04-04' },
+  { id:'wf-002', title:'Q1営業報告書承認',                                        category:'稟議',               applicant:'佐藤 花子', status:'申請中',   created:'2026-04-10' },
+  { id:'wf-003', title:'外注委託契約書（テクノフロンティア）',                    category:'契約',               applicant:'田中 一郎', status:'承認済',   created:'2026-04-09' },
+  { id:'wf-004', title:'新規取引先与信審査（山田製作所）',                        category:'契約',               applicant:'鈴木 次郎', status:'申請中',   created:'2026-04-09' },
+  { id:'wf-005', title:'DX推進システム見積提出承認',                              category:'稟議',               applicant:'高橋 明美', status:'承認済',   created:'2026-04-08' },
+  { id:'wf-006', title:'4月第3週 出退勤申請（遅刻1件・早退1件）',                category:'勤怠申請（出退勤・遅刻・早退）', applicant:'佐藤 花子', status:'承認済',   created:'2026-04-15' },
+  { id:'wf-007', title:'有給休暇申請（5/2〜5/3 2日間）',                         category:'有給休暇申請',       applicant:'田中 一郎', status:'申請中',   created:'2026-04-13' },
 ];
 
 // ── 勘定科目マスタ ────────────────────────────────────────────
