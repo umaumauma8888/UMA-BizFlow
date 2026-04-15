@@ -19,6 +19,11 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'demo_admin_responsive_v6.html'));
 });
 
+// ── メール送信 API（api/send-email.js を Express にマウント）────
+// vercel.json の catch-all ルートが /api/send-email を server.js に
+// 転送するため、ここで明示的に処理する
+app.post('/api/send-email', require('./api/send-email'));
+
 // ── ヘルパー ─────────────────────────────────────────────────
 const now = () => new Date().toISOString().slice(0, 10);
 const uid = () => uuidv4();
