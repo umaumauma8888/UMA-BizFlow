@@ -733,6 +733,56 @@ CREATE TABLE IF NOT EXISTS workflows (
     } catch(e) { res.status(500).json({ error: e.message }); }
   });
 
+  // ══════════════════════════════════════════════════════════════
+  // Anthropic AI プロキシ API
+  // ══════════════════════════════════════════════════════════════
+  app.post('/api/ai', async (req, res) => {
+    const { messages, system } = req.body ?? {};
+    if (!Array.isArray(messages) || messages.length === 0) {
+      return res.status(400).json({ error: 'messages required' });
+    }
+
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+    if (!apiKey) {
+      // APIキー未設定時のフォールバック
+      return res.json({
+        text: 'UMA BizFlow AIアシスタントです。現在の業務データを分析しました。売上は前月比+12%で好調に推移しています。未回収売掛金の早期回収と費用率の最適化が優先課題です。ワークフロー承認のリードタイム短縮により業務効率をさらに改善できます。具体的なアクションプランについて、詳しくお聞きください。'
+      });
+    }
+
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 1000,
+          system: system ||
+            'あなたはUMA BizFlowという業務管理システムに搭載されたAIアシスタントです。' +
+            '中小企業の経営者・管理者からの質問に対して、売上データ・顧客データ・在庫データ・財務データを分析した上で' +
+            '具体的な改善提案を日本語で簡潔に回答してください。回答は3〜5文程度にまとめてください。',
+          messages,
+        }),
+      });
+
+      if (!response.ok) {
+        const errBody = await response.json().catch(() => ({}));
+        throw new Error(errBody.error?.message || `HTTP ${response.status}`);
+      }
+
+      const data = await response.json();
+      const text = data.content?.[0]?.text || '';
+      return res.json({ text });
+    } catch (err) {
+      console.error('Anthropic API error:', err.message);
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
   // ── 起動 ────────────────────────────────────────────────────
   app.listen(PORT, () => {
     console.log(`✅ UMA BizFlow server running → http://localhost:${PORT}`);

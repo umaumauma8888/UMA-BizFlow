@@ -998,6 +998,16 @@ code { font-family:'JetBrains Mono','Fira Code',monospace; font-size:11px; backg
   .admin-panel.show .admin-topbar { display: none !important; }
 }
 
+/* AI チャットバブル */
+.ai-chat { display:flex; flex-direction:column; gap:10px; }
+.ai-bubble { max-width:88%; padding:10px 14px; border-radius:12px; font-size:12px; line-height:1.75; white-space:pre-wrap; word-break:break-word; }
+.ai-bubble-user { background:rgba(26,86,219,0.35); border:1px solid rgba(26,86,219,0.45); align-self:flex-end; color:rgba(255,255,255,0.92); border-bottom-right-radius:3px; }
+.ai-bubble-bot  { background:rgba(6,182,212,0.12); border:1px solid rgba(6,182,212,0.25); align-self:flex-start; color:rgba(255,255,255,0.87); border-bottom-left-radius:3px; }
+.ai-bubble-loading { opacity:0.65; font-style:italic; }
+.ai-copy-btn { margin-top:6px; font-size:11px; background:rgba(6,182,212,0.18); border:1px solid rgba(6,182,212,0.3); color:rgba(255,255,255,0.7); padding:4px 10px; border-radius:5px; cursor:pointer; }
+.ai-copy-btn:hover { background:rgba(6,182,212,0.32); }
+.ai-btn:disabled { opacity:0.45; cursor:not-allowed; }
+
 </style>
 </head>
 <body>
@@ -2661,6 +2671,25 @@ document.addEventListener('DOMContentLoaded', function() {
   </div>
 </div>
 
+<!-- AI 文書自動生成モーダル -->
+<div class="acc-modal-bg" id="ai-doc-modal">
+  <div class="acc-modal">
+    <h3>📝 文書自動生成</h3>
+    <div class="acc-form-row">
+      <label>生成する文書の種類</label>
+      <select id="ai-doc-type">
+        <option>稟議書</option>
+        <option>月次報告書</option>
+        <option>議事録</option>
+      </select>
+    </div>
+    <div class="acc-modal-footer">
+      <button class="btn-acc-ghost" onclick="accCloseModal('ai-doc-modal')">キャンセル</button>
+      <button class="btn-acc-primary" onclick="submitAIDoc()">AIで生成する</button>
+    </div>
+  </div>
+</div>
+
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 /* ── インラインChartライブラリ（外部依存ゼロ）── */
 var Chart=(function(){
@@ -2908,199 +2937,141 @@ function setTab(el,tabId){
 }
 
 
+// ── HTML エスケープ（フロントエンド用）──────────────────────
+function escHtml(str){
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\n/g,'<br>');
+}
+
+// ── Anthropic API 共通呼び出し ────────────────────────────────
+function callAI(userMessage){
+  return fetch('/api/ai',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({messages:[{role:'user',content:userMessage}]})
+  }).then(function(res){
+    return res.json().then(function(data){
+      if(!res.ok) throw new Error(data.error||'APIエラーが発生しました');
+      return data.text||'';
+    });
+  });
+}
+
+// ── AI チャット送信 ────────────────────────────────────────────
 function runAI(suffix){
   var inp=document.getElementById('ai-input-'+suffix);
   var r=document.getElementById('ai-result-'+suffix);
+  var btn=document.querySelector('[onclick="runAI(\''+suffix+'\')"]');
   if(!inp||!inp.value.trim())return;
   var query=inp.value.trim();
+  inp.value='';
+
   r.style.display='block';
-  r.textContent='🔍 データを読み込み中...';
-  setTimeout(function(){
+  r.style.whiteSpace='normal';
+
+  // チャットコンテナ初期化
+  if(!r.querySelector('.ai-chat')){r.innerHTML='<div class="ai-chat"></div>';}
+  var chat=r.querySelector('.ai-chat');
+
+  // ユーザーバブル
+  var uBub=document.createElement('div');
+  uBub.className='ai-bubble ai-bubble-user';
+  uBub.textContent=query;
+  chat.appendChild(uBub);
+
+  // ローディングバブル
+  var lBub=document.createElement('div');
+  lBub.className='ai-bubble ai-bubble-bot ai-bubble-loading';
+  lBub.textContent='⏳ 分析中...';
+  chat.appendChild(lBub);
+  r.scrollTop=r.scrollHeight;
+
+  if(btn){btn.disabled=true;}
+
+  callAI(query)
+    .then(function(text){
+      lBub.classList.remove('ai-bubble-loading');
+      lBub.innerHTML=escHtml(text);
+      r.scrollTop=r.scrollHeight;
+      if(btn){btn.disabled=false;}
+    })
+    .catch(function(err){
+      lBub.classList.remove('ai-bubble-loading');
+      lBub.innerHTML='⚠️ エラー: '+escHtml(err.message);
+      if(btn){btn.disabled=false;}
+    });
+}
+
+// ── 文書・分析 AI 機能 ────────────────────────────────────────
+function runAIFeature(feature, suffix){
+  var r=document.getElementById('ai-result-'+(suffix||'main'));
+  if(feature==='doc'){
+    // 文書タイプ選択モーダルを開く
+    document.getElementById('ai-doc-modal').classList.add('open');
+    window._aiDocSuffix=suffix||'main';
+    return;
+  }
+  if(feature==='analytics'){
     var f=computeFinancials();
     var marginRate=f.sales>0?(f.profit/f.sales*100).toFixed(1):0;
     var expenseRate=f.sales>0?(f.expenses/f.sales*100).toFixed(1):0;
-    var arTurnover=f.sales>0?(f.ar/f.sales*30).toFixed(1):0;
-    var saving5=Math.round(f.expenses*0.05);
-    var saving10=Math.round(f.expenses*0.10);
-    var openWf=MASTER_WORKFLOWS.filter(function(w){return w.status==='申請中';}).length;
-    var openInv=MASTER_TRANSACTIONS.filter(function(t){return !t.paid;}).length;
-
-    // キーワードで回答を分岐
-    var res='';
-    if(/文書自動生成|文書作成|稟議書作成|議事録作成|報告書作成/.test(query)){
-      var today = new Date();
-      var yyyy = today.getFullYear();
-      var mm = String(today.getMonth()+1).padStart(2,'0');
-      var dd = String(today.getDate()).padStart(2,'0');
-      res='📝 文書自動生成（デモ）\n\n'+
-        '【稟議書】クラウド会計システム更新\n'+
-        '申請日: '+yyyy+'-'+mm+'-'+dd+' / 申請者: 佐藤 花子\n'+
-        '目的: 月次締め作業の短縮とインボイス関連業務の標準化\n'+
-        '費用: 初期 480,000円 / 月額 38,000円\n'+
-        '期待効果: 月40時間削減、入力ミス率 30% 改善\n\n'+
-        '【議事録】週次オペレーション会議\n'+
-        '決定事項: 4/20までに請求テンプレート統一、担当: 経理チーム\n'+
-        'ToDo: 1) 既存請求書の棚卸し 2) 運用ルール配布 3) 検収フロー確定\n\n'+
-        '【報告書】業務改善サマリ\n'+
-        '・未回収売掛金: '+fmt(f.ar)+'\n'+
-        '・申請中ワークフロー: '+openWf+'件\n'+
-        '・未入金請求書: '+openInv+'件\n'+
-        '→ 次アクション: 督促優先順位の自動化と承認リードタイム短縮';
-
-    } else if(/データ分析|レポート|可視化|ダッシュボード/.test(query)){
-      var doneWf=MASTER_WORKFLOWS.filter(function(w){return w.status==='承認済';}).length;
-      var wfTotal=Math.max(1, MASTER_WORKFLOWS.length);
-      var approveRate=Math.round((doneWf/wfTotal)*100);
-      res='📊 データ分析・レポート（デモ）\n\n'+
-        '【KPI要約】\n'+
-        '売上: '+fmt(f.sales)+' / 純利益: '+fmtSigned(f.profit)+' / 利益率: '+marginRate+'%\n'+
-        '費用率: '+expenseRate+'% / 売掛回転目安: '+arTurnover+'日\n\n'+
-        '【ワークフロー健全性】\n'+
-        '承認率: '+approveRate+'%（承認済 '+doneWf+' / 全体 '+MASTER_WORKFLOWS.length+'）\n'+
-        '滞留: 申請中 '+openWf+'件\n\n'+
-        '【AI判定】\n'+
-        (approveRate>=70?'🟢 承認プロセスは概ね健全。':'🟡 承認ボトルネックあり。')+'\n'+
-        (parseFloat(arTurnover)>30?'🔴 売掛回収が遅延傾向。督促ルールを強化。':'🟢 売掛回転は許容範囲。')+'\n\n'+
-        '【提案】\n'+
-        '1. 申請カテゴリ別に承認SLAを設定\n'+
-        '2. 10日超の未収請求を自動アラート\n'+
-        '3. 月次レポートを自動生成して経営会議へ連携';
-
-    } else if(/契約書|レビュー|条項|NDA|リスク/.test(query)){
-      res='🔍 契約書レビュー（デモ）\n\n'+
-        '対象: 業務委託基本契約書 v1.2\n\n'+
-        '【検出リスク】\n'+
-        '1. 契約解除条項が片務的（高）\n'+
-        '   - 相手方のみ即時解除可能\n'+
-        '   - 推奨: 双方同条件へ修正\n\n'+
-        '2. 瑕疵担保責任の期間が無期限（中）\n'+
-        '   - 推奨: 検収後6か月など上限設定\n\n'+
-        '3. 秘密保持の例外規定が不足（中）\n'+
-        '   - 推奨: 公知情報・法令開示を例外に追加\n\n'+
-        '【総合判定】\n'+
-        'リスクスコア: 72/100（要修正）\n'+
-        '法務レビュー前に上記3点の条文修正を推奨';
-
-    } else if(/チャット|サポート|ヘルプ|使い方|操作/.test(query)){
-      res='💬 チャットサポート（デモ）\n\n'+
-        'お問い合わせありがとうございます。操作候補を提示します。\n\n'+
-        '【よく使う操作】\n'+
-        '1. 請求書作成: サイドバー「請求管理」→「+ 請求書発行」\n'+
-        '2. 入金登録: サイドバー「入金管理」→「+ 入金登録」\n'+
-        '3. 承認状況確認: サイドバー「ワークフロー」\n\n'+
-        '【現在の状態】\n'+
-        '・未入金請求書: '+openInv+'件\n'+
-        '・申請中ワークフロー: '+openWf+'件\n\n'+
-        '必要なら「請求書の登録手順を詳しく」や「承認遅延の原因を分析して」のように入力してください。';
-
-    } else if(/処理|ワークフロー|状況|まとめ|サマリ/.test(query)){
-      var collRate=f.sales>0?(((f.sales-f.ar)/f.sales)*100).toFixed(1):0;
-      var arRisk=f.ar>f.sales*0.3?'⚠️ 高リスク':f.ar>f.sales*0.15?'△ 要注意':'✅ 良好';
-      res='📊 ワークフロー処理状況 — 経営診断レポート\n\n'+
-        '【収益性】\n'+
-        '売上 '+fmt(f.sales)+' / 純利益 '+fmtSigned(f.profit)+' / 利益率 '+marginRate+'%\n'+
-        (parseFloat(marginRate)>=15?'→ 利益率は健全水準。費用の固定化を避け現状維持を。':
-         parseFloat(marginRate)>=5?'→ 黒字ですが業界平均（15〜20%）を下回っています。費用構造の見直しが急務。':
-         '→ 利益率が低水準または赤字です。費用 '+fmt(f.expenses)+' の削減項目を即座に特定してください。')+'\n\n'+
-        '【キャッシュフロー】\n'+
-        '未回収売掛金 '+fmt(f.ar)+'（'+f.unpaidCount+'件） — 回収率 '+collRate+'% '+arRisk+'\n'+
-        (parseFloat(collRate)>=85?'→ 回収率は良好。残 '+f.unpaidCount+'件を月内に完結させれば資金安定。':
-        '→ 回収率が低く、売掛金の滞留がキャッシュを圧迫しています。督促の優先順位を即設定してください。')+'\n\n'+
-        '【今週のアクション】\n'+
-        '① 売掛金 '+fmt(f.ar)+' の期日超過分から順に電話督促\n'+
-        '② 費用率 '+expenseRate+'% の内訳を確認し、広告費・通信費の削減余地を精査\n'+
-        '③ 来月の入金予測を立て、資金ショートリスクがあれば金融機関へ早期相談';
-
-    } else if(/改善|提案|収益|利益|コスト|費用/.test(query)){
-      res='💡 経営改善レポート — 3つの優先課題\n\n'+
-        '━━ ① 売掛金の早期回収（キャッシュ確保）━━\n'+
-        '売掛金回転日数: 約'+arTurnover+'日（業界標準: 30日以内）\n'+
-        (parseFloat(arTurnover)>30?'→ 基準を超えており資金繰りを圧迫中。':'→ ほぼ適正範囲。')+'\n'+
-        '・14日後リマインドメールの自動送付を設定\n'+
-        '・大口顧客には担当者から月1回の電話確認を義務化\n'+
-        '・全額回収で手元資金 '+fmt(f.ar)+' 改善\n\n'+
-        '━━ ② 利益率改善（現状 '+marginRate+'%）━━\n'+
-        '費用削減シミュレーション:\n'+
-        '・5%削減（'+fmt(saving5)+'圧縮）→ 純利益: '+fmtSigned(f.profit+saving5)+'\n'+
-        '・10%削減（'+fmt(saving10)+'圧縮）→ 純利益: '+fmtSigned(f.profit+saving10)+'\n'+
-        '着手順位: 広告費のROI精査 → 通信費の重複解約 → 残業削減\n\n'+
-        '━━ ③ 売上拡大の次の一手 ━━\n'+
-        '・インボイス対応コンサル案件の既存顧客への横展開\n'+
-        '・単発請求を月額サブスク契約に転換し売上を安定化\n'+
-        '・紹介制度の導入で広告費ゼロの新規獲得を実現\n\n'+
-        '優先順位: 売掛回収→費用削減→売上拡大の順で着手';
-
-    } else if(/督促|遅延|承認|未払|売掛/.test(query)){
-      var unpaid=MASTER_TRANSACTIONS.filter(function(t){return !t.paid;});
-      var totalU=unpaid.reduce(function(s,t){return s+t.total;},0);
-      res='⚠️ 未回収・遅延案件 — 優先度付き分析\n\n'+
-        '【売掛金合計: '+fmt(totalU)+'（'+unpaid.length+'件）】\n\n';
-      unpaid.forEach(function(t,i){
-        var days=[45,32,18][i%3]||20;
-        var risk=days>=30?'🔴 至急':days>=14?'🟡 督促タイミング':'🟢 期日内';
-        res+=(i+1)+'. '+risk+' '+t.customer+'\n';
-        res+='   '+t.invoiceNo+' / '+fmt(t.total)+' / 経過約'+days+'日\n';
-        res+='   → '+(days>=30?'責任者から直接電話。法的手段も視野に':
-                      days>=14?'本日メール送付 → 3営業日後に電話フォロー':
-                      '受領確認メールを送付')+'\n\n';
+    r.style.display='block'; r.style.whiteSpace='normal';
+    r.innerHTML='<div class="ai-bubble ai-bubble-bot ai-bubble-loading">⏳ データを分析中...</div>';
+    var prompt='現在の業務データ: 売上合計='+f.sales+'円, 純利益='+f.profit+'円, '+
+      '未回収売掛金='+f.ar+'円（'+f.unpaidCount+'件）, 費用合計='+f.expenses+'円, '+
+      '利益率='+marginRate+'%, 費用率='+expenseRate+'%。'+
+      'これらのKPIを分析し、経営改善のための優先課題と具体的な施策を3〜5項目で報告してください。';
+    callAI(prompt)
+      .then(function(text){
+        r.innerHTML='<div class="ai-bubble ai-bubble-bot">'+escHtml(text)+'</div>'+
+          '<button class="ai-copy-btn" onclick="copyAIResult(this)">📋 コピー</button>';
+      })
+      .catch(function(err){
+        r.innerHTML='<div class="ai-bubble ai-bubble-bot">⚠️ エラー: '+escHtml(err.message)+'</div>';
       });
-      var p30=Math.round(totalU*0.6);
-      var p60=Math.round(totalU*0.35);
-      res+='【回収予測】\n'+
-        '30日以内: 約'+fmt(p30)+'（60%想定）\n'+
-        '30〜60日: 約'+fmt(p60)+'（35%想定）\n'+
-        '回収困難リスク分: 約'+fmt(totalU-p30-p60)+' → 貸倒引当金の計上を検討';
-
-    } else if(/文書|添削|稟議|議事録|報告書/.test(query)){
-      res='📝 文書改善アドバイス\n\n'+
-        '【稟議書・報告書の品質チェックポイント】\n\n'+
-        '① 数値の根拠を明示する\n'+
-        '   ✗「売上が増加した」\n'+
-        '   ✅「売上 '+fmt(f.sales)+' （前期比+12%）に増加」\n\n'+
-        '② 結論を冒頭に置く（PREP法）\n'+
-        '   結論 → 理由 → 具体例 → 結論の順で構成\n\n'+
-        '③ アクションが明確か確認\n'+
-        '   誰が・いつまでに・何をするかを1文で明記\n\n'+
-        '④ 承認者が判断できる情報を3点に絞る\n'+
-        '   費用対効果 / リスク / 代替案の有無\n\n'+
-        '→ 上記4点を満たすと承認率が大幅に向上します。\n'+
-        '　草稿をこのチャットに貼り付ければ具体的な添削も可能です。';
-
-    } else {
-      // 汎用：財務データを使って答える
-      res='🤖 AI分析回答\n\n'+
-        '「'+query+'」について、現在の財務データを基に分析します。\n\n'+
-        '【現状スナップショット】\n'+
-        '売上高: '+fmt(f.sales)+' / 純利益: '+fmtSigned(f.profit)+' / 利益率: '+marginRate+'%\n'+
-        '未回収売掛金: '+fmt(f.ar)+'（'+f.unpaidCount+'件）\n'+
-        '費用合計: '+fmt(f.expenses)+'（売上比 '+expenseRate+'%）\n\n'+
-        '【AIからの提言】\n'+
-        '現時点での最優先課題は以下の3点です:\n'+
-        '1. 売掛金 '+fmt(f.ar)+' の早期回収でキャッシュを確保\n'+
-        '2. 費用率 '+expenseRate+'% を業界標準（70〜75%）に近づける\n'+
-        '3. 利益率 '+marginRate+'% の改善に向けた売上拡大施策の実行\n\n'+
-        'より詳しい分析が必要な項目（売掛金/費用/売上拡大）を入力してください。';
-    }
-    r.textContent=res;
-  },1400);
+    return;
+  }
+  // contract / support → テキストをセットしてチャット送信
+  var inp=document.getElementById('ai-input-'+(suffix||'main'));
+  var prompts={
+    contract:'契約書レビューのデモをしてください。架空の業務委託契約書のリスク分析を行い、主要なリスク箇所を指摘してください。',
+    support:'請求書の登録から入金管理までの一連の操作手順を、ステップ別に日本語で教えてください。'
+  };
+  if(inp){
+    inp.value=prompts[feature]||'AI機能のデモをしてください';
+    runAI(suffix||'main');
+  }
 }
 
-function runAIFeature(feature, suffix){
-  var inp=document.getElementById('ai-input-'+suffix);
+function copyAIResult(btn){
+  var text=btn.previousElementSibling.textContent;
+  navigator.clipboard.writeText(text).then(function(){
+    btn.textContent='✅ コピーしました';
+    setTimeout(function(){btn.textContent='📋 コピー';},2000);
+  }).catch(function(){btn.textContent='❌ コピー失敗';});
+}
+
+function submitAIDoc(){
+  var docType=document.getElementById('ai-doc-type').value;
+  var suffix=window._aiDocSuffix||'main';
+  document.getElementById('ai-doc-modal').classList.remove('open');
   var r=document.getElementById('ai-result-'+suffix);
-  if(!inp) return;
-  var presets={
-    doc:'文書自動生成：稟議書・議事録・報告書のたたき台を作って',
-    analytics:'データ分析・レポート：今月の業務データを可視化して',
-    contract:'契約書レビュー：NDAのリスクをチェックして',
-    support:'チャットサポート：請求書登録までの手順を教えて'
+  r.style.display='block'; r.style.whiteSpace='normal';
+  r.innerHTML='<div class="ai-bubble ai-bubble-bot ai-bubble-loading">⏳ '+escHtml(docType)+'を生成中...</div>';
+  var docPrompts={
+    '稟議書':'クラウド業務管理システム「UMA BizFlow」の導入に関する稟議書を正式なフォーマットで作成してください。目的・費用・期待効果・リスクを含めてください。',
+    '月次報告書':'2026年4月の業務月次報告書を作成してください。売上・顧客数・ワークフロー処理件数・課題・来月の方針を含めた経営層向けの報告書として出力してください。',
+    '議事録':'2026年4月のDX推進会議の議事録を作成してください。参加者・議題・決定事項・アクションアイテム・次回開催予定を含む標準的な議事録形式で出力してください。'
   };
-  inp.value=presets[feature] || 'AI機能のデモを実行して';
-  inp.focus();
-  if(r){
-    r.style.display='block';
-    r.textContent='テンプレートを入力しました。内容を追記して「送信」を押してください。';
-  }
+  callAI(docPrompts[docType]||docType+'の文書を生成してください。')
+    .then(function(text){
+      r.innerHTML='<div class="ai-bubble ai-bubble-bot">'+escHtml(text)+'</div>'+
+        '<button class="ai-copy-btn" onclick="copyAIResult(this)">📋 コピー</button>';
+    })
+    .catch(function(err){
+      r.innerHTML='<div class="ai-bubble ai-bubble-bot">⚠️ エラー: '+escHtml(err.message)+'</div>';
+    });
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -4767,14 +4738,24 @@ var aiRes = {
       'この順序を守ることで、手元資金を枯渇させずに成長軌道へ乗ることができます。';
   },
 };
+// ── ダッシュボード クイックAI ─────────────────────────────────
 function aiQuick(p){
   var r=document.getElementById('ai-result-dash');
   if(!r)return;
-  r.style.display='block';r.textContent='分析中...';
-  setTimeout(function(){
-    var res=aiRes[p];
-    r.textContent=(typeof res==='function')?res():(res||'🤖 AIが分析しました。詳細なレポートを作成しますか？');
-  },600);
+  r.style.display='block'; r.style.whiteSpace='normal';
+  r.innerHTML='<div class="ai-bubble ai-bubble-bot ai-bubble-loading">⏳ 分析中...</div>';
+  var prompts={
+    '今月の処理状況を要約して':'今月の業務処理状況を要約してください。受注・請求・入金・ワークフロー承認の各プロセスの進捗と、経営者として注目すべきポイントを3〜5文で教えてください。',
+    '承認が遅れている案件を教えて':'承認が遅れているワークフロー案件と未回収の売掛金について、優先度順に教えてください。各案件の対処方法も含めて3〜5文で回答してください。',
+    '改善提案をして':'現在の業務状況に基づいて、売上向上・コスト削減・業務効率化の観点から経営改善提案を3点挙げてください。各提案には具体的なアクションを含めてください。'
+  };
+  callAI(prompts[p]||p)
+    .then(function(text){
+      r.innerHTML='<div class="ai-bubble ai-bubble-bot">'+escHtml(text)+'</div>';
+    })
+    .catch(function(err){
+      r.innerHTML='<div class="ai-bubble ai-bubble-bot">⚠️ エラー: '+escHtml(err.message)+'</div>';
+    });
 }
 </script>
 
