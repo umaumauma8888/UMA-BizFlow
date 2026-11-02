@@ -38,7 +38,7 @@ app.get('/terms-of-service', (req, res) => {
 // ── メール送信 API（api/send-email.js を Express にマウント）────
 // vercel.json の catch-all ルートが /api/send-email を server.js に
 // 転送するため、ここで明示的に処理する
-app.post('/api/send-email', require('./api/send-email'));
+app.post('/api/send-email', (req,res) => res.status(403).json({error:'このコピーではメール送信を行いません。'}));
 
 // ── ヘルパー ─────────────────────────────────────────────────
 const now = () => new Date().toISOString().slice(0, 10);
@@ -46,7 +46,7 @@ const uid = () => uuidv4();
 
 // ── DB 初期化 & サーバー起動 ──────────────────────────────────
 // Vercel のサーバーレス環境はプロジェクトルートが読み取り専用のため /tmp を使用
-const DB_PATH = process.env.VERCEL ? '/tmp/uma_bizflow.db' : 'uma_bizflow.db';
+const DB_PATH = process.env.VERCEL ? '/tmp/uma_bizflow_smart_register_preview.db' : 'uma_bizflow_smart_register_preview.db';
 
 async function main() {
   const db = await open({
@@ -758,6 +758,7 @@ CREATE TABLE IF NOT EXISTS workflows (
   // Anthropic AI プロキシ API
   // ══════════════════════════════════════════════════════════════
   app.post('/api/ai', async (req, res) => {
+    return res.status(403).json({error:'このコピーでは外部AIサービスを呼び出しません。'});
     const { messages, system, feature } = req.body ?? {};
     if (!Array.isArray(messages) || messages.length === 0) {
       return res.status(400).json({ error: 'messages required' });

@@ -1009,7 +1009,7 @@ code { font-family:'JetBrains Mono','Fira Code',monospace; font-size:11px; backg
 .ai-btn:disabled { opacity:0.45; cursor:not-allowed; }
 
 </style>
-</head>
+<link rel="stylesheet" href="/register.css"><link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0d1f3c"></head>
 <body>
 
 <div class="demo-global-banner">【デモ画面】入力・変更したデータは保存されません。自由にお試しください。</div>
@@ -3248,6 +3248,7 @@ function buildDerivedData() {
     amount:OPENING_BALANCE.cash, memo:'期首残高｜現金・普通預金', taxLabel:'', source:'opening' });
 
   MASTER_TRANSACTIONS.forEach(t => {
+    if (t.smartRegister) return;
     // ① 売上計上: 売掛金(税抜) / 売上高(税抜)
     journals.push({ id:'j-s-'+t.orderId, date:t.invoiceDate, debit:'1100', credit:'4001',
       amount:t.subtotal,
@@ -3275,6 +3276,7 @@ function buildDerivedData() {
       amount:e.amount, memo:e.memo, taxLabel:'', source:'expense' });
   });
 
+  journals.push(...(window.smartRegisterJournals || []));
   journals.sort((a,b) => a.date.localeCompare(b.date) || a.id.localeCompare(b.id));
   return journals;
 }
@@ -4491,6 +4493,7 @@ function renderMonthlySalesChart(f) {
   // グラフデータは MASTER_TRANSACTIONS から実績月を反映
   const monthlyMap = {};
   MASTER_TRANSACTIONS.forEach(t => {
+    if (t.smartRegister) return;
     const m = t.invoiceDate.slice(0,7); // '2026-05'
     monthlyMap[m] = (monthlyMap[m]||0) + t.subtotal;
   });
@@ -4869,5 +4872,5 @@ function aiQuick(p){
 }
 </script>
 
-</body>
+<script src="/register-engine.js"></script><script src="/register-ui.js"></script><script>if("serviceWorker" in navigator){navigator.serviceWorker.register("/register-sw.js").catch(console.warn);}</script></body>
 </html>
