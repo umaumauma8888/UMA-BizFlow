@@ -11,6 +11,10 @@
       "use": "@vercel/static"
     },
     {
+      "src": "register.css",
+      "use": "@vercel/static"
+    },
+    {
       "src": "manifest.webmanifest",
       "use": "@vercel/static"
     }
