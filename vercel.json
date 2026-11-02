@@ -1,15 +1,18 @@
 {
   "version": 2,
+  "installCommand": "",
   "builds": [
     {
-      "src": "server.js",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
+      "src": "*.html",
+      "use": "@vercel/static"
+    },
     {
-      "src": "/(.*)",
-      "dest": "server.js"
+      "src": "register-*.*",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "manifest.webmanifest",
+      "use": "@vercel/static"
     }
   ]
 }
